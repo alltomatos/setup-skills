@@ -1,0 +1,51 @@
+{
+  "name": "app-traefik",
+  "description": "Deploy do Traefik v3.5.3 + Portainer CE via Docker Swarm. Proxy reverso com SSL automático (Let's Encrypt). Base obrigatória para todas as demais skills.",
+  "depends_on": ["infra-bootstrap"],
+  "security_level": "medium",
+  "persistence": {
+    "traefik": "/root/dados_vps/traefik.md",
+    "portainer": "/root/dados_vps/portainer.md",
+    "yaml_files": ["/root/traefik.yaml", "/root/portainer.yaml"]
+  },
+  "required_inputs": [
+    {
+      "var": "NOME_SERVIDOR",
+      "label": "Nome do Servidor",
+      "description": "Nome identificador do servidor (ex: OrionDesign)",
+      "example": "OrionDesign",
+      "sensitive": false
+    },
+    {
+      "var": "NOME_REDE_INTERNA",
+      "label": "Nome da Rede Interna",
+      "description": "Nome da rede overlay Docker que conectará todos os containers (ex: OrionNet)",
+      "example": "OrionNet",
+      "sensitive": false
+    },
+    {
+      "var": "EMAIL_SSL",
+      "label": "Email para SSL (Let's Encrypt)",
+      "description": "Email válido para receber notificações de renovação de certificado",
+      "example": "contato@seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "URL_PORTAINER",
+      "label": "Domínio do Portainer",
+      "description": "Subdomínio configurado no DNS para o Portainer (ex: portainer.seudominio.com.br)",
+      "example": "portainer.seudominio.com.br",
+      "sensitive": false
+    }
+  ],
+  "pre_flight_checks": [
+    "DNS do URL_PORTAINER deve apontar para o IP desta VPS",
+    "Portas 80 e 443 devem estar liberadas no firewall",
+    "Docker deve estar instalado (skill infra-bootstrap)"
+  ],
+  "post_install_guide": [
+    "Acesse https://{URL_PORTAINER} para criar o usuário admin do Portainer",
+    "O primeiro acesso deve ser feito em até 5 minutos após o deploy",
+    "Guarde as credenciais do Portainer — elas serão necessárias para as próximas skills"
+  ]
+}
