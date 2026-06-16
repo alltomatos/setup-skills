@@ -1,0 +1,87 @@
+{
+  "name": "app-n8n",
+  "description": "Deploy do N8N em modo queue (editor + worker + webhook) via Docker Swarm. Usa PostgreSQL externo (host=postgres, db=n8n_queue) e Redis interno como broker de filas Bull. Dois domínios separados: um para a interface e outro dedicado a webhooks.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "security_level": "high",
+  "persistence": {
+    "n8n": "/root/dados_vps/n8n.md",
+    "yaml_files": ["/root/n8n.yaml"]
+  },
+  "required_inputs": [
+    {
+      "var": "URL_N8N",
+      "label": "Domínio do Editor N8N",
+      "description": "Subdomínio para a interface web de criação de workflows",
+      "example": "n8n.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "URL_WEBHOOK_N8N",
+      "label": "Domínio de Webhook N8N",
+      "description": "Subdomínio dedicado exclusivamente para receber webhooks externos. Deve ser diferente do editor.",
+      "example": "webhook.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "SENHA_POSTGRES",
+      "label": "Senha do PostgreSQL",
+      "description": "Senha do usuário 'postgres' no banco externo (host=postgres, db=n8n_queue)",
+      "example": "",
+      "sensitive": true
+    },
+    {
+      "var": "EMAIL_SMTP_N8N",
+      "label": "Email Remetente SMTP",
+      "description": "Endereço de email que o N8N usará como remetente nos envios",
+      "example": "contato@seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "USER_SMTP_N8N",
+      "label": "Usuário SMTP",
+      "description": "Login de autenticação no servidor SMTP",
+      "example": "contato@seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "SENHA_SMTP_N8N",
+      "label": "Senha SMTP",
+      "description": "Senha de autenticação no servidor SMTP",
+      "example": "",
+      "sensitive": true
+    },
+    {
+      "var": "HOST_SMTP_N8N",
+      "label": "Host SMTP",
+      "description": "Endereço do servidor SMTP",
+      "example": "smtp.hostinger.com",
+      "sensitive": false
+    },
+    {
+      "var": "PORTA_SMTP_N8N",
+      "label": "Porta SMTP",
+      "description": "Porta do servidor SMTP (465 para SSL, 587 para TLS)",
+      "example": "465",
+      "sensitive": false
+    },
+    {
+      "var": "NOME_REDE_INTERNA",
+      "label": "Nome da Rede Interna",
+      "description": "Nome da rede overlay Docker que conecta todos os serviços (deve existir — criada pelo app-traefik)",
+      "example": "OrionNet",
+      "sensitive": false
+    }
+  ],
+  "pre_flight_checks": [
+    "DNS do URL_N8N deve apontar para o IP desta VPS",
+    "DNS do URL_WEBHOOK_N8N deve apontar para o IP desta VPS (registro separado obrigatório)",
+    "Banco PostgreSQL deve estar acessível via host 'postgres' na rede interna com database 'n8n_queue' criada",
+    "Rede overlay NOME_REDE_INTERNA deve existir (criada pela skill app-traefik)"
+  ],
+  "post_install_guide": [
+    "Acesse https://{URL_N8N} para criar o usuário admin do N8N no primeiro acesso",
+    "Teste um webhook simples em https://{URL_WEBHOOK_N8N}/webhook-test/ping para validar o serviço dedicado",
+    "A N8N_ENCRYPTION_KEY foi gerada automaticamente — se perder o volume 'n8n_data', os workflows com credenciais criptografadas não poderão ser restaurados",
+    "Para escalar workers: docker service scale n8n_n8n_worker=N (sem reiniciar editor/webhook)"
+  ]
+}

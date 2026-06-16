@@ -1,0 +1,52 @@
+{
+  "name": "app-evolution",
+  "description": "Deploy da Evolution API (WhatsApp Business) via Docker Swarm. Container único com Redis embutido, integração PostgreSQL externo e geração automática de API Key. Exposto via Traefik com SSL automático.",
+  "depends_on": ["app-traefik"],
+  "security_level": "high",
+  "persistence": {
+    "evolution": "/root/dados_vps/evolution.md",
+    "yaml_files": ["/root/evolution.yaml"]
+  },
+  "required_inputs": [
+    {
+      "var": "URL_EVOLUTION",
+      "label": "Domínio da Evolution API",
+      "description": "Subdomínio configurado no DNS para a Evolution API (ex: api.seudominio.com.br). Sem 'https://' ou barra final.",
+      "example": "api.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "SENHA_POSTGRES",
+      "label": "Senha do PostgreSQL",
+      "description": "Senha do usuário 'postgres' no banco de dados externo (host=postgres). NUNCA é persistida em arquivo.",
+      "example": "(gerada na skill infra-bootstrap ou informada pelo usuário)",
+      "sensitive": true
+    },
+    {
+      "var": "NOME_REDE_INTERNA",
+      "label": "Nome da Rede Interna",
+      "description": "Nome da rede overlay Docker. Lido automaticamente de /root/dados_vps/traefik.md.",
+      "example": "OrionNet",
+      "sensitive": false
+    }
+  ],
+  "generated_secrets": [
+    {
+      "var": "AUTHENTICATION_API_KEY",
+      "description": "Gerada automaticamente via 'openssl rand -hex 16'. Salva em /root/dados_vps/evolution.md.",
+      "sensitive": true
+    }
+  ],
+  "pre_flight_checks": [
+    "DNS do URL_EVOLUTION deve apontar para o IP desta VPS antes do deploy (SSL falha sem isso)",
+    "Traefik deve estar ativo — skill app-traefik deve ter sido executada com sucesso",
+    "PostgreSQL externo deve estar operacional e acessível via host 'postgres' na rede overlay",
+    "Banco de dados 'evolution' deve existir no PostgreSQL (CREATE DATABASE evolution)"
+  ],
+  "post_install_guide": [
+    "Acesse https://{URL_EVOLUTION}/manager para abrir o painel web da Evolution API",
+    "No campo de autenticação, informe a AUTHENTICATION_API_KEY salva em /root/dados_vps/evolution.md",
+    "Crie uma nova instância de WhatsApp pelo Manager e escaneie o QR Code",
+    "A SENHA_POSTGRES nunca aparece nos arquivos gerados — confirme isso em /root/dados_vps/evolution.md"
+  ]
+}

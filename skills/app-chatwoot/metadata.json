@@ -1,0 +1,99 @@
+{
+  "name": "app-chatwoot",
+  "description": "Deploy do Chatwoot (app + sidekiq + redis) via Docker Swarm. Plataforma de atendimento omnichannel com SSL automático via Traefik. Usa pgvector como banco de dados PostgreSQL.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "security_level": "high",
+  "persistence": {
+    "chatwoot": "/root/dados_vps/chatwoot.md",
+    "yaml_files": ["/root/chatwoot.yaml"]
+  },
+  "required_inputs": [
+    {
+      "var": "URL_CHATWOOT",
+      "label": "Domínio do Chatwoot",
+      "description": "Subdomínio configurado no DNS para o Chatwoot (ex: chatwoot.seudominio.com.br)",
+      "example": "chatwoot.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "NOME_EMPRESA_CHATWOOT",
+      "label": "Nome da Empresa",
+      "description": "Nome exibido na interface do Chatwoot como identificador da instalação",
+      "example": "Orion Design",
+      "sensitive": false
+    },
+    {
+      "var": "SENHA_PGVECTOR",
+      "label": "Senha do PostgreSQL (pgvector)",
+      "description": "Senha do usuário postgres no container pgvector. Host fixo: pgvector, usuário: postgres",
+      "example": "s3nh@F0rte!",
+      "sensitive": true
+    },
+    {
+      "var": "EMAIL_ADMIN_CHATWOOT",
+      "label": "Email Remetente (SMTP From)",
+      "description": "Endereço de email usado como remetente nos envios do Chatwoot (MAILER_SENDER_EMAIL)",
+      "example": "noreply@seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "USER_SMTP_CHATWOOT",
+      "label": "Usuário SMTP",
+      "description": "Usuário de autenticação no servidor SMTP",
+      "example": "noreply@seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "SENHA_EMAIL_CHATWOOT",
+      "label": "Senha SMTP",
+      "description": "Senha de autenticação SMTP. SENSÍVEL: nunca registrada em logs ou arquivos .md",
+      "example": "s3nh@Smtp!",
+      "sensitive": true
+    },
+    {
+      "var": "SMTP_HOST_CHATWOOT",
+      "label": "Host SMTP",
+      "description": "Endereço do servidor SMTP (ex: smtp.hostinger.com, smtp.gmail.com)",
+      "example": "smtp.hostinger.com",
+      "sensitive": false
+    },
+    {
+      "var": "PORTA_SMTP_CHATWOOT",
+      "label": "Porta SMTP",
+      "description": "Porta do servidor SMTP. 465 ativa SMTP_SSL=true automaticamente; 587 ativa SMTP_SSL=false",
+      "example": "465",
+      "sensitive": false,
+      "allowed_values": ["465", "587"]
+    },
+    {
+      "var": "NOME_REDE_INTERNA",
+      "label": "Rede Overlay Docker",
+      "description": "Nome da rede overlay criada pelo Traefik. Lida automaticamente de /root/dados_vps/traefik.md",
+      "example": "OrionNet",
+      "sensitive": false,
+      "auto_source": "/root/dados_vps/traefik.md"
+    }
+  ],
+  "pre_flight_checks": [
+    "DNS do URL_CHATWOOT deve apontar para o IP desta VPS",
+    "Skill app-traefik deve estar instalada e a rede overlay ativa",
+    "Container pgvector deve estar em execução e acessível na rede overlay",
+    "Banco de dados 'chatwoot' deve existir no pgvector (ou o usuário postgres deve ter permissão para criá-lo)",
+    "Portas 80 e 443 devem estar abertas no firewall",
+    "openssl deve estar disponível no host (para geração da encryption key)"
+  ],
+  "post_install_guide": [
+    "Aguarde 60-90 segundos para migrations do Rails finalizarem antes do primeiro acesso",
+    "Acesse https://{URL_CHATWOOT} e crie a conta de superadmin no primeiro boot",
+    "O sidekiq processa filas em background — verifique com: docker service logs chatwoot_sidekiq",
+    "Para verificar status dos 3 serviços: docker service ls | grep chatwoot",
+    "Metadados (sem senhas) salvos em: /root/dados_vps/chatwoot.md",
+    "Stack YAML completa em: /root/chatwoot.yaml"
+  ],
+  "generated_vars": {
+    "SMTP_SSL": "Derivado automaticamente de PORTA_SMTP_CHATWOOT (465=true, 587=false)",
+    "SECRET_KEY_BASE": "Gerado via 'openssl rand -hex 16' em cada execução"
+  },
+  "services": ["app", "sidekiq", "redis"],
+  "volumes": ["chatwoot_data", "chatwoot_storage"]
+}

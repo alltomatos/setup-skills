@@ -1,0 +1,99 @@
+{
+  "name": "app-typebot",
+  "description": "Deploy do Typebot via Docker Swarm. Dois serviços obrigatórios: Builder (editor de fluxos) e Viewer (runtime público). Requer PostgreSQL externo e SMTP para autenticação.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "security_level": "high",
+  "persistence": {
+    "typebot": "/root/dados_vps/typebot.md",
+    "yaml_files": ["/root/typebot.yaml"]
+  },
+  "required_inputs": [
+    {
+      "var": "URL_TYPEBOT",
+      "label": "Domínio do Builder",
+      "description": "Subdomínio para o editor de fluxos do Typebot (ex: typebot.seudominio.com.br)",
+      "example": "typebot.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "URL_VIEWER_TYPEBOT",
+      "label": "Domínio do Viewer",
+      "description": "Subdomínio para o runtime público dos bots (ex: viewer.seudominio.com.br). DEVE ser diferente do Builder.",
+      "example": "viewer.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "SENHA_POSTGRES",
+      "label": "Senha do PostgreSQL",
+      "description": "Senha do usuário postgres no banco externo (host=postgres, user=postgres)",
+      "example": "MinhaS3nh@Forte",
+      "sensitive": true
+    },
+    {
+      "var": "EMAIL_SMTP_TYPEBOT",
+      "label": "Email remetente SMTP",
+      "description": "Endereço de email usado como remetente nos emails de autenticação",
+      "example": "noreply@seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "USER_SMTP_TYPEBOT",
+      "label": "Usuário SMTP",
+      "description": "Usuário de autenticação no servidor SMTP",
+      "example": "noreply@seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "SENHA_SMTP_TYPEBOT",
+      "label": "Senha SMTP",
+      "description": "Senha de autenticação no servidor SMTP",
+      "example": "S3nhaSmtp!",
+      "sensitive": true
+    },
+    {
+      "var": "HOST_SMTP_TYPEBOT",
+      "label": "Host SMTP",
+      "description": "Endereço do servidor SMTP",
+      "example": "smtp.gmail.com",
+      "sensitive": false
+    },
+    {
+      "var": "PORTA_SMTP_TYPEBOT",
+      "label": "Porta SMTP",
+      "description": "Porta do servidor SMTP (comuns: 465 SSL, 587 TLS, 25)",
+      "example": "587",
+      "sensitive": false
+    },
+    {
+      "var": "NOME_REDE_INTERNA",
+      "label": "Nome da Rede Overlay",
+      "description": "Nome da rede overlay Docker criada pelo Traefik (ex: OrionNet)",
+      "example": "OrionNet",
+      "sensitive": false
+    }
+  ],
+  "auto_generated": [
+    {
+      "var": "NEXTAUTH_SECRET",
+      "label": "Segredo NextAuth",
+      "description": "Gerado automaticamente via openssl rand -hex 16. Não perguntar ao usuário.",
+      "auto_generated": true,
+      "command": "openssl rand -hex 16",
+      "sensitive": true
+    }
+  ],
+  "pre_flight_checks": [
+    "DNS do URL_TYPEBOT deve apontar para o IP desta VPS",
+    "DNS do URL_VIEWER_TYPEBOT deve apontar para o IP desta VPS",
+    "PostgreSQL externo deve estar acessível em host=postgres na rede overlay",
+    "Banco de dados 'typebot' deve existir no PostgreSQL (ou user postgres deve ter permissão de criação)",
+    "Portas 80 e 443 devem estar liberadas no firewall",
+    "Stack Traefik deve estar ativa (docker stack ls | grep traefik)"
+  ],
+  "post_install_guide": [
+    "Acesse https://{URL_TYPEBOT} para criar o primeiro usuário (administrador)",
+    "Configure um typebot e publique — o Viewer ficará disponível em https://{URL_VIEWER_TYPEBOT}",
+    "O NEXTAUTH_SECRET gerado não é persistido em texto — se precisar redeployar, um novo será gerado automaticamente",
+    "Verifique os logs: docker service logs typebot_typebot_builder"
+  ]
+}

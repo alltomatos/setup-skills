@@ -1,0 +1,70 @@
+{
+  "name": "app-minio",
+  "description": "Deploy do MinIO (Object Storage S3-compatible) via Docker Swarm. Fornece armazenamento de arquivos para outras skills (Chatwoot, N8N, Evolution API). Expõe painel admin e endpoint S3 via Traefik.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "security_level": "high",
+  "persistence": {
+    "minio": "/root/dados_vps/minio.md",
+    "yaml_files": ["/root/minio.yaml"]
+  },
+  "required_inputs": [
+    {
+      "var": "URL_MINIO",
+      "label": "Domínio do Painel Admin MinIO",
+      "description": "Subdomínio configurado no DNS para o console web do MinIO. Mapeia para a porta 9001 internamente.",
+      "example": "minio.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "URL_S3",
+      "label": "Domínio da API S3",
+      "description": "Subdomínio configurado no DNS para o endpoint S3 do MinIO. Mapeia para a porta 9000 internamente. Usado por outras skills como storage endpoint.",
+      "example": "s3.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "SENHA_MINIO",
+      "label": "Senha do Admin MinIO",
+      "description": "Senha do usuário root (admin) do MinIO. Mínimo de 8 caracteres. Nunca armazenada em disco pelo padrão Orion.",
+      "example": "MinhaS3nhaF0rte!",
+      "sensitive": true,
+      "validation": {
+        "minLength": 8
+      }
+    },
+    {
+      "var": "NOME_REDE_INTERNA",
+      "label": "Nome da Rede Interna",
+      "description": "Nome da rede overlay Docker que conecta todos os containers do ecossistema Orion.",
+      "example": "OrionNet",
+      "sensitive": false
+    }
+  ],
+  "pre_flight_checks": [
+    "DNS de URL_MINIO deve apontar para o IP desta VPS",
+    "DNS de URL_S3 deve apontar para o IP desta VPS",
+    "Traefik deve estar ativo (skill app-traefik)",
+    "Rede overlay NOME_REDE_INTERNA deve existir"
+  ],
+  "post_install_guide": [
+    "Acesse https://{URL_MINIO} com usuário 'admin' e a senha definida em SENHA_MINIO",
+    "Crie um bucket para cada aplicação que usará storage (ex: 'chatwoot', 'attachments')",
+    "Gere Access Key + Secret Key via menu Identity → Service Accounts no painel",
+    "Informe as Access Keys ao Claude ao instalar skills que dependem de storage S3 (ex: app-chatwoot)",
+    "IMPORTANTE: As Access Keys geradas são as credenciais de integração — guarde-as com segurança",
+    "A senha root (SENHA_MINIO) não é armazenada pelo Orion — guarde em gerenciador de senhas"
+  ],
+  "ports": {
+    "console": 9001,
+    "s3_api": 9000
+  },
+  "outputs": {
+    "url_minio": "URL do painel admin (lida do minio.md por outras skills)",
+    "url_s3": "URL da API S3 (lida do minio.md por skills de storage)"
+  },
+  "consumers": [
+    "app-chatwoot (storage de attachments)",
+    "app-n8n (storage de arquivos de workflow)",
+    "app-evolution (storage de mídia WhatsApp)"
+  ]
+}
