@@ -49,7 +49,7 @@ claude login
 ### 3. Clonar o projeto
 
 ```bash
-git clone https://github.com/<seu-usuario>/setup-skills.git
+git clone https://github.com/alltomatos/setup-skills.git
 cd setup-skills
 
 # Iniciar o orquestrador
