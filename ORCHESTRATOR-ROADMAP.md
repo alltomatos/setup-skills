@@ -78,9 +78,9 @@ Fonte de verdade: `docs/SetupOrion.md` (v2.8.0 — 45.909 linhas, ~110 ferrament
 - [x] T15: Skill `infra-postgres`      — PostgreSQL standalone via Docker Swarm
 - [x] T16: Skill `infra-pgvector`      — PostgreSQL + pgvector (extensão vetorial)
 - [x] T17: Skill `infra-redis`         — Redis cache/pub-sub
-- [ ] T18: Skill `infra-mysql`         — MySQL 8
-- [ ] T19: Skill `infra-mongodb`       — MongoDB
-- [ ] T20: Skill `infra-rabbitmq`      — RabbitMQ (fila de mensagens)
+- [x] T18: Skill `infra-mysql`         — MySQL 8
+- [x] T19: Skill `infra-mongodb`       — MongoDB
+- [x] T20: Skill `infra-rabbitmq`      — RabbitMQ (fila de mensagens)
 - [ ] T21: Skill `infra-clickhouse`    — ClickHouse (analytics OLAP)
 - [ ] T22: Skill `infra-kafka`         — Apache Kafka
 - [ ] T23: Skill `infra-qdrant`        — Qdrant (busca vetorial)

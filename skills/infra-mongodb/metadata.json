@@ -1,0 +1,14 @@
+{
+  "name": "infra-mongodb",
+  "description": "Instala o MongoDB 6.0 como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "MONGO_INITDB_ROOT_PASSWORD",
+      "description": "Senha root do MongoDB (vazio para gerar aleatória)",
+      "type": "password"
+    }
+  ],
+  "security_warning": "A senha root não será persistida conforme ADR-002.",
+  "persistence_path": "/root/dados_vps/infra-mongodb.md"
+}

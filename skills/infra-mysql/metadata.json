@@ -1,0 +1,14 @@
+{
+  "name": "infra-mysql",
+  "description": "Instala o MySQL 8.0 como uma stack Docker Swarm otimizada.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "MYSQL_ROOT_PASSWORD",
+      "description": "Senha mestre (root) do MySQL (vazio para gerar aleatória)",
+      "type": "password"
+    }
+  ],
+  "security_warning": "A senha root não será persistida conforme ADR-002.",
+  "persistence_path": "/root/dados_vps/infra-mysql.md"
+}
