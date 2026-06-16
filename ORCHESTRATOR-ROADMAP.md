@@ -134,7 +134,7 @@ Fonte de verdade: `docs/SetupOrion.md` (v2.8.0 — 45.909 linhas, ~110 ferrament
 > Deps: E5 (postgres ou mysql).
 
 - [x] T45: Skill `app-strapi`          — Strapi (headless CMS)
-- [ ] T46: Skill `app-directus`        — Directus (headless CMS + BaaS)
+- [x] T46: Skill `app-directus`        — Directus (headless CMS + BaaS)
 - [ ] T47: Skill `app-nocobase`        — NocoBase (no-code BaaS)
 - [ ] T48: Skill `app-nocodb`          — NocoDB (Airtable open-source)
 - [ ] T49: Skill `app-baserow`         — Baserow (Airtable open-source)
