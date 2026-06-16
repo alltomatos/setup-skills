@@ -1,0 +1,13 @@
+{
+  "name": "app-langfuse",
+  "description": "Instala o Langfuse (Observabilidade LLM) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_LANGFUSE",
+      "description": "Domínio para o Langfuse (ex: langfuse.exemplo.com)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-langfuse.md"
+}
