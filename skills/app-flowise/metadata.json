@@ -1,0 +1,13 @@
+{
+  "name": "app-flowise",
+  "description": "Instala o Flowise (Orquestrador LLM Low-code) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_FLOWISE",
+      "description": "Domínio para o Flowise (ex: flowise.exemplo.com)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-flowise.md"
+}

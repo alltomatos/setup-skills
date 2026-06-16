@@ -1,0 +1,7 @@
+{
+  "name": "infra-kafka",
+  "description": "Instala o Apache Kafka (KRaft mode) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [],
+  "persistence_path": "/root/dados_vps/infra-kafka.md"
+}

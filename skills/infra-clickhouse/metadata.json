@@ -1,0 +1,14 @@
+{
+  "name": "infra-clickhouse",
+  "description": "Instala o ClickHouse (OLAP) como uma stack Docker Swarm para analytics de alta performance.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "CLICKHOUSE_PASSWORD",
+      "description": "Senha para o usuário default (vazio para gerar aleatória)",
+      "type": "password"
+    }
+  ],
+  "security_warning": "A senha não será persistida conforme ADR-002.",
+  "persistence_path": "/root/dados_vps/infra-clickhouse.md"
+}
