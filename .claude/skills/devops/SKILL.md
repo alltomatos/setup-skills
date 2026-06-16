@@ -4,165 +4,164 @@ description: |
   Use quando o usuário pedir para instalar, configurar ou fazer deploy de qualquer
   aplicação, banco de dados ou serviço de infraestrutura. Também cobre diagnóstico
   de stacks existentes, verificação de pré-requisitos e orientação sobre dependências.
-allowed-tools: Bash(bash *) Bash(cat *) Bash(ls *) Bash(find *) Bash(docker *) Read
+  Argumento opcional: nome da skill para ir direto ao deploy (ex: /devops chatwoot).
+argument-hint: [nome-da-skill ou vazio para menu]
+allowed-tools: Bash(bash *) Bash(cat *) Bash(ls *) Bash(find *) Bash(docker *) Bash(python3 *) Read
 ---
 
-# Assistente DevOps — Ecossistema Orion
+## Instruções para o assistente (não exibir ao usuário)
 
-Você é um assistente DevOps especializado neste repositório. Seu trabalho é guiar o usuário no deploy de stacks Docker Swarm usando as skills disponíveis em `skills/`.
+Você é um assistente DevOps do ecossistema Orion. Ao ser invocado:
 
-## Como funciona o sistema
+1. **Se `$ARGUMENTS` estiver vazio** → exiba o menu abaixo e aguarde o usuário escolher.
+2. **Se `$ARGUMENTS` tiver um nome** → pule o menu e vá direto ao fluxo de deploy para aquela skill.
+3. **Após escolha do usuário** → leia o `metadata.json` da skill escolhida, resolva dependências e siga o fluxo de deploy.
 
-Cada subdiretório em `skills/` é uma **deploy skill** — um script bash autocontido que instala uma stack no Docker Swarm. Você nunca escreve YAML nem bash do zero: você **lê o `metadata.json` da skill, coleta as entradas necessárias do usuário e executa o `run.sh`** com as variáveis corretas.
+Regras inegociáveis:
+- Nunca execute `run.sh` sem ter coletado TODAS as `required_inputs` primeiro.
+- Variáveis com `"sensitive": true` → colete via chat, nunca exiba de volta, nunca logue.
+- Sempre resolva `depends_on` antes da skill alvo (verifique `/root/dados_vps/`).
+- Redes overlay: leia `/root/dados_vps/traefik.md` antes de perguntar ao usuário.
 
-### Fluxo padrão de deploy
-
-```
-1. Usuário pede para instalar X
-2. Você verifica se X existe em skills/ (injete o estado real abaixo)
-3. Você lê skills/X/metadata.json → identifica depends_on e required_inputs
-4. Você verifica quais dependências já estão instaladas (/root/dados_vps/)
-5. Você instala dependências faltantes (mesma sequência)
-6. Você coleta as entradas NOT sensitive do usuário
-7. Você solicita entradas sensitive uma a uma via chat
-8. Você monta o comando e executa: bash skills/X/run.sh com as variáveis exportadas
-```
+---
 
 ## Estado atual do servidor
 
-### Stacks em execução
-!`docker service ls 2>/dev/null || echo "Docker Swarm não acessível neste contexto"`
+```
+!`python3 -c "
+import os, json, glob
 
-### Skills já instaladas (dados persistidos)
-!`ls /root/dados_vps/ 2>/dev/null || echo "Nenhuma skill instalada ainda"`
+dados = set(f.replace('.md','') for f in os.listdir('/root/dados_vps') if f.endswith('.md')) if os.path.isdir('/root/dados_vps') else set()
 
-### Skills disponíveis para deploy
-!`ls /root/setup-skills/skills/ 2>/dev/null | grep -v '^00-core$'`
+skills_dir = '/root/setup-skills/skills'
+skills = sorted(d for d in os.listdir(skills_dir) if d != '00-core' and os.path.isdir(os.path.join(skills_dir, d)))
 
-## Catálogo de skills
+installed = [s for s in skills if s in dados or s.replace('app-','').replace('infra-','') in dados]
+pending   = [s for s in skills if s not in installed]
 
-### Infraestrutura (prefixo `infra-`)
-
-| Skill | O que instala | Deps |
-|-------|--------------|------|
-| `infra-bootstrap` | Prepara o servidor (Docker Swarm, firewall, diretórios) | — |
-| `infra-postgres` | PostgreSQL 14 standalone | bootstrap |
-| `infra-pgvector` | PostgreSQL 14 + extensão pgvector (AI/RAG) | bootstrap |
-| `infra-redis` | Redis 7 (cache / pub-sub) | bootstrap |
-| `infra-mysql` | MySQL 8.0 | bootstrap |
-| `infra-mongodb` | MongoDB 6.0 | bootstrap |
-| `infra-rabbitmq` | RabbitMQ + Management Plugin | bootstrap |
-| `infra-kafka` | Apache Kafka (KRaft mode) | bootstrap |
-| `infra-clickhouse` | ClickHouse OLAP | bootstrap |
-| `infra-qdrant` | Qdrant Vector Database | bootstrap |
-
-> **Pré-requisito universal**: `infra-bootstrap` + `app-traefik` devem ser os primeiros a rodar em qualquer VPS nova.
-
-### Aplicações (prefixo `app-`)
-
-**Proxy / Painel**
-| Skill | O que instala |
-|-------|--------------|
-| `app-traefik` | Traefik v3 + Portainer CE (proxy reverso + SSL automático) |
-
-**Automação / Low-code**
-| Skill | O que instala | Deps extras |
-|-------|--------------|-------------|
-| `app-n8n` | N8N (queue mode: editor + worker + webhook) | postgres, redis |
-| `app-typebot` | Typebot (builder + viewer) | — |
-
-**WhatsApp / Mensageria**
-| Skill | O que instala |
-|-------|--------------|
-| `app-evolution` | Evolution API (WhatsApp Business) |
-| `app-unoapi` | UnoAPI (gateway via Baileys) |
-| `app-quepasa` | QuePasa (gateway WhatsApp) |
-| `app-wuzapi` | WuzAPI (gateway leve) |
-| `app-wppconnect` | WPPConnect (gateway robusto) |
-| `app-transcrevezap` | TranscreveZap (transcrição de áudio) |
-
-**IA / LLM**
-| Skill | O que instala | Deps extras |
-|-------|--------------|-------------|
-| `app-ollama` | Ollama (modelos locais: Llama3, Mistral…) | — |
-| `app-openwebui` | Open WebUI (frontend para Ollama) | ollama |
-| `app-flowise` | Flowise (orquestração LLM low-code) | postgres |
-| `app-langflow` | Langflow (builder visual de fluxos) | — |
-| `app-langfuse` | Langfuse (observabilidade LLM) | postgres |
-| `app-dify` | Dify (plataforma LLM + RAG) | postgres, redis |
-| `app-anythingllm` | AnythingLLM (RAG privado) | — |
-| `app-firecrawl` | Firecrawl (web scraping para LLM) | redis |
-| `app-zep` | Zep (memória long-term para agentes) | pgvector |
-| `app-evoai` | EvoAI (plataforma de agentes) | postgres |
-| `app-omnitools` | OmniTools (hub de ferramentas AI) | — |
-
-**Atendimento / CRM**
-| Skill | O que instala | Deps extras |
-|-------|--------------|-------------|
-| `app-chatwoot` | Chatwoot (omnichannel) | pgvector |
-| `app-woofed` | WoofedCRM (CRM para WhatsApp) | pgvector, redis |
-| `app-krayincrm` | Krayin CRM (Laravel) | mysql interno |
-| `app-twentycrm` | Twenty CRM (CRM moderno) | — |
-| `app-evocrm` | EvoCRM (CRM + AI microservices) | pgvector |
-
-**Storage**
-| Skill | O que instala |
-|-------|--------------|
-| `app-minio` | MinIO (object storage S3-compatible) |
-
-## Como coletar e executar
-
-### 1. Leia o metadata.json antes de perguntar qualquer coisa
-```bash
-cat /root/setup-skills/skills/<nome>/metadata.json
+print(f'Skills instaladas : {len(installed)}')
+print(f'Skills disponíveis: {len(pending)}')
+print(f'Total no catálogo : {len(skills)}')
+" 2>/dev/null || echo "Ambiente local — servidor não conectado"`
 ```
 
-### 2. Verifique dependências já instaladas
-```bash
-ls /root/dados_vps/
+---
+
+## ╔══════════════════════════════════════════════╗
+## ║        ORION DEVOPS — Menu de Deploy        ║
+## ╚══════════════════════════════════════════════╝
+
+```
+!`python3 << 'PYEOF'
+import os, json, glob
+
+SKILLS_DIR = '/root/setup-skills/skills'
+DADOS_DIR  = '/root/dados_vps'
+
+def is_installed(name):
+    if not os.path.isdir(DADOS_DIR):
+        return False
+    slug = name.replace('app-', '').replace('infra-', '')
+    return (
+        os.path.exists(f'{DADOS_DIR}/{name}.md') or
+        os.path.exists(f'{DADOS_DIR}/{slug}.md')
+    )
+
+def icon(name):
+    return '✅' if is_installed(name) else '⬜'
+
+def row(num, name, label, deps=''):
+    i = icon(name)
+    dep_str = f'  ← requer: {deps}' if deps else ''
+    return f'  [{num:>2}] {i} {label:<38}{dep_str}'
+
+print('┌─────────────────────────────────────────────────────────────────────┐')
+print('│  🏗️  INFRAESTRUTURA BASE                                             │')
+print('├─────────────────────────────────────────────────────────────────────┤')
+print(row(' 0', 'infra-bootstrap', 'Bootstrap do Servidor'))
+print(row(' 1', 'app-traefik',     'Traefik + Portainer (proxy + SSL)', 'bootstrap'))
+print('├─────────────────────────────────────────────────────────────────────┤')
+print('│  🗄️  BANCOS DE DADOS                                                 │')
+print('├─────────────────────────────────────────────────────────────────────┤')
+print(row(' 2', 'infra-postgres',  'PostgreSQL 14'))
+print(row(' 3', 'infra-pgvector',  'PostgreSQL 14 + pgvector (AI/RAG)'))
+print(row(' 4', 'infra-redis',     'Redis 7 (cache / pub-sub)'))
+print(row(' 5', 'infra-mysql',     'MySQL 8.0'))
+print(row(' 6', 'infra-mongodb',   'MongoDB 6.0'))
+print(row(' 7', 'infra-rabbitmq',  'RabbitMQ + Management UI'))
+print(row(' 8', 'infra-kafka',     'Apache Kafka (KRaft mode)'))
+print(row(' 9', 'infra-clickhouse','ClickHouse (analytics OLAP)'))
+print(row('10', 'infra-qdrant',    'Qdrant (busca vetorial)'))
+print('├─────────────────────────────────────────────────────────────────────┤')
+print('│  💬 WHATSAPP / MENSAGERIA                                            │')
+print('├─────────────────────────────────────────────────────────────────────┤')
+print(row('11', 'app-evolution',   'Evolution API (WhatsApp Business)'))
+print(row('12', 'app-unoapi',      'UnoAPI (gateway Baileys)',      'minio, rabbitmq'))
+print(row('13', 'app-quepasa',     'QuePasa (gateway WhatsApp)',    'postgres'))
+print(row('14', 'app-wuzapi',      'WuzAPI (gateway leve)',         'postgres'))
+print(row('15', 'app-wppconnect',  'WPPConnect (gateway robusto)'))
+print(row('16', 'app-transcrevezap','TranscreveZap (transcrição áudio)'))
+print('├─────────────────────────────────────────────────────────────────────┤')
+print('│  🤖 INTELIGÊNCIA ARTIFICIAL / LLM                                    │')
+print('├─────────────────────────────────────────────────────────────────────┤')
+print(row('17', 'app-ollama',      'Ollama (modelos locais LLM)'))
+print(row('18', 'app-openwebui',   'Open WebUI (frontend Ollama)',  'ollama'))
+print(row('19', 'app-flowise',     'Flowise (orquestração LLM)',    'postgres'))
+print(row('20', 'app-langflow',    'Langflow (builder visual LLM)'))
+print(row('21', 'app-langfuse',    'Langfuse (observabilidade LLM)','postgres'))
+print(row('22', 'app-dify',        'Dify (plataforma LLM + RAG)',   'postgres, redis'))
+print(row('23', 'app-anythingllm', 'AnythingLLM (RAG privado)'))
+print(row('24', 'app-firecrawl',   'Firecrawl (web scraping → LLM)','redis'))
+print(row('25', 'app-zep',         'Zep (memória long-term agentes)','pgvector'))
+print(row('26', 'app-evoai',       'EvoAI (plataforma de agentes)', 'postgres'))
+print(row('27', 'app-omnitools',   'OmniTools (hub ferramentas AI)'))
+print('├─────────────────────────────────────────────────────────────────────┤')
+print('│  🎯 ATENDIMENTO / CRM                                                │')
+print('├─────────────────────────────────────────────────────────────────────┤')
+print(row('28', 'app-chatwoot',    'Chatwoot (omnichannel)',         'pgvector'))
+print(row('29', 'app-woofed',      'WoofedCRM (CRM WhatsApp)',       'pgvector, redis'))
+print(row('30', 'app-krayincrm',   'Krayin CRM (Laravel open-source)'))
+print(row('31', 'app-twentycrm',   'Twenty CRM (CRM moderno)'))
+print(row('32', 'app-evocrm',      'EvoCRM (CRM + AI microservices)','pgvector'))
+print('├─────────────────────────────────────────────────────────────────────┤')
+print('│  ⚙️  AUTOMAÇÃO / LOW-CODE                                            │')
+print('├─────────────────────────────────────────────────────────────────────┤')
+print(row('33', 'app-n8n',         'N8N (automação queue mode)',     'postgres, redis'))
+print(row('34', 'app-typebot',     'Typebot (chatbot builder)'))
+print('├─────────────────────────────────────────────────────────────────────┤')
+print('│  💾 STORAGE                                                          │')
+print('├─────────────────────────────────────────────────────────────────────┤')
+print(row('35', 'app-minio',       'MinIO (object storage S3)'))
+print('└─────────────────────────────────────────────────────────────────────┘')
+print()
+print('  ✅ = já instalado   ⬜ = disponível para instalar')
+print()
+print('  Digite o número ou o nome da skill para instalar.')
+print('  Ex: "2"  ou  "postgres"  ou  "instalar chatwoot"')
+print('  Para diagnóstico do servidor: "status" ou "ver stacks"')
+PYEOF
+`
 ```
 
-### 3. Execute passando variáveis como environment
-```bash
-export VAR1="valor1"
-export VAR2="valor2"
-# ...
-bash /root/setup-skills/skills/<nome>/run.sh
+---
+
+## Fluxo de deploy (executar após escolha do usuário)
+
+```
+1. Ler metadata.json da skill escolhida
+2. Verificar depends_on → instalar pendentes primeiro
+3. Coletar required_inputs NÃO sensitive do usuário (todos de uma vez)
+4. Solicitar required_inputs sensitive UM A UM
+5. Exportar variáveis e executar: bash /root/setup-skills/skills/<nome>/run.sh
+6. Verificar resultado: docker service ls | grep <nome>
+7. Mostrar dados persistidos: cat /root/dados_vps/<nome>.md
 ```
 
-> **Regra de segurança**: variáveis `sensitive: true` no metadata.json NUNCA aparecem em logs, mensagens de confirmação ou resumos. Colete-as via chat e passe apenas via `export` antes do `run.sh`.
-
-### 4. Verifique o resultado
-```bash
-# Status das stacks
-docker service ls | grep <nome>
-
-# Dados persistidos (sem senhas)
-cat /root/dados_vps/<nome>.md
-```
-
-## Diagnóstico rápido
-
-Quando o usuário pedir para verificar o servidor ou diagnosticar problemas:
+## Diagnóstico (quando usuário pedir "status" ou "ver stacks")
 
 ```bash
-# Visão geral
-docker service ls
-
-# Log de um serviço específico
-docker service logs <stack>_<servico> --tail 50
-
-# Uso de recursos
-docker stats --no-stream
-
-# Dados de todas as skills instaladas
-cat /root/dados_vps/*.md 2>/dev/null
+docker service ls 2>/dev/null || echo "Swarm não disponível"
 ```
-
-## Orientações gerais
-
-- **Nunca instale em ordem errada**: sempre resolva `depends_on` antes da skill alvo.
-- **VPS nova**: sempre comece por `infra-bootstrap` → `app-traefik`.
-- **Redes overlay**: o nome da rede é salvo em `/root/dados_vps/traefik.md` — leia antes de perguntar ao usuário.
-- **Re-deploy é seguro**: todos os `run.sh` usam `docker stack deploy --prune` que é idempotente.
-- **Senhas geradas**: algumas skills geram segredos internamente (ex: app keys via `openssl`) — o usuário não precisa fornecê-las.
+```bash
+cat /root/dados_vps/*.md 2>/dev/null || echo "Nenhuma skill instalada"
+```
