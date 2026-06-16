@@ -1,0 +1,8 @@
+{
+  "name": "infra-redis",
+  "description": "Instala o Redis 7 (latest) como uma stack Docker Swarm para cache e pub-sub.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [],
+  "security_warning": "Nesta configuração inicial, o Redis é acessível apenas internamente na rede Orion sem senha (padrão Orion).",
+  "persistence_path": "/root/dados_vps/infra-redis.md"
+}
