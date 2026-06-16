@@ -1,0 +1,14 @@
+{
+  "name": "infra-pgvector",
+  "description": "Instala o PostgreSQL 14 com a extensão pgvector para buscas vetoriais (AI/RAG).",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "PGVECTOR_PASSWORD",
+      "description": "Senha para o usuário postgres do pgvector (deixe vazio para gerar aleatória)",
+      "type": "password"
+    }
+  ],
+  "security_warning": "A senha não será persistida conforme ADR-002.",
+  "persistence_path": "/root/dados_vps/infra-pgvector.md"
+}
