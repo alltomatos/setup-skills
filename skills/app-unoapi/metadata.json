@@ -1,0 +1,38 @@
+{
+  "name": "app-unoapi",
+  "description": "Instala a UnoAPI (Gateway WhatsApp) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "app-minio", "infra-rabbitmq"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_UNOAPI",
+      "description": "Domínio para a UnoAPI",
+      "type": "text"
+    },
+    {
+      "name": "S3_URL",
+      "description": "Endpoint do Minio/S3",
+      "type": "text"
+    },
+    {
+      "name": "S3_ACCESS_KEY",
+      "description": "Access Key do S3",
+      "type": "text"
+    },
+    {
+      "name": "S3_SECRET_KEY",
+      "description": "Secret Key do S3",
+      "type": "password"
+    },
+    {
+      "name": "RABBITMQ_USER",
+      "description": "Usuário do RabbitMQ",
+      "type": "text"
+    },
+    {
+      "name": "RABBITMQ_PASS",
+      "description": "Senha do RabbitMQ",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-unoapi.md"
+}
