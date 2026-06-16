@@ -1,0 +1,43 @@
+{
+  "name": "app-evocrm",
+  "description": "Instala o EvoCRM (Sistema de CRM microservices focado em AI) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-pgvector"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_EVOCRM_FRONT",
+      "description": "Domínio para o painel (Frontend) do EvoCRM",
+      "type": "text"
+    },
+    {
+      "name": "DOMAIN_EVOCRM_API",
+      "description": "Domínio para a API (Gateway) do EvoCRM",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_HOST",
+      "description": "Host SMTP para e-mails",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PORT",
+      "description": "Porta SMTP (ex: 465 ou 587)",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_USER",
+      "description": "Usuário SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PASS",
+      "description": "Senha SMTP",
+      "type": "password"
+    },
+    {
+      "name": "SMTP_FROM_EMAIL",
+      "description": "E-mail de remetente",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-evocrm.md"
+}
