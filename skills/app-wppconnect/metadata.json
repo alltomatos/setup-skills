@@ -1,0 +1,13 @@
+{
+  "name": "app-wppconnect",
+  "description": "Instala o WPPConnect (Gateway WhatsApp poderoso) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_WPPCONNECT",
+      "description": "Domínio para o WPPConnect",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-wppconnect.md"
+}
