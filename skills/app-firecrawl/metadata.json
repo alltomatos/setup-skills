@@ -1,0 +1,13 @@
+{
+  "name": "app-firecrawl",
+  "description": "Instala o Firecrawl (Web Scraping para LLMs) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-redis"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_FIRECRAWL",
+      "description": "Domínio para o Firecrawl API (ex: firecrawl.exemplo.com)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-firecrawl.md"
+}
