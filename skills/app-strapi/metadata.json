@@ -1,0 +1,13 @@
+{
+  "name": "app-strapi",
+  "description": "Instala o Strapi (Headless CMS open-source) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_STRAPI",
+      "description": "Domínio para o Strapi",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-strapi.md"
+}
