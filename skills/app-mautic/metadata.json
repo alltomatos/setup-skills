@@ -1,0 +1,13 @@
+{
+  "name": "app-mautic",
+  "description": "Instala o Mautic 5 (Automação de Marketing) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-mysql"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_MAUTIC",
+      "description": "Domínio para o Mautic",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-mautic.md"
+}
