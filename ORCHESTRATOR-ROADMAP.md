@@ -7,12 +7,12 @@ Este documento mapeia o progresso do projeto `setup-skills` sob governança do o
 - [x] **E1: Bootstrap do Ecossistema** (Configuração, docs, governança)
 - [x] **E2: Estrutura de Skills & Persistência** (Decomposição, bibliotecas, padrão MD)
 - [x] **E3: Implementação de Skills Base** (infra-bootstrap + app-traefik)
-- [ ] **E4: Implementação de Skills de Aplicação** (Chatwoot, Evolution, N8n, Typebot, Minio, etc)
+- [x] **E4: Implementação de Skills de Aplicação** (Chatwoot, Evolution, N8n, Typebot, Minio, etc)
 - [ ] **E5: Auditoria, Testes e Qualidade** (Segurança e Validação)
 
 ## Status
 
-- **Fase Atual**: 4 (Skills de Aplicação)
+- **Fase Atual**: 5 (Auditoria e Qualidade)
 - **Estado**: Iniciando
 
 ## Tarefas (DAG)
@@ -26,9 +26,9 @@ Este documento mapeia o progresso do projeto `setup-skills` sob governança do o
 - [x] T7: Implementar lib-persistence.sh (escrita atômica, index.md) | depends_on: [T6]
 - [x] T8: Skill infra-bootstrap (idempotente, log MD) | depends_on: [T7]
 - [x] T9: Skill app-traefik + app-portainer (Swarm, SSL, pré-flight) | depends_on: [T8]
-- [ ] T10: Skill app-chatwoot | depends_on: [T9]
-- [ ] T11: Skill app-evolution | depends_on: [T9]
-- [ ] T12: Skill app-n8n | depends_on: [T9]
-- [ ] T13: Skill app-typebot | depends_on: [T9]
-- [ ] T14: Skill app-minio | depends_on: [T9]
+- [x] T10: Skill app-chatwoot | depends_on: [T9]
+- [x] T11: Skill app-evolution | depends_on: [T9]
+- [x] T12: Skill app-n8n | depends_on: [T9]
+- [x] T13: Skill app-typebot | depends_on: [T9]
+- [x] T14: Skill app-minio | depends_on: [T9]
 - [ ] T15: Auditoria de segurança e testes | depends_on: [T10, T11, T12, T13, T14]
