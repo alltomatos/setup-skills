@@ -1,0 +1,58 @@
+{
+  "name": "app-directus",
+  "description": "Instala o Directus (Headless CMS + BaaS open-source) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "infra-redis", "app-minio"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_DIRECTUS",
+      "description": "Domínio para o Directus",
+      "type": "text"
+    },
+    {
+      "name": "ADMIN_EMAIL",
+      "description": "Email do administrador inicial",
+      "type": "text"
+    },
+    {
+      "name": "ADMIN_PASSWORD",
+      "description": "Senha do administrador inicial",
+      "type": "password"
+    },
+    {
+      "name": "SMTP_HOST",
+      "description": "Host SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PORT",
+      "description": "Porta SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_USER",
+      "description": "Usuário SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PASS",
+      "description": "Senha SMTP",
+      "type": "password"
+    },
+    {
+      "name": "S3_URL",
+      "description": "Endpoint do Minio/S3",
+      "type": "text"
+    },
+    {
+      "name": "S3_ACCESS_KEY",
+      "description": "Access Key S3",
+      "type": "text"
+    },
+    {
+      "name": "S3_SECRET_KEY",
+      "description": "Secret Key S3",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-directus.md"
+}
