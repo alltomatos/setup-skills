@@ -1,0 +1,337 @@
+#!/bin/bash
+
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+##                                         ORION DESIGN                                        ##
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+
+## Cores
+amarelo="\e[33m"
+verde="\e[32m"
+branco="\e[97m"
+bege="\e[93m"
+vermelho="\e[91m"
+reset="\e[0m"
+
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+##                                         ORION DESIGN                                        ##
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+
+sudo apt update
+
+sudo apt upgrade -y
+
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+##                                         ORION DESIGN                                        ##
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+
+nome_aviso(){
+clear
+echo ""
+echo -e "$amarelo===================================================================================================$reset"
+echo -e "$amarelo=                                                                                                 $amarelo=$reset"
+echo -e "$amarelo=                     $branco  █████╗     ██╗   ██╗    ██╗    ███████╗     ██████╗                       $amarelo=$reset"
+echo -e "$amarelo=                     $branco ██╔══██╗    ██║   ██║    ██║    ██╔════╝    ██╔═══██╗                      $amarelo=$reset"
+echo -e "$amarelo=                     $branco ███████║    ██║   ██║    ██║    ███████╗    ██║   ██║                      $amarelo=$reset"
+echo -e "$amarelo=                     $branco ██╔══██║    ╚██╗ ██╔╝    ██║    ╚════██║    ██║   ██║                      $amarelo=$reset"
+echo -e "$amarelo=                     $branco ██║  ██║     ╚████╔╝     ██║    ███████║    ╚██████╔╝                      $amarelo=$reset"
+echo -e "$amarelo=                     $branco ╚═╝  ╚═╝      ╚═══╝      ╚═╝    ╚══════╝     ╚═════╝                       $amarelo=$reset"
+echo -e "$amarelo=                                                                                                 $amarelo=$reset"
+echo -e "$amarelo===================================================================================================$reset"
+echo ""
+echo ""
+}
+
+nome_atualizadno(){
+    clear
+    echo ""
+    echo -e "$amarelo===================================================================================================$reset"
+    echo -e "$amarelo=                                                                                                 $amarelo=$reset"
+    echo -e "$amarelo=    $branco  █████╗ ████████╗██╗   ██╗ █████╗ ██╗     ██╗███████╗ █████╗ ███╗   ██╗██████╗  ██████╗     $amarelo=$reset"
+    echo -e "$amarelo=    $branco ██╔══██╗╚══██╔══╝██║   ██║██╔══██╗██║     ██║╚══███╔╝██╔══██╗████╗  ██║██╔══██╗██╔═══██╗    $amarelo=$reset"
+    echo -e "$amarelo=    $branco ███████║   ██║   ██║   ██║███████║██║     ██║  ███╔╝ ███████║██╔██╗ ██║██║  ██║██║   ██║    $amarelo=$reset"
+    echo -e "$amarelo=    $branco ██╔══██║   ██║   ██║   ██║██╔══██║██║     ██║ ███╔╝  ██╔══██║██║╚██╗██║██║  ██║██║   ██║    $amarelo=$reset"
+    echo -e "$amarelo=    $branco ██║  ██║   ██║   ╚██████╔╝██║  ██║███████╗██║███████╗██║  ██║██║ ╚████║██████╔╝╚██████╔╝    $amarelo=$reset"
+    echo -e "$amarelo=    $branco ╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝     $amarelo=$reset"
+    echo -e "$amarelo=                                                                                                 $amarelo=$reset"
+    echo -e "$amarelo===================================================================================================$reset"
+    echo ""
+    echo ""
+}
+
+nome_iniciando(){
+    clear
+    echo ""
+    echo -e "$amarelo===================================================================================================$reset"
+    echo -e "$amarelo=                                                                                                 $amarelo=$reset"
+    echo -e "$amarelo=                  $branco ██╗███╗   ██╗██╗ ██████╗██╗ █████╗ ███╗   ██╗██████╗  ██████╗                 $amarelo=$reset"
+    echo -e "$amarelo=                  $branco ██║████╗  ██║██║██╔════╝██║██╔══██╗████╗  ██║██╔══██╗██╔═══██╗                $amarelo=$reset"
+    echo -e "$amarelo=                  $branco ██║██╔██╗ ██║██║██║     ██║███████║██╔██╗ ██║██║  ██║██║   ██║                $amarelo=$reset"
+    echo -e "$amarelo=                  $branco ██║██║╚██╗██║██║██║     ██║██╔══██║██║╚██╗██║██║  ██║██║   ██║                $amarelo=$reset"
+    echo -e "$amarelo=                  $branco ██║██║ ╚████║██║╚██████╗██║██║  ██║██║ ╚████║██████╔╝╚██████╔╝                $amarelo=$reset"
+    echo -e "$amarelo=                  $branco ╚═╝╚═╝  ╚═══╝╚═╝ ╚═════╝╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝                 $amarelo=$reset"
+    echo -e "$amarelo=                                              v. 2.8.0                                           $amarelo=$reset"
+    echo -e "$amarelo===================================================================================================$reset"
+    echo ""
+    echo ""
+}
+
+nome_verificando(){
+    clear
+    echo ""
+    echo -e "$amarelo===================================================================================================$reset"
+    echo -e "$amarelo=                                                                                                 $amarelo=$reset"
+    echo -e "$amarelo=       $branco ██╗   ██╗███████╗██████╗ ██╗███████╗██╗ ██████╗ █████╗ ███╗   ██╗██████╗  ██████╗       $amarelo=$reset"
+    echo -e "$amarelo=       $branco ██║   ██║██╔════╝██╔══██╗██║██╔════╝██║██╔════╝██╔══██╗████╗  ██║██╔══██╗██╔═══██╗      $amarelo=$reset"
+    echo -e "$amarelo=       $branco ██║   ██║█████╗  ██████╔╝██║█████╗  ██║██║     ███████║██╔██╗ ██║██║  ██║██║   ██║      $amarelo=$reset"
+    echo -e "$amarelo=       $branco ╚██╗ ██╔╝██╔══╝  ██╔══██╗██║██╔══╝  ██║██║     ██╔══██║██║╚██╗██║██║  ██║██║   ██║      $amarelo=$reset"
+    echo -e "$amarelo=       $branco  ╚████╔╝ ███████╗██║  ██║██║██║     ██║╚██████╗██║  ██║██║ ╚████║██████╔╝╚██████╔╝      $amarelo=$reset"
+    echo -e "$amarelo=       $branco   ╚═══╝  ╚══════╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝       $amarelo=$reset"
+    echo -e "$amarelo=                                                                                                 $amarelo=$reset"
+    echo -e "$amarelo===================================================================================================$reset"
+    echo ""
+    echo ""
+}
+
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+##                                         ORION DESIGN                                        ##
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+
+desc_ver(){
+echo -e "                            Este script recomenda o uso do$amarelo Debian 11$branco.$reset"
+echo ""
+} 
+
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+##                                         ORION DESIGN                                        ##
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+
+clear
+nome_verificando
+echo "Aguarde enquanto verificamos algumas informações."
+sleep 1
+
+# Verifica se está usando Ubuntu 20.04
+if ! grep -q 'PRETTY_NAME="Debian GNU/Linux 11' /etc/os-release; then
+    nome_aviso
+    desc_ver
+    #echo "Este script recomenda o uso do Debian 11."
+    sleep 5
+    clear
+    nome_verificando
+fi
+
+# Verifica se o usuário é root
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Este script precisa ser executado como root. Executando sudo su..."
+    sudo su
+fi
+
+# Verifica se o usuário está no diretório /root/
+if [ "$PWD" != "/root" ]; then
+    echo "Mudando para o diretório /root/"
+    cd /root || exit
+fi
+
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+##                                         ORION DESIGN                                        ##
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+
+
+nome_iniciando 
+
+if ! command -v docker &> /dev/null; then
+    echo "1/15 - [ OFF ] - Docker não está instalado"
+    sleep 5
+else
+    ENV_VALUE=$(systemctl show --property=Environment docker 2>/dev/null | grep -o "DOCKER_MIN_API_VERSION=1.24" || true)
+
+    if [ "$ENV_VALUE" == "DOCKER_MIN_API_VERSION=1.24" ]; then
+        echo "1/15 - [ OK ] - Docker está instalado e configurado corretamente"
+        sleep 5
+    else      
+        sudo mkdir -p /etc/systemd/system/docker.service.d >/dev/null 2>&1
+
+        sudo bash -c 'cat > /etc/systemd/system/docker.service.d/override.conf <<EOF
+[Service]
+Environment=DOCKER_MIN_API_VERSION=1.24
+EOF' >/dev/null 2>&1
+
+        sudo systemctl daemon-reexec >/dev/null 2>&1
+        sudo systemctl daemon-reload >/dev/null 2>&1
+        sudo systemctl restart docker >/dev/null 2>&1
+
+        sleep 5
+
+        # Recheca se foi corrigido
+        ENV_VALUE=$(systemctl show --property=Environment docker 2>/dev/null | grep -o "DOCKER_MIN_API_VERSION=1.24" || true)
+        if [ "$ENV_VALUE" == "DOCKER_MIN_API_VERSION=1.24" ]; then
+            echo "1/15 - [ OK ] - Docker configurado corretamente"
+        else
+            echo "1/15 - [ FAIL ] - Erro ao corrigir o Docker"
+        fi
+        sleep 5
+    fi
+fi
+
+echo ""
+
+## Fazendo upgrade
+sudo apt upgrade -y > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "2/15 - [ OK ] - Fazendo Upgrade"
+else
+    echo "2/15 - [ OFF ] - Fazendo Upgrade"
+fi
+
+echo ""
+
+## Instalando Sudo
+apt install sudo -y > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "3/15 - [ OK ] - Verificando/Instalando sudo"
+else
+    echo "3/15 - [ OFF ] - Verificando/Instalando sudo"
+fi
+
+echo ""
+
+## Instalando apt-utils
+sudo apt-get install -y apt-utils > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "4/15 - [ OK ] - Verificando/Instalando apt-utils"
+else
+    echo "4/15 - [ OFF ] - Verificando/Instalando apt-utils"
+fi
+
+echo ""
+
+## Instalando dialog
+sudo apt-get install -y dialog > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "5/15 - [ OK ] - Verificando/Instalando dialog"
+else
+    echo "5/15 - [ OFF ] - Verificando/Instalando dialog"
+fi
+
+echo ""
+
+## Instalando jq
+sudo apt-get install -y jq > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "6/15 - [ OK ] - Verificando/Instalando jq 1/2"
+else
+    echo "6/15 - [ OFF ] - Verificando/Instalando jq 1/2"
+fi
+
+echo ""
+
+## Instalando jq
+sudo apt install jq -y > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "7/15 - [ OK ] - Verificando/Instalando jq 2/2"
+else
+    echo "7/15 - [ OFF ] - Verificando/Instalando jq 2/2"
+fi
+
+echo ""
+
+## Instalando apache2-utils
+sudo apt install apache2-utils -y > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "8/15 - [ OK ] - Verificando/Instalando apache2-utils 1/2"
+else
+    echo "8/15 - [ OFF ] - Verificando/Instalando apache2-utils1/2"
+fi
+
+echo ""
+
+## Instalando apache2-utils
+apt install apache2-utils -y > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "9/15 - [ OK ] - Verificando/Instalando apache2-utils 2/2"
+else
+    echo "9/15 - [ OFF ] - Verificando/Instalando apache2-utils 2/2"
+fi
+
+echo ""
+
+## Instalando git
+apt install git -y > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "10/15 - [ OK ] - Verificando/Instalando Git"
+else
+    echo "10/15 - [ OFF ] - Verificando/Instalando Git"
+fi
+
+echo ""
+
+## Instalando python3
+apt install python3 -y > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "11/15 - [ OK ] - Verificando/Instalando python3"
+else
+    echo "11/15 - [ OFF ] - Verificando/Instalando python3"
+fi
+
+echo ""
+
+## Fazendo update
+sudo apt update > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "12/15 - [ OK ] - Fazendo Update"
+else
+    echo "12/15 - [ OFF ] - Fazendo Update"
+fi
+
+echo ""
+
+## Fazendo upgrade
+sudo apt upgrade -y > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "13/15 - [ OK ] - Fazendo Upgrade"
+else
+    echo "13/15 - [ OFF ] - Fazendo Upgrade"
+fi
+
+echo ""
+
+## Instalando neofetch
+apt install neofetch -y > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo "14/15 - [ OK ] - Verificando/Instalando neofetch"
+else
+    echo "14/15 - [ OFF ] - Verificando/Instalando neofetch"
+fi
+
+echo ""
+
+# Verifica se o arquivo SetupOrion já existe
+if [ -e "SetupOrion" ]; then
+    echo ""
+    rm SetupOrion
+fi
+
+# Baixa o script
+#curl -sSL https://raw.githubusercontent.com/oriondesign2015/SetupOrion/main/SetupOrion -o SetupOrion
+curl -sSL https://s3.setuporion.com.br/setuporion/SetupOrion -o SetupOrion
+if [ $? -eq 0 ]; then
+    echo "15/15 - [ OK ] - Baixando o script"
+    # Executa o script baixado
+    chmod +x SetupOrion
+    ./SetupOrion
+else
+    echo "15/15 - [ OFF ] - Baixando o script"
+    echo "Encerrando o setup"
+    sleep 5
+fi
+
+
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+##                                         ORION DESIGN                                        ##
+## // ## // ## // ## // ## // ## // ## // ## //## // ## // ## // ## // ## // ## // ## // ## // ##
+
+sudo apt update
+sudo apt upgrade -y
+
+clear
+rm SetupOrion
