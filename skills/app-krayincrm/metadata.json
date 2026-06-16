@@ -1,0 +1,38 @@
+{
+  "name": "app-krayincrm",
+  "description": "Instala o Krayin CRM (CRM open-source baseado em Laravel) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_KRAYIN",
+      "description": "Domínio para o Krayin CRM",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_HOST",
+      "description": "Host SMTP para e-mails",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PORT",
+      "description": "Porta SMTP (ex: 465 ou 587)",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_USER",
+      "description": "Usuário SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PASS",
+      "description": "Senha SMTP",
+      "type": "password"
+    },
+    {
+      "name": "SMTP_FROM_EMAIL",
+      "description": "E-mail de remetente",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-krayincrm.md"
+}
