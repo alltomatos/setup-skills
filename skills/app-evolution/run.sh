@@ -172,7 +172,7 @@ YAML
 deploy_stack() {
     echo -e "${amarelo}[4/5] Executando deploy da stack evolution...${reset}"
 
-    if docker stack deploy --prune --resolve-image always -c /root/evolution.yaml evolution > /dev/null 2>&1; then
+    if deploy_via_portainer "evolution" "/root/evolution.yaml" > /dev/null 2>&1; then
         echo -e "${verde}      [OK] Stack evolution deployada.${reset}"
     else
         echo -e "${vermelho}      [FAIL] Falha no deploy da evolution.${reset}"

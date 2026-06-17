@@ -34,7 +34,7 @@ services:
           memory: 1024M
 EOL
 
-docker stack deploy --prune --resolve-image always -c qdrant.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "qdrant.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"

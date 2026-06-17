@@ -46,6 +46,6 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
-docker stack deploy --prune --resolve-image always -c docuseal.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "docuseal.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-docuseal" "# DocuSeal\n\n- Status: Instalado\n- URL: https://$DOMAIN_DOCUSEAL"
 rm -f docuseal.yaml; exit 0

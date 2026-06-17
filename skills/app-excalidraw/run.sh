@@ -35,6 +35,6 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
-docker stack deploy --prune --resolve-image always -c excalidraw.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "excalidraw.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-excalidraw" "# Excalidraw\n\n- Status: Instalado\n- URL: https://$DOMAIN_EXCALIDRAW"
 rm -f excalidraw.yaml; exit 0

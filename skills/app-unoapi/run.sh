@@ -84,7 +84,7 @@ EOL
 # e que os comandos curl funcionem.
 # O orquestrador deve garantir que o RabbitMQ esteja pronto.
 
-docker stack deploy --prune --resolve-image always -c unoapi.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "unoapi.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"

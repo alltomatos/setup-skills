@@ -58,7 +58,7 @@ EOL
 
 # Nota: POSTGRES_PASSWORD deve vir do contexto ou ser solicitada se necessário.
 # Aqui assumimos que o orquestrador gerencia a injeção conforme ADR-002.
-docker stack deploy --prune --resolve-image always -c flowise.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "flowise.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"

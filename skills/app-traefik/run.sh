@@ -244,7 +244,7 @@ deploy_stacks() {
     echo -e "${amarelo}[6/6] Executando deploy das stacks...${reset}"
 
     # Traefik
-    docker stack deploy --prune --resolve-image always -c /root/traefik.yaml traefik > /dev/null 2>&1
+    deploy_via_portainer ""/root/traefik.yaml"" ""traefik""
     if [ $? -eq 0 ]; then
         echo -e "${verde}      [OK] Stack traefik deployada.${reset}"
     else
@@ -257,7 +257,7 @@ deploy_stacks() {
     sleep 30
 
     # Portainer
-    docker stack deploy --prune --resolve-image always -c /root/portainer.yaml portainer > /dev/null 2>&1
+    deploy_via_portainer ""/root/portainer.yaml"" ""portainer""
     if [ $? -eq 0 ]; then
         echo -e "${verde}      [OK] Stack portainer deployada.${reset}"
     else

@@ -59,6 +59,6 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
-docker stack deploy --prune --resolve-image always -c docmost.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "docmost.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-docmost" "# Docmost\n\n- Status: Instalado\n- URL: https://$DOMAIN_DOCMOST"
 rm -f docmost.yaml; exit 0

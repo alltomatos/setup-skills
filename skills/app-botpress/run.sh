@@ -86,7 +86,7 @@ networks:
     external: true
 YAML
 
-docker stack deploy --prune --resolve-image always -c botpress${SUFFIX}.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "botpress${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"

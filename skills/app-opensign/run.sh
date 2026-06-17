@@ -70,6 +70,6 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
-docker stack deploy --prune --resolve-image always -c opensign.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "opensign.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-opensign" "# OpenSign\n\n- Status: Instalado\n- URL: https://$DOMAIN_OPENSIGN"
 rm -f opensign.yaml; exit 0

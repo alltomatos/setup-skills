@@ -56,6 +56,6 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
-docker stack deploy --prune --resolve-image always -c documenso.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "documenso.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-documenso" "# Documenso\n\n- Status: Instalado\n- URL: https://$DOMAIN_DOCUMENSO"
 rm -f documenso.yaml; exit 0

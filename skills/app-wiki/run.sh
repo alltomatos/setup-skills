@@ -36,6 +36,6 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
-docker stack deploy --prune --resolve-image always -c wiki.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "wiki.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-wiki" "# Wiki.js\n\n- Status: Instalado\n- URL: https://$DOMAIN_WIKI"
 rm -f wiki.yaml; exit 0

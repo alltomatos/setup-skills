@@ -14,6 +14,9 @@ reset="\e[0m"
 STACK_NAME="kafka"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
+# KRaft cluster ID — único por deploy (ADR-002: gerado em runtime)
+KAFKA_CLUSTER_ID=$(echo -n "$(openssl rand -hex 22)" | base64 | tr '+/' '-_' | tr -d '=')
+
 echo -e "${amarelo}Instalando Kafka (KRaft) via Docker Swarm...${reset}"
 
 docker volume create kafka_data > /dev/null 2>&1
@@ -32,7 +35,7 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+      - KAFKA_KRAFT_CLUSTER_ID=$KAFKA_CLUSTER_ID
     volumes:
       - kafka_data:/bitnami/kafka
     deploy:
@@ -46,7 +49,7 @@ volumes:
     external: true
 EOL
 
-docker stack deploy --prune --resolve-image always -c kafka.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "kafka.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"

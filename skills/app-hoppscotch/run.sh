@@ -70,6 +70,6 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
-docker stack deploy --prune --resolve-image always -c hoppscotch.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "hoppscotch.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-hoppscotch" "# Hoppscotch\n\n- Status: Instalado\n- URL: https://$DOMAIN_HOPPSCOTCH"
 rm -f hoppscotch.yaml; exit 0

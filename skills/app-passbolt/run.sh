@@ -53,6 +53,6 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
-docker stack deploy --prune --resolve-image always -c passbolt.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "passbolt.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-passbolt" "# Passbolt\n\n- Status: Instalado\n- URL: https://$DOMAIN_PASSBOLT"
 rm -f passbolt.yaml; exit 0

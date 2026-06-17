@@ -187,7 +187,7 @@ YAML
 deploy_stack() {
     echo -e "${amarelo}[4/5] Executando deploy da stack typebot...${reset}"
 
-    if docker stack deploy --prune --resolve-image always -c /root/typebot.yaml typebot > /dev/null 2>&1; then
+    if deploy_via_portainer "typebot" "/root/typebot.yaml" > /dev/null 2>&1; then
         echo -e "${verde}      [OK] Stack typebot deployada (builder + viewer).${reset}"
     else
         echo -e "${vermelho}      [FAIL] Falha no deploy do typebot.${reset}"

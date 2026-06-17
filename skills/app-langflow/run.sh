@@ -51,7 +51,7 @@ networks:
     external: true
 EOL
 
-docker stack deploy --prune --resolve-image always -c langflow.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "langflow.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"

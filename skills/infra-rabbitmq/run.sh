@@ -60,7 +60,7 @@ networks:
     name: $NOME_REDE_INTERNA
 EOL
 
-docker stack deploy --prune --resolve-image always -c rabbitmq.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "rabbitmq.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"

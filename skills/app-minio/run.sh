@@ -144,7 +144,7 @@ YAML
 deploy_stack() {
     echo -e "${amarelo}[3/4] Executando deploy da stack minio...${reset}"
 
-    if docker stack deploy --prune --resolve-image always -c /root/minio.yaml minio > /dev/null 2>&1; then
+    if deploy_via_portainer "minio" "/root/minio.yaml" > /dev/null 2>&1; then
         echo -e "${verde}      [OK] Stack minio deployada.${reset}"
     else
         echo -e "${vermelho}      [FAIL] Falha no deploy do minio.${reset}"

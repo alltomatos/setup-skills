@@ -115,7 +115,7 @@ networks:
   $NOME_REDE_INTERNA: {external: true}
 YAML
 
-docker stack deploy --prune --resolve-image always -c azuracast${SUFFIX}.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "azuracast${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"

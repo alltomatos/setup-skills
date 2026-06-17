@@ -90,7 +90,7 @@ networks:
     external: true
 YAML
 
-docker stack deploy --prune --resolve-image always -c wordpress_${WORDPRESS_SITE_NAME}${SUFFIX}.yaml $STACK_NAME
+deploy_via_portainer "$STACK_NAME" "wordpress_${WORDPRESS_SITE_NAME}${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
