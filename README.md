@@ -33,7 +33,7 @@ npm -v    # 10.x.x
 ### 2. Claude Code CLI
 
 ```bash
-npm install -g @anthropic/claude-code
+npm install -g @anthropic-ai/claude-code
 
 # Verificar instalação
 claude --version
