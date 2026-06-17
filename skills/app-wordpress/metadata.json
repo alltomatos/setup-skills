@@ -1,5 +1,6 @@
 {
   "name": "app-wordpress",
+  "version": "1.0.0",
   "description": "Instala o WordPress (CMS/Blog) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-mysql"],
   "required_inputs": [

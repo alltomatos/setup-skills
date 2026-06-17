@@ -1,7 +1,11 @@
 {
+  "version": "1.0.0",
   "name": "infra-qdrant",
   "description": "Instala o Qdrant Vector Database como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik"
+  ],
   "required_inputs": [],
   "persistence_path": "/root/dados_vps/infra-qdrant.md"
 }

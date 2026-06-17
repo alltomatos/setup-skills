@@ -14,8 +14,13 @@ reset="\e[0m"
 STACK_NAME="erpnext"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Geração de senha interna para o banco (ADR-002)
-DB_PASSWORD=$(openssl rand -hex 16)
+# Recupera ou gera senhas (ADR-001)
+DB_PASSWORD=$(read_data "app-frappe" | grep -oP '(?<=- DB Password Interno: ).*' || openssl rand -hex 16)
+FRAPPE_ADMIN_PASSWORD=$(read_data "app-frappe" | grep -oP '(?<=- Admin Password: ).*' || echo "$ADMIN_PASSWORD")
+
+if [ -z "$FRAPPE_ADMIN_PASSWORD" ]; then
+    FRAPPE_ADMIN_PASSWORD=$(openssl rand -hex 12)
+fi
 
 echo -e "${amarelo}Instalando Frappe ERPNext em $DOMAIN_FRAPPE...${reset}"
 
@@ -137,7 +142,7 @@ if [ $? -eq 0 ]; then
     # Comandos de inicialização manual do site (como no SetupOrion)
     # docker exec -it \$(docker ps -qf "name=erpnext_backend") bash -c "bench new-site $DOMAIN_FRAPPE --mariadb-root-password=$DB_PASSWORD --admin-password=$FRAPPE_ADMIN_PASSWORD --install-app erpnext"
     
-    save_data "app-frappe" "# Frappe ERPNext\n\n- Status: Stack Instalada\n- URL: https://$DOMAIN_FRAPPE\n- Admin: administrator\n- Senha: $FRAPPE_ADMIN_PASSWORD\n\n*Nota: Pode ser necessário executar o 'bench new-site' manualmente no container backend se o site não carregar.*"
+    save_data "app-frappe" "# Frappe ERPNext\n\n- Status: Stack Instalada\n- URL: https://$DOMAIN_FRAPPE\n- Admin: administrator\n- Admin Password: $FRAPPE_ADMIN_PASSWORD\n- DB Password Interno: $DB_PASSWORD\n\n*Nota: Pode ser necessário executar o 'bench new-site' manualmente no container backend se o site não carregar.*"
 else
     exit 1
 fi

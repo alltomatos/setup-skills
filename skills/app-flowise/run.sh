@@ -14,6 +14,11 @@ reset="\e[0m"
 STACK_NAME="flowise"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
+# Recuperar ou gerar API Key (idempotência)
+if [ -z "$API_KEY" ]; then
+    API_KEY=$(read_data "app-flowise" | grep -oP '(?<=- API Key: ).*' || openssl rand -hex 16)
+fi
+
 echo -e "${amarelo}Instalando Flowise no domínio $DOMAIN_FLOWISE...${reset}"
 
 docker volume create flowise_data > /dev/null 2>&1
@@ -32,6 +37,7 @@ services:
       - DATABASE_NAME=flowise
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=\$POSTGRES_PASSWORD
+      - API_KEY=$API_KEY
       - PORT=3000
     volumes:
       - flowise_data:/root/.flowise
@@ -62,7 +68,7 @@ deploy_via_portainer "$STACK_NAME" "flowise.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-flowise" "# Flowise (AI)\n\n- Status: Instalado\n- URL: https://$DOMAIN_FLOWISE\n- DB: PostgreSQL (interno)"
+    save_data "app-flowise" "# Flowise (AI)\n\n- Status: Instalado\n- URL: https://$DOMAIN_FLOWISE\n- API Key: $API_KEY\n- DB: PostgreSQL (interno)"
 else
     exit 1
 fi

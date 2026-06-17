@@ -26,19 +26,16 @@ if ! docker service ls --format "{{.Name}}" | grep -q "^redis$"; then
     exit 1
 fi
 
-# Gerar segredos (ADR-002)
-ENC_KEY1=$(openssl rand -hex 16)
-ENC_KEY2=$(openssl rand -hex 16)
-API_SECRET=$(openssl rand -hex 32)
-NODE_SECRET=$(openssl rand -hex 32)
+# Ler ou gerar segredos (idempotência)
+LOWCODER_API_AUTH_SECRET=$(read_data "app-lowcoder" | grep -oP '(?<=- LOWCODER_API_AUTH_SECRET: ).*' || openssl rand -hex 32)
+LOWCODER_NODE_AUTH_SECRET=$(read_data "app-lowcoder" | grep -oP '(?<=- LOWCODER_NODE_AUTH_SECRET: ).*' || openssl rand -hex 32)
+LOWCODER_ENCRYPTION_PASSWORD=$(read_data "app-lowcoder" | grep -oP '(?<=- LOWCODER_ENCRYPTION_PASSWORD: ).*' || openssl rand -hex 16)
+LOWCODER_ENCRYPTION_SALT=$(read_data "app-lowcoder" | grep -oP '(?<=- LOWCODER_ENCRYPTION_SALT: ).*' || openssl rand -hex 16)
 
 # TLS SMTP
 SMTP_SSL="false"
-SMTP_TLS="false"
 if [ "$SMTP_PORT" -eq 465 ]; then
     SMTP_SSL="true"
-else
-    SMTP_TLS="true"
 fi
 
 echo -e "${amarelo}Instalando Lowcoder no dominio $DOMAIN_LOWCODER...${reset}"
@@ -67,10 +64,10 @@ services:
       - LOWCODER_ADMIN_SMTP_SSL_ENABLED=$SMTP_SSL
       - LOWCODER_ADMIN_SMTP_STARTTLS_ENABLED=$SMTP_TLS
       - LOWCODER_EMAIL_NOTIFICATIONS_SENDER=$SMTP_FROM_EMAIL
-      - LOWCODER_DB_ENCRYPTION_PASSWORD=$ENC_KEY1
-      - LOWCODER_DB_ENCRYPTION_SALT=$ENC_KEY2
-      - LOWCODER_API_KEY_SECRET=$API_SECRET
-      - LOWCODER_NODE_SERVICE_SECRET=$NODE_SECRET
+      - LOWCODER_DB_ENCRYPTION_PASSWORD=$LOWCODER_ENCRYPTION_PASSWORD
+      - LOWCODER_DB_ENCRYPTION_SALT=$LOWCODER_ENCRYPTION_SALT
+      - LOWCODER_API_KEY_SECRET=$LOWCODER_API_AUTH_SECRET
+      - LOWCODER_NODE_SERVICE_SECRET=$LOWCODER_NODE_AUTH_SECRET
     deploy:
       labels:
         - traefik.enable=true
@@ -89,7 +86,7 @@ services:
       - $NOME_REDE_INTERNA
     environment:
       - LOWCODER_API_SERVICE_URL=http://lowcoder_api:8080
-      - LOWCODER_NODE_SERVICE_SECRET=$NODE_SECRET
+      - LOWCODER_NODE_SERVICE_SECRET=$LOWCODER_NODE_AUTH_SECRET
     deploy:
       resources:
         limits:
@@ -105,7 +102,7 @@ services:
     environment:
       - LOWCODER_API_SERVICE_URL=http://lowcoder_api:8080
       - LOWCODER_NODE_SERVICE_URL=http://lowcoder_node:6060
-      - LOWCODER_NODE_SERVICE_SECRET=$NODE_SECRET
+      - LOWCODER_NODE_SERVICE_SECRET=$LOWCODER_NODE_AUTH_SECRET
     deploy:
       labels:
         - traefik.enable=true
@@ -131,7 +128,7 @@ deploy_via_portainer "$STACK_NAME" "lowcoder.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-lowcoder" "# Lowcoder\n\n- Status: Instalado\n- URL: https://$DOMAIN_LOWCODER"
+    save_data "app-lowcoder" "# Lowcoder\n\n- Status: Instalado\n- URL: https://$DOMAIN_LOWCODER\n- LOWCODER_API_AUTH_SECRET: $LOWCODER_API_AUTH_SECRET\n- LOWCODER_NODE_AUTH_SECRET: $LOWCODER_NODE_AUTH_SECRET\n- LOWCODER_ENCRYPTION_PASSWORD: $LOWCODER_ENCRYPTION_PASSWORD\n- LOWCODER_ENCRYPTION_SALT: $LOWCODER_ENCRYPTION_SALT"
 else
     exit 1
 fi

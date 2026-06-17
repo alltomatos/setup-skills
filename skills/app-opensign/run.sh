@@ -5,7 +5,17 @@ source "$SKILL_DIR/../00-core/lib-persistence.sh"
 amarelo="\e[33m"; verde="\e[32m"; reset="\e[0m"
 STACK_NAME="opensign"; NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 if ! docker service ls --format "{{.Name}}" | grep -q "^mongodb$"; then echo -e "\e[31mErro: infra-mongodb nao instalado.\e[0m"; exit 1; fi
-MASTER_KEY=$(openssl rand -hex 16); JWT_SECRET=$(openssl rand -hex 16)
+
+# Persistencia de Segredos (ADR-001)
+if service_exists "app-opensign"; then
+    EXISTING_DATA=$(read_data "app-opensign")
+    MASTER_KEY=$(echo "$EXISTING_DATA" | grep "Master Key: " | sed 's/.*Master Key: //')
+    JWT_SECRET=$(echo "$EXISTING_DATA" | grep "JWT Secret: " | sed 's/.*JWT Secret: //')
+fi
+
+[ -z "$MASTER_KEY" ] && MASTER_KEY=$(openssl rand -hex 16)
+[ -z "$JWT_SECRET" ] && JWT_SECRET=$(openssl rand -hex 16)
+
 echo -e "${amarelo}Instalando OpenSign...${reset}"
 docker volume create opensign_files > /dev/null 2>&1
 cat > opensign.yaml <<'YAML'
@@ -71,5 +81,5 @@ networks:
     external: true
 YAML
 deploy_via_portainer "$STACK_NAME" "opensign.yaml"
-[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-opensign" "# OpenSign\n\n- Status: Instalado\n- URL: https://$DOMAIN_OPENSIGN"
+[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-opensign" "# OpenSign\n\n- Status: Instalado\n- URL: https://$DOMAIN_OPENSIGN\n- Master Key: $MASTER_KEY\n- JWT Secret: $JWT_SECRET"
 rm -f opensign.yaml; exit 0

@@ -1,7 +1,12 @@
 {
+  "version": "1.0.0",
   "name": "app-evoai",
   "description": "Instala a EvoAI (Plataforma de Agentes AI) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-postgres"
+  ],
   "required_inputs": [
     {
       "name": "DOMAIN_EVOAI_FRONT",

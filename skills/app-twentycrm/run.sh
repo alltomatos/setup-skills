@@ -14,9 +14,17 @@ reset="\e[0m"
 STACK_NAME="twenty"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Gerar segredos
-POSTGRES_PASSWORD=$(openssl rand -hex 16)
-APP_SECRET=$(openssl rand -hex 32)
+# Persistência de Segredos (ADR-001)
+EXISTING_DATA=$(read_data "app-twentycrm" 2>/dev/null)
+DB_PASSWORD=$(echo "$EXISTING_DATA" | grep "DB_PASSWORD:" | sed 's/.*DB_PASSWORD: //')
+SIGNING_SECRET=$(echo "$EXISTING_DATA" | grep "SIGNING_SECRET:" | sed 's/.*SIGNING_SECRET: //')
+ACCESS_TOKEN_SECRET=$(echo "$EXISTING_DATA" | grep "ACCESS_TOKEN_SECRET:" | sed 's/.*ACCESS_TOKEN_SECRET: //')
+REFRESH_TOKEN_SECRET=$(echo "$EXISTING_DATA" | grep "REFRESH_TOKEN_SECRET:" | sed 's/.*REFRESH_TOKEN_SECRET: //')
+
+[ -z "$DB_PASSWORD" ] && DB_PASSWORD=$(openssl rand -hex 16)
+[ -z "$SIGNING_SECRET" ] && SIGNING_SECRET=$(openssl rand -hex 32)
+[ -z "$ACCESS_TOKEN_SECRET" ] && ACCESS_TOKEN_SECRET=$(openssl rand -hex 32)
+[ -z "$REFRESH_TOKEN_SECRET" ] && REFRESH_TOKEN_SECRET=$(openssl rand -hex 32)
 
 echo -e "${amarelo}Instalando Twenty CRM no domínio $DOMAIN_TWENTY...${reset}"
 
@@ -40,9 +48,12 @@ services:
       - PORT=3000
       - SERVER_URL=https://$DOMAIN_TWENTY
       - REDIS_URL=redis://twenty_redis:6379
-      - PG_DATABASE_URL=postgres://postgres:$POSTGRES_PASSWORD@twenty_db:5432/twenty
+      - PG_DATABASE_URL=postgres://postgres:$DB_PASSWORD@twenty_db:5432/twenty
       - STORAGE_TYPE=local
-      - APP_SECRET=$APP_SECRET
+      - APP_SECRET=$SIGNING_SECRET
+      - SIGNING_SECRET=$SIGNING_SECRET
+      - ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET
+      - REFRESH_TOKEN_SECRET=$REFRESH_TOKEN_SECRET
     deploy:
       labels:
         - "traefik.enable=true"
@@ -64,10 +75,13 @@ services:
       - PORT=3000
       - SERVER_URL=https://$DOMAIN_TWENTY
       - REDIS_URL=redis://twenty_redis:6379
-      - PG_DATABASE_URL=postgres://postgres:$POSTGRES_PASSWORD@twenty_db:5432/twenty
+      - PG_DATABASE_URL=postgres://postgres:$DB_PASSWORD@twenty_db:5432/twenty
       - DISABLE_DB_MIGRATIONS=true
       - STORAGE_TYPE=local
-      - APP_SECRET=$APP_SECRET
+      - APP_SECRET=$SIGNING_SECRET
+      - SIGNING_SECRET=$SIGNING_SECRET
+      - ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET
+      - REFRESH_TOKEN_SECRET=$REFRESH_TOKEN_SECRET
     deploy:
       resources:
         limits:
@@ -83,8 +97,8 @@ services:
     environment:
       - PGUSER_SUPERUSER=postgres
       - POSTGRES_DB=twenty
-      - POSTGRESQL_PASSWORD=$POSTGRES_PASSWORD
-      - PGPASSWORD_SUPERUSER=$POSTGRES_PASSWORD
+      - POSTGRESQL_PASSWORD=$DB_PASSWORD
+      - PGPASSWORD_SUPERUSER=$DB_PASSWORD
       - ALLOW_NOSSL=true
       - SPILO_PROVIDER=local
 
@@ -115,7 +129,15 @@ deploy_via_portainer "$STACK_NAME" "twenty.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-twentycrm" "# Twenty CRM\n\n- Status: Instalado\n- URL: https://$DOMAIN_TWENTY\n- DB: Spilo (Postgres)\n- Secret: $APP_SECRET"
+    save_data "app-twentycrm" "# Twenty CRM
+
+- Status: Instalado
+- URL: https://$DOMAIN_TWENTY
+- DB: Spilo (Postgres)
+- DB_PASSWORD: $DB_PASSWORD
+- SIGNING_SECRET: $SIGNING_SECRET
+- ACCESS_TOKEN_SECRET: $ACCESS_TOKEN_SECRET
+- REFRESH_TOKEN_SECRET: $REFRESH_TOKEN_SECRET"
 else
     exit 1
 fi

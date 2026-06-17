@@ -1,5 +1,6 @@
 {
   "name": "app-netbox",
+  "version": "1.0.0",
   "description": "Instala o NetBox (inventário de rede e IPAM) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

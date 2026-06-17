@@ -14,8 +14,10 @@ reset="\e[0m"
 STACK_NAME="quepasa"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Gerar chaves aleatórias
-MASTERKEY=$(openssl rand -hex 16)
+# Recuperar ou gerar MASTERKEY (idempotência)
+if [ -z "$MASTERKEY" ]; then
+    MASTERKEY=$(read_data "app-quepasa" | grep -oP '(?<=- MasterKey: ).*' || openssl rand -hex 16)
+fi
 
 echo -e "${amarelo}Instalando Quepasa no domínio $DOMAIN_QUEPASA...${reset}"
 

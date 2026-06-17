@@ -5,7 +5,13 @@ source "$SKILL_DIR/../00-core/lib-persistence.sh"
 amarelo="\e[33m"; verde="\e[32m"; reset="\e[0m"
 STACK_NAME="docuseal"; NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 if ! docker service ls --format "{{.Name}}" | grep -q "^postgres$"; then echo -e "\e[31mErro: infra-postgres nao instalado.\e[0m"; exit 1; fi
-SECRET_KEY=$(openssl rand -hex 16)
+
+# Persistencia de Segredos (ADR-001)
+if service_exists "app-docuseal"; then
+    SECRET_KEY=$(read_data "app-docuseal" | grep "App Key: " | sed 's/.*App Key: //')
+fi
+[ -z "$SECRET_KEY" ] && SECRET_KEY=$(openssl rand -hex 16)
+
 echo -e "${amarelo}Instalando DocuSeal...${reset}"
 docker volume create docuseal_data > /dev/null 2>&1
 cat > docuseal.yaml <<'YAML'
@@ -47,5 +53,5 @@ networks:
     external: true
 YAML
 deploy_via_portainer "$STACK_NAME" "docuseal.yaml"
-[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-docuseal" "# DocuSeal\n\n- Status: Instalado\n- URL: https://$DOMAIN_DOCUSEAL"
+[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-docuseal" "# DocuSeal\n\n- Status: Instalado\n- URL: https://$DOMAIN_DOCUSEAL\n- App Key: $SECRET_KEY"
 rm -f docuseal.yaml; exit 0

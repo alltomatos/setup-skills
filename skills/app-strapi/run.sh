@@ -14,10 +14,12 @@ reset="\e[0m"
 STACK_NAME="strapi"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Gerar segredos
-JWT_SECRET=$(openssl rand -hex 32)
-ADMIN_JWT_SECRET=$(openssl rand -hex 32)
-APP_KEYS=$(openssl rand -hex 16),$(openssl rand -hex 16)
+# Ler ou gerar segredos (idempotência)
+APP_KEYS=$(read_data "app-strapi" | grep -oP '(?<=- APP_KEYS: ).*' || echo "$(openssl rand -hex 16),$(openssl rand -hex 16),$(openssl rand -hex 16),$(openssl rand -hex 16)")
+API_TOKEN_SALT=$(read_data "app-strapi" | grep -oP '(?<=- API_TOKEN_SALT: ).*' || openssl rand -hex 16)
+ADMIN_JWT_SECRET=$(read_data "app-strapi" | grep -oP '(?<=- ADMIN_JWT_SECRET: ).*' || openssl rand -hex 16)
+TRANSFER_TOKEN_SALT=$(read_data "app-strapi" | grep -oP '(?<=- TRANSFER_TOKEN_SALT: ).*' || openssl rand -hex 16)
+JWT_SECRET=$(read_data "app-strapi" | grep -oP '(?<=- JWT_SECRET: ).*' || openssl rand -hex 16)
 
 echo -e "${amarelo}Instalando Strapi no domínio $DOMAIN_STRAPI...${reset}"
 
@@ -43,6 +45,8 @@ services:
       - JWT_SECRET=$JWT_SECRET
       - ADMIN_JWT_SECRET=$ADMIN_JWT_SECRET
       - APP_KEYS=$APP_KEYS
+      - API_TOKEN_SALT=$API_TOKEN_SALT
+      - TRANSFER_TOKEN_SALT=$TRANSFER_TOKEN_SALT
       - NODE_ENV=production
       - STRAPI_TELEMETRY_DISABLED=true
     deploy:
@@ -70,7 +74,7 @@ deploy_via_portainer "$STACK_NAME" "strapi.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-strapi" "# Strapi\n\n- Status: Instalado\n- URL: https://$DOMAIN_STRAPI\n- DB: PostgreSQL (global)"
+    save_data "app-strapi" "# Strapi\n\n- Status: Instalado\n- URL: https://$DOMAIN_STRAPI\n- DB: PostgreSQL (global)\n- APP_KEYS: $APP_KEYS\n- API_TOKEN_SALT: $API_TOKEN_SALT\n- ADMIN_JWT_SECRET: $ADMIN_JWT_SECRET\n- TRANSFER_TOKEN_SALT: $TRANSFER_TOKEN_SALT\n- JWT_SECRET: $JWT_SECRET"
 else
     exit 1
 fi

@@ -1,5 +1,6 @@
 {
   "name": "app-formbricks",
+  "version": "1.0.0",
   "description": "Instala o Formbricks (surveys e formulários open-source) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-pgvector", "app-minio"],
   "required_inputs": [

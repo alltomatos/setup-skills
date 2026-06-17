@@ -21,8 +21,8 @@ else
     POSTGRES_PASS=$POSTGRES_PASSWORD
 fi
 
-# Chave de criptografia (ADR-002)
-PBW_ENCRYPTION_KEY=$(openssl rand -hex 16)
+# Recupera ou gera chave de criptografia (ADR-001)
+PBW_ENCRYPTION_KEY=$(read_data "app-pgbackweb" | grep -oP '(?<=- Encryption Key: ).*' || openssl rand -hex 32)
 
 echo -e "${amarelo}Instalando PgBackWeb em $DOMAIN_PGBACKWEB...${reset}"
 
@@ -76,7 +76,7 @@ deploy_via_portainer "$STACK_NAME" "pgbackweb${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-pgbackweb" "# PgBackWeb\n\n- Status: Instalado\n- URL: https://$DOMAIN_PGBACKWEB"
+    save_data "app-pgbackweb" "# PgBackWeb\n\n- Status: Instalado\n- URL: https://$DOMAIN_PGBACKWEB\n- Encryption Key: $PBW_ENCRYPTION_KEY"
 else
     exit 1
 fi

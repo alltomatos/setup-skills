@@ -1,5 +1,6 @@
 {
   "name": "app-phpmyadmin",
+  "version": "1.0.0",
   "description": "Instala o phpMyAdmin (interface web para MySQL) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

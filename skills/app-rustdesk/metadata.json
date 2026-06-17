@@ -1,5 +1,6 @@
 {
   "name": "app-rustdesk",
+  "version": "1.0.0",
   "description": "Instala o RustDesk Server (servidor de acesso remoto self-hosted) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

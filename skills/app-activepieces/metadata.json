@@ -1,5 +1,6 @@
 {
   "name": "app-activepieces",
+  "version": "1.0.0",
   "description": "Instala o ActivePieces (automação no-code alternativa ao Zapier/Make) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
   "required_inputs": [

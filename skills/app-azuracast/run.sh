@@ -14,8 +14,15 @@ reset="\e[0m"
 STACK_NAME="azuracast"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Geração de senhas internas (ADR-002)
-MYSQL_PASS=$(openssl rand -hex 16)
+# Geração ou recuperação de senhas internas (ADR-001/002)
+MYSQL_PASS=""
+if service_exists "app-azuracast"; then
+    MYSQL_PASS=$(read_data "app-azuracast" | grep "\- MySQL Pass:" | cut -d ':' -f 2 | xargs)
+fi
+
+if [ -z "$MYSQL_PASS" ]; then
+    MYSQL_PASS=$(openssl rand -hex 16)
+fi
 
 echo -e "${amarelo}Instalando AzuraCast em $DOMAIN_AZURACAST...${reset}"
 
@@ -119,7 +126,7 @@ deploy_via_portainer "$STACK_NAME" "azuracast${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-azuracast" "# AzuraCast\n\n- Status: Instalado\n- URL: https://$DOMAIN_AZURACAST\n- Nota: Crie sua rádio e usuário no primeiro acesso."
+    save_data "app-azuracast" "# AzuraCast\n\n- Status: Instalado\n- URL: https://$DOMAIN_AZURACAST\n- MySQL Pass: $MYSQL_PASS\n- Nota: Crie sua rádio e usuário no primeiro acesso."
 else
     exit 1
 fi

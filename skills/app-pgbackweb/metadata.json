@@ -1,5 +1,6 @@
 {
   "name": "app-pgbackweb",
+  "version": "1.0.0",
   "description": "Instala o PgBackWeb (gerenciador de backups PostgreSQL via interface web) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
   "required_inputs": [

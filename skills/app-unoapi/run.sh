@@ -14,8 +14,10 @@ reset="\e[0m"
 STACK_NAME="unoapi"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Token da API gerado automaticamente
-UNOAPI_AUTH_TOKEN=$(openssl rand -hex 16)
+# Recuperar ou gerar Token da API (idempotência)
+if [ -z "$UNOAPI_AUTH_TOKEN" ]; then
+    UNOAPI_AUTH_TOKEN=$(read_data "app-unoapi" | grep -oP '(?<=- Token: ).*' || openssl rand -hex 16)
+fi
 
 echo -e "${amarelo}Instalando UnoAPI no domínio $DOMAIN_UNOAPI...${reset}"
 

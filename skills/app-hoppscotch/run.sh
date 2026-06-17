@@ -5,7 +5,19 @@ source "$SKILL_DIR/../00-core/lib-persistence.sh"
 amarelo="\e[33m"; verde="\e[32m"; reset="\e[0m"
 STACK_NAME="hoppscotch"; NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 if ! docker service ls --format "{{.Name}}" | grep -q "^postgres$"; then echo -e "\e[31mErro: infra-postgres nao instalado.\e[0m"; exit 1; fi
-ENC_KEY=$(openssl rand -hex 16); JWT_KEY=$(openssl rand -hex 16); SESSION_KEY=$(openssl rand -hex 16)
+
+# Persistencia de Segredos (ADR-001)
+if service_exists "app-hoppscotch"; then
+    EXISTING_DATA=$(read_data "app-hoppscotch")
+    ENC_KEY=$(echo "$EXISTING_DATA" | grep "Encryption Key: " | sed 's/.*Encryption Key: //')
+    JWT_KEY=$(echo "$EXISTING_DATA" | grep "JWT Secret: " | sed 's/.*JWT Secret: //')
+    SESSION_KEY=$(echo "$EXISTING_DATA" | grep "Session Secret: " | sed 's/.*Session Secret: //')
+fi
+
+[ -z "$ENC_KEY" ] && ENC_KEY=$(openssl rand -hex 16)
+[ -z "$JWT_KEY" ] && JWT_KEY=$(openssl rand -hex 16)
+[ -z "$SESSION_KEY" ] && SESSION_KEY=$(openssl rand -hex 16)
+
 echo -e "${amarelo}Instalando Hoppscotch...${reset}"
 cat > hoppscotch.yaml <<'YAML'
 version: "3.8"
@@ -71,5 +83,5 @@ networks:
     external: true
 YAML
 deploy_via_portainer "$STACK_NAME" "hoppscotch.yaml"
-[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-hoppscotch" "# Hoppscotch\n\n- Status: Instalado\n- URL: https://$DOMAIN_HOPPSCOTCH"
+[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-hoppscotch" "# Hoppscotch\n\n- Status: Instalado\n- URL: https://$DOMAIN_HOPPSCOTCH\n- Encryption Key: $ENC_KEY\n- JWT Secret: $JWT_KEY\n- Session Secret: $SESSION_KEY"
 rm -f hoppscotch.yaml; exit 0

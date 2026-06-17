@@ -1,9 +1,17 @@
 {
   "name": "app-excalidraw",
   "description": "Instala o Excalidraw ( whiteboard colaborativo open-source) como Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik"],
-  "required_inputs": [
-    { "name": "DOMAIN_EXCALIDRAW", "description": "Domínio para o Excalidraw (ex: draw.oriondesign.art.br)", "type": "text" }
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik"
   ],
-  "persistence_path": "/root/dados_vps/app-excalidraw.md"
+  "required_inputs": [
+    {
+      "name": "DOMAIN_EXCALIDRAW",
+      "description": "Dom\u00ednio para o Excalidraw (ex: draw.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-excalidraw.md",
+  "version": "1.0.0"
 }

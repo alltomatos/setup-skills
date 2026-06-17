@@ -14,8 +14,13 @@ reset="\e[0m"
 STACK_NAME="woofed"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Chave secreta aleatória
-SECRET_KEY_BASE=$(openssl rand -hex 32)
+# Persistência de Segredos (ADR-001)
+EXISTING_DATA=$(read_data "app-woofed" 2>/dev/null)
+DB_PASSWORD=$(echo "$EXISTING_DATA" | grep "DB_PASSWORD:" | sed 's/.*DB_PASSWORD: //')
+SECRET_KEY_BASE=$(echo "$EXISTING_DATA" | grep "SECRET_KEY_BASE:" | sed 's/.*SECRET_KEY_BASE: //')
+
+[ -z "$DB_PASSWORD" ] && DB_PASSWORD=$(openssl rand -hex 16)
+[ -z "$SECRET_KEY_BASE" ] && SECRET_KEY_BASE=$(openssl rand -hex 32)
 
 echo -e "${amarelo}Instalando WoofedCRM no domínio $DOMAIN_WOOFED...${reset}"
 
@@ -39,7 +44,7 @@ services:
       - MOTOR_AUTH_USERNAME=$MOTOR_USER
       - MOTOR_AUTH_PASSWORD=$MOTOR_PASS
       - DEFAULT_TIMEZONE=Brasilia
-      - DATABASE_URL=postgres://postgres:\$PGVECTOR_PASSWORD@pgvector:5432/woofed
+      - DATABASE_URL=postgres://postgres:$DB_PASSWORD@pgvector:5432/woofed
       - REDIS_URL=redis://redis:6379/0
       - ACTIVE_STORAGE_SERVICE=local
       - RAILS_ENV=production
@@ -72,7 +77,7 @@ services:
       - LANGUAGE=pt-BR
       - MOTOR_AUTH_USERNAME=$MOTOR_USER
       - MOTOR_AUTH_PASSWORD=$MOTOR_PASS
-      - DATABASE_URL=postgres://postgres:\$PGVECTOR_PASSWORD@pgvector:5432/woofed
+      - DATABASE_URL=postgres://postgres:$DB_PASSWORD@pgvector:5432/woofed
       - REDIS_URL=redis://redis:6379/0
       - RAILS_ENV=production
     deploy:
@@ -94,7 +99,13 @@ deploy_via_portainer "$STACK_NAME" "woofed.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-woofed" "# WoofedCRM\n\n- Status: Instalado\n- URL: https://$DOMAIN_WOOFED\n- Motor User: $MOTOR_USER"
+    save_data "app-woofed" "# WoofedCRM
+
+- Status: Instalado
+- URL: https://$DOMAIN_WOOFED
+- Motor User: $MOTOR_USER
+- DB_PASSWORD: $DB_PASSWORD
+- SECRET_KEY_BASE: $SECRET_KEY_BASE"
 else
     exit 1
 fi

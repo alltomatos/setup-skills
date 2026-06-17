@@ -1,5 +1,6 @@
 {
   "name": "app-botpress",
+  "version": "1.0.0",
   "description": "Instala o Botpress (plataforma de chatbots) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "infra-redis"],
   "required_inputs": [

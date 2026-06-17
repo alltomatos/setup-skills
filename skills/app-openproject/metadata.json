@@ -1,5 +1,6 @@
 {
   "name": "app-openproject",
+  "version": "1.0.0",
   "description": "Instala o OpenProject (gestão de projetos clássica e ágil) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

@@ -21,10 +21,21 @@ else
     POSTGRES_PASS=$POSTGRES_PASSWORD
 fi
 
-# Geração de chaves (ADR-002)
-AP_API_KEY=$(openssl rand -hex 16)
-AP_ENCRYPTION_KEY=$(openssl rand -hex 16)
-AP_JWT_SECRET=$(openssl rand -hex 16)
+# Geração ou recuperação de chaves (ADR-001/002)
+AP_API_KEY=""
+AP_ENCRYPTION_KEY=""
+AP_JWT_SECRET=""
+
+if service_exists "app-activepieces"; then
+    DATA=$(read_data "app-activepieces")
+    AP_API_KEY=$(echo "$DATA" | grep "\- API Key:" | cut -d ':' -f 2 | xargs)
+    AP_ENCRYPTION_KEY=$(echo "$DATA" | grep "\- Encryption Key:" | cut -d ':' -f 2 | xargs)
+    AP_JWT_SECRET=$(echo "$DATA" | grep "\- JWT Secret:" | cut -d ':' -f 2 | xargs)
+fi
+
+[ -z "$AP_API_KEY" ] && AP_API_KEY=$(openssl rand -hex 16)
+[ -z "$AP_ENCRYPTION_KEY" ] && AP_ENCRYPTION_KEY=$(openssl rand -hex 16)
+[ -z "$AP_JWT_SECRET" ] && AP_JWT_SECRET=$(openssl rand -hex 16)
 
 echo -e "${amarelo}Instalando ActivePieces em $DOMAIN_ACTIVEPIECES...${reset}"
 
@@ -113,7 +124,7 @@ deploy_via_portainer "$STACK_NAME" "activepieces${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-activepieces" "# ActivePieces\n\n- Status: Instalado\n- URL: https://$DOMAIN_ACTIVEPIECES\n- Nota: Crie seu usuário e senha no primeiro acesso."
+    save_data "app-activepieces" "# ActivePieces\n\n- Status: Instalado\n- URL: https://$DOMAIN_ACTIVEPIECES\n- API Key: $AP_API_KEY\n- Encryption Key: $AP_ENCRYPTION_KEY\n- JWT Secret: $AP_JWT_SECRET\n- Nota: Crie seu usuário e senha no primeiro acesso."
 else
     exit 1
 fi

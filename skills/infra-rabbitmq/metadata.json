@@ -1,7 +1,11 @@
 {
+  "version": "1.0.0",
   "name": "infra-rabbitmq",
   "description": "Instala o RabbitMQ com Management Plugin como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik"
+  ],
   "required_inputs": [
     {
       "name": "RABBITMQ_DEFAULT_PASS",

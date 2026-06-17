@@ -1,7 +1,11 @@
 {
+  "version": "1.0.0",
   "name": "app-anythingllm",
   "description": "Instala o AnythingLLM (Solução RAG full-stack) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik"
+  ],
   "required_inputs": [
     {
       "name": "DOMAIN_ANYTHINGLLM",

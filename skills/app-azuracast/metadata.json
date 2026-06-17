@@ -1,5 +1,6 @@
 {
   "name": "app-azuracast",
+  "version": "1.0.0",
   "description": "Instala o AzuraCast (plataforma completa de gerenciamento de rádio web) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

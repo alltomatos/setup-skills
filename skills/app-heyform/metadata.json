@@ -1,5 +1,6 @@
 {
   "name": "app-heyform",
+  "version": "1.0.0",
   "description": "Instala o HeyForm (criador de formulários open-source interativo) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-mongodb"],
   "required_inputs": [

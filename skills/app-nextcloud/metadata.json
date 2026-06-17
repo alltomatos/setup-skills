@@ -1,11 +1,29 @@
 {
   "name": "app-nextcloud",
   "description": "Instala o Nextcloud (armazenamento em nuvem open-source) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "infra-redis"],
-  "required_inputs": [
-    { "name": "DOMAIN_NEXTCLOUD", "description": "Domínio para o Nextcloud (ex: cloud.oriondesign.art.br)", "type": "text" },
-    { "name": "NEXTCLOUD_USER", "description": "Nome de usuário do admin", "type": "text" },
-    { "name": "NEXTCLOUD_PASS", "description": "Senha do admin (min 8 chars)", "type": "password" }
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-postgres",
+    "infra-redis"
   ],
-  "persistence_path": "/root/dados_vps/app-nextcloud.md"
+  "required_inputs": [
+    {
+      "name": "DOMAIN_NEXTCLOUD",
+      "description": "Dom\u00ednio para o Nextcloud (ex: cloud.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "NEXTCLOUD_USER",
+      "description": "Nome de usu\u00e1rio do admin",
+      "type": "text"
+    },
+    {
+      "name": "NEXTCLOUD_PASS",
+      "description": "Senha do admin (min 8 chars)",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-nextcloud.md",
+  "version": "1.0.0"
 }

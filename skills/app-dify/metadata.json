@@ -1,7 +1,13 @@
 {
+  "version": "1.0.0",
   "name": "app-dify",
   "description": "Instala o Dify (Plataforma LLM + RAG) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "infra-redis"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-postgres",
+    "infra-redis"
+  ],
   "required_inputs": [
     {
       "name": "DOMAIN_DIFY",

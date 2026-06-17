@@ -1,11 +1,29 @@
 {
   "name": "app-affine",
-  "description": "Instala o AFFiNE (plataforma Notion open-source com edição colaborativa) como Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-pgvector", "infra-redis"],
-  "required_inputs": [
-    { "name": "DOMAIN_AFFINE", "description": "Domínio para o AFFiNE (ex: affine.oriondesign.art.br)", "type": "text" },
-    { "name": "AFFINE_ADMIN_EMAIL", "description": "Email do administrador", "type": "text" },
-    { "name": "AFFINE_ADMIN_PASS", "description": "Senha do admin", "type": "password" }
+  "description": "Instala o AFFiNE (plataforma Notion open-source com edi\u00e7\u00e3o colaborativa) como Docker Swarm.",
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-pgvector",
+    "infra-redis"
   ],
-  "persistence_path": "/root/dados_vps/app-affine.md"
+  "required_inputs": [
+    {
+      "name": "DOMAIN_AFFINE",
+      "description": "Dom\u00ednio para o AFFiNE (ex: affine.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "AFFINE_ADMIN_EMAIL",
+      "description": "Email do administrador",
+      "type": "text"
+    },
+    {
+      "name": "AFFINE_ADMIN_PASS",
+      "description": "Senha do admin",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-affine.md",
+  "version": "1.0.0"
 }

@@ -14,10 +14,18 @@ reset="\e[0m"
 STACK_NAME="jitsi"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Gerar segredos (ADR-002)
-JICOFO_SECRET=$(openssl rand -hex 16)
-JICOFO_COMPONENT=$(openssl rand -hex 16)
-JVB_AUTH=$(openssl rand -hex 16)
+# Persistencia de Segredos (ADR-001)
+if service_exists "app-jitsi"; then
+    EXISTING_DATA=$(read_data "app-jitsi")
+    JICOFO_SECRET=$(echo "$EXISTING_DATA" | grep "Jicofo Secret: " | sed 's/.*Jicofo Secret: //')
+    JICOFO_COMPONENT=$(echo "$EXISTING_DATA" | grep "Jicofo Component: " | sed 's/.*Jicofo Component: //')
+    JVB_AUTH=$(echo "$EXISTING_DATA" | grep "JVB Auth: " | sed 's/.*JVB Auth: //')
+fi
+
+# Gerar segredos se nao existirem
+[ -z "$JICOFO_SECRET" ] && JICOFO_SECRET=$(openssl rand -hex 16)
+[ -z "$JICOFO_COMPONENT" ] && JICOFO_COMPONENT=$(openssl rand -hex 16)
+[ -z "$JVB_AUTH" ] && JVB_AUTH=$(openssl rand -hex 16)
 
 echo -e "${amarelo}Instalando Jitsi Meet no dominio $DOMAIN_JITSI...${reset}"
 
@@ -186,7 +194,7 @@ if [ $? -eq 0 ]; then
     sleep 30
     docker exec -t "$(docker ps --filter "name=jitsi_prosody" -q)" \
         prosodyctl --config /config/prosody.cfg.lua register $JITSI_USER meet.jitsi $JITSI_PASS 2>/dev/null || true
-    save_data "app-jitsi" "# Jitsi Meet\n\n- Status: Instalado\n- URL: https://$DOMAIN_JITSI\n- Admin: $JITSI_USER"
+    save_data "app-jitsi" "# Jitsi Meet\n\n- Status: Instalado\n- URL: https://$DOMAIN_JITSI\n- Admin: $JITSI_USER\n- Jicofo Secret: $JICOFO_SECRET\n- Jicofo Component: $JICOFO_COMPONENT\n- JVB Auth: $JVB_AUTH"
 else
     exit 1
 fi

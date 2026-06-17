@@ -1,5 +1,6 @@
 {
   "name": "app-krayincrm",
+  "version": "1.0.0",
   "description": "Instala o Krayin CRM (CRM open-source baseado em Laravel) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

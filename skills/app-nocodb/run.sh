@@ -20,8 +20,8 @@ if ! docker service ls --format "{{.Name}}" | grep -q "^postgres$"; then
     exit 1
 fi
 
-# Gerar segredo (ADR-002)
-JWT_SECRET=$(openssl rand -hex 16)
+# Ler ou gerar segredo (idempotência)
+NC_JWT_SECRET=$(read_data "app-nocodb" | grep -oP '(?<=- NC_JWT_SECRET: ).*' || openssl rand -hex 16)
 
 echo -e "${amarelo}Instalando NocoDB no dominio $DOMAIN_NOCODB...${reset}"
 
@@ -42,7 +42,7 @@ services:
       - NC_DB=pg://postgres:5432?u=postgres&p=$POSTGRES_PASSWORD&d=nocodb
       - NC_REDIS_URL=redis://nocodb_redis:6379
       - NC_DISABLE_TELE=true
-      - NC_AUTH_JWT_SECRET=$JWT_SECRET
+      - NC_AUTH_JWT_SECRET=$NC_JWT_SECRET
     deploy:
       labels:
         - traefik.enable=true
@@ -84,7 +84,7 @@ deploy_via_portainer "$STACK_NAME" "nocodb.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-nocodb" "# NocoDB\n\n- Status: Instalado\n- URL: https://$DOMAIN_NOCODB"
+    save_data "app-nocodb" "# NocoDB\n\n- Status: Instalado\n- URL: https://$DOMAIN_NOCODB\n- NC_JWT_SECRET: $NC_JWT_SECRET"
 else
     exit 1
 fi

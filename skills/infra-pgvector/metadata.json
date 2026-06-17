@@ -1,7 +1,11 @@
 {
+  "version": "1.0.0",
   "name": "infra-pgvector",
   "description": "Instala o PostgreSQL 14 com a extensão pgvector para buscas vetoriais (AI/RAG).",
-  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik"
+  ],
   "required_inputs": [
     {
       "name": "PGVECTOR_PASSWORD",

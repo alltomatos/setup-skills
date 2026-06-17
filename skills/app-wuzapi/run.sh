@@ -14,9 +14,13 @@ reset="\e[0m"
 STACK_NAME="wuzapi"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Gerar chaves aleatórias
-WUZAPI_ADMIN_TOKEN=$(openssl rand -hex 16)
-SECRET_KEY=$(openssl rand -hex 16)
+# Recuperar ou gerar chaves (idempotência)
+if [ -z "$WUZAPI_ADMIN_TOKEN" ]; then
+    WUZAPI_ADMIN_TOKEN=$(read_data "app-wuzapi" | grep -oP '(?<=- Admin Token: ).*' || openssl rand -hex 16)
+fi
+if [ -z "$SECRET_KEY" ]; then
+    SECRET_KEY=$(read_data "app-wuzapi" | grep -oP '(?<=- Secret Key: ).*' || openssl rand -hex 16)
+fi
 
 echo -e "${amarelo}Instalando Wuzapi no domínio $DOMAIN_WUZAPI...${reset}"
 
@@ -72,7 +76,7 @@ deploy_via_portainer "$STACK_NAME" "wuzapi.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-wuzapi" "# Wuzapi\n\n- Status: Instalado\n- URL: https://$DOMAIN_WUZAPI\n- Admin Token: $WUZAPI_ADMIN_TOKEN"
+    save_data "app-wuzapi" "# Wuzapi\n\n- Status: Instalado\n- URL: https://$DOMAIN_WUZAPI\n- Admin Token: $WUZAPI_ADMIN_TOKEN\n- Secret Key: $SECRET_KEY"
 else
     exit 1
 fi

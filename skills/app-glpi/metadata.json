@@ -1,5 +1,6 @@
 {
   "name": "app-glpi",
+  "version": "1.0.0",
   "description": "Instala o GLPI (gestão de ativos e helpdesk) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-mysql"],
   "required_inputs": [

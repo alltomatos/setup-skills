@@ -16,6 +16,9 @@ NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}
 
 echo -e "${amarelo}Gerando tokens e configurando Supabase em $DOMAIN_SUPABASE...${reset}"
 
+# Recupera dados existentes (ADR-001)
+EXISTING_DATA=$(read_data "app-supabase" 2>/dev/null)
+
 # Função de geração de tokens extraída do SetupOrion
 generate_jwt_tokens() {
     payload_service_key='{"role":"service_role","iss":"supabase","iat":1715050800,"exp":1872817200}'
@@ -28,10 +31,16 @@ generate_jwt_tokens() {
     signature_anon_key=$(echo -n "$header.$payload_anon_key_base64" | openssl dgst -sha256 -hmac "$secret" -binary | openssl base64 | tr -d '=' | tr '+/' '-_' | tr -d '\n')
     token_service_key="$header.$payload_service_key_base64.$signature_service_key"
     token_anon_key="$header.$payload_anon_key_base64.$signature_anon_key"
-    echo "$secret $token_service_key $token_anon_key"
+    echo "$secret $token_anon_key $token_service_key"
 }
 
-read JWT_SECRET ANON_KEY SERVICE_KEY <<< $(generate_jwt_tokens)
+JWT_SECRET=$(echo "$EXISTING_DATA" | grep -oP '(?<=- JWT Secret: ).*')
+ANON_KEY=$(echo "$EXISTING_DATA" | grep -oP '(?<=- Anon Key: ).*')
+SERVICE_KEY=$(echo "$EXISTING_DATA" | grep -oP '(?<=- Service Key: ).*')
+
+if [ -z "$JWT_SECRET" ] || [ -z "$ANON_KEY" ] || [ -z "$SERVICE_KEY" ]; then
+    read JWT_SECRET ANON_KEY SERVICE_KEY <<< $(generate_jwt_tokens)
+fi
 
 # Preparar estrutura de arquivos
 BASE_DIR="/root/supabase"

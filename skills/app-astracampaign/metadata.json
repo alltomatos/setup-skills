@@ -1,0 +1,44 @@
+{
+  "name": "app-astracampaign",
+  "version": "1.0.0",
+  "description": "AstraCampaign is a powerful contact management and marketing automation system. It features a backend for API processing and a frontend for the user interface, utilizing PostgreSQL for data and Redis for task queuing.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "security_level": "high",
+  "persistence": {
+    "astracampaign": "/root/dados_vps/astracampaign.md",
+    "yaml_files": ["/root/astracampaign.yaml"]
+  },
+  "required_inputs": [
+    {
+      "var": "URL_ASTRACAMPAIGN",
+      "label": "Domínio do AstraCampaign",
+      "description": "Subdomínio para acessar a interface do AstraCampaign",
+      "example": "astracampaign.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "SENHA_POSTGRES",
+      "label": "Senha do PostgreSQL",
+      "description": "Senha do usuário 'postgres' no banco de dados (host: postgres)",
+      "example": "",
+      "sensitive": true
+    },
+    {
+      "var": "NOME_REDE_INTERNA",
+      "label": "Nome da Rede Interna",
+      "description": "Nome da rede overlay Docker (padrão: OrionNet)",
+      "example": "OrionNet",
+      "sensitive": false
+    }
+  ],
+  "pre_flight_checks": [
+    "DNS do URL_ASTRACAMPAIGN deve apontar para o IP desta VPS",
+    "Banco de dados PostgreSQL deve estar ativo (host: postgres)",
+    "Database 'astracampaign' deve ser criada previamente ou via script",
+    "Rede overlay NOME_REDE_INTERNA deve existir"
+  ],
+  "post_install_guide": [
+    "Acesse https://{URL_ASTRACAMPAIGN} para iniciar o uso",
+    "O backend está acessível em https://{URL_ASTRACAMPAIGN}/api"
+  ]
+}

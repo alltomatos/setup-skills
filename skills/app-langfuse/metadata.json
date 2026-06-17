@@ -1,7 +1,12 @@
 {
+  "version": "1.0.0",
   "name": "app-langfuse",
   "description": "Instala o Langfuse (Observabilidade LLM) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-postgres"
+  ],
   "required_inputs": [
     {
       "name": "DOMAIN_LANGFUSE",

@@ -23,9 +23,13 @@ elif [ "$SMTP_PORT" -eq 587 ]; then
     SMTP_USE_TLS="true"
 fi
 
-# Chaves de encriptação (Orion pattern)
-EVO_AI_ENCRYPTION_KEY=$(openssl rand -base64 32)
-EVO_AI_JWT_SECRET_KEY=$(openssl rand -base64 32)
+# Recuperar ou gerar chaves de encriptação (idempotência)
+if [ -z "$EVO_AI_ENCRYPTION_KEY" ]; then
+    EVO_AI_ENCRYPTION_KEY=$(read_data "app-evoai" | grep -oP '(?<=- Encryption Key: ).*' || openssl rand -base64 32)
+fi
+if [ -z "$EVO_AI_JWT_SECRET_KEY" ]; then
+    EVO_AI_JWT_SECRET_KEY=$(read_data "app-evoai" | grep -oP '(?<=- JWT Secret Key: ).*' || openssl rand -base64 32)
+fi
 
 echo -e "${amarelo}Instalando EvoAI (API: $DOMAIN_EVOAI_API, Front: $DOMAIN_EVOAI_FRONT)...${reset}"
 
@@ -115,7 +119,7 @@ deploy_via_portainer "$STACK_NAME" "evoai.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-evoai" "# EvoAI\n\n- Status: Instalado\n- API: https://$DOMAIN_EVOAI_API\n- Painel: https://$DOMAIN_EVOAI_FRONT\n- Admin: $ADMIN_EMAIL"
+    save_data "app-evoai" "# EvoAI\n\n- Status: Instalado\n- API: https://$DOMAIN_EVOAI_API\n- Painel: https://$DOMAIN_EVOAI_FRONT\n- Admin: $ADMIN_EMAIL\n- Encryption Key: $EVO_AI_ENCRYPTION_KEY\n- JWT Secret Key: $EVO_AI_JWT_SECRET_KEY"
 else
     exit 1
 fi

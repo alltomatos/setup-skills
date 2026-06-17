@@ -5,7 +5,13 @@ source "$SKILL_DIR/../00-core/lib-persistence.sh"
 amarelo="\e[33m"; verde="\e[32m"; reset="\e[0m"
 STACK_NAME="docmost"; NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 if ! docker service ls --format "{{.Name}}" | grep -q "^postgres$"; then echo -e "\e[31mErro: infra-postgres nao instalado.\e[0m"; exit 1; fi
-SECRET=$(openssl rand -hex 16)
+
+# Persistencia de Segredos (ADR-001)
+if service_exists "app-docmost"; then
+    SECRET=$(read_data "app-docmost" | grep "App Secret: " | sed 's/.*App Secret: //')
+fi
+[ -z "$SECRET" ] && SECRET=$(openssl rand -hex 16)
+
 echo -e "${amarelo}Instalando Docmost...${reset}"
 docker volume create docmost_storage > /dev/null 2>&1
 docker volume create docmost_redis > /dev/null 2>&1
@@ -60,5 +66,5 @@ networks:
     external: true
 YAML
 deploy_via_portainer "$STACK_NAME" "docmost.yaml"
-[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-docmost" "# Docmost\n\n- Status: Instalado\n- URL: https://$DOMAIN_DOCMOST"
+[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-docmost" "# Docmost\n\n- Status: Instalado\n- URL: https://$DOMAIN_DOCMOST\n- App Secret: $SECRET"
 rm -f docmost.yaml; exit 0

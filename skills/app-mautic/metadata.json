@@ -1,5 +1,6 @@
 {
   "name": "app-mautic",
+  "version": "1.0.0",
   "description": "Instala o Mautic 5 (Automação de Marketing) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-mysql"],
   "required_inputs": [

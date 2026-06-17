@@ -7,14 +7,14 @@ STACK_NAME="wisemapping"; NOME_REDE_INTERNA=$(docker network ls --filter driver=
 if ! docker service ls --format "{{.Name}}" | grep -q "^postgres$"; then echo -e "\e[31mErro: infra-postgres nao instalado.\e[0m"; exit 1; fi
 JWT_SECRET=$(openssl rand -hex 32)
 echo -e "${amarelo}Instalando WiseMapping...${reset}"
-mkdir -p /root/wisemapping_data
+docker volume create wisemapping_data > /dev/null 2>&1
 cat > wisemapping.yaml <<YAML
 version: "3.7"
 services:
   wisemapping:
     image: wisemapping/wisemapping:latest
     volumes:
-      - /root/wisemapping_data:/opt/wisemapping/data
+      - wisemapping_data:/usr/local/tomcat/webapps/wisemapping/WEB-INF/data
     networks:
       - \$NOME_REDE_INTERNA
     environment:

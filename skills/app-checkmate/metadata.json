@@ -1,5 +1,6 @@
 {
   "name": "app-checkmate",
+  "version": "1.0.0",
   "description": "Instala o Checkmate (monitoramento alternativo) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-mongodb"],
   "required_inputs": [

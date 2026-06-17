@@ -14,8 +14,8 @@ reset="\e[0m"
 STACK_NAME="odoo"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Geração de senha para banco interno (ADR-002)
-DB_PASSWORD=$(openssl rand -hex 16)
+# Recupera ou gera senha do banco (ADR-001)
+DB_PASSWORD=$(read_data "app-odoo" | grep -oP '(?<=- DB Password Interno: ).*' || openssl rand -hex 16)
 
 # Validar versão ou assumir padrão
 if [ -z "$ODOO_VERSION" ]; then

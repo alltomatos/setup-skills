@@ -1,7 +1,13 @@
 {
+  "version": "1.0.0",
   "name": "app-unoapi",
   "description": "Instala a UnoAPI (Gateway WhatsApp) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "app-minio", "infra-rabbitmq"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "app-minio",
+    "infra-rabbitmq"
+  ],
   "required_inputs": [
     {
       "name": "DOMAIN_UNOAPI",

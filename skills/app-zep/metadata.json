@@ -1,7 +1,12 @@
 {
+  "version": "1.0.0",
   "name": "app-zep",
   "description": "Instala o Zep (Memória de longo prazo para agentes AI) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-pgvector"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-pgvector"
+  ],
   "required_inputs": [
     {
       "name": "DOMAIN_ZEP",

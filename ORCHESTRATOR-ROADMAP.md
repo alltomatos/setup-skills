@@ -295,11 +295,11 @@ Fonte de verdade: `docs/SetupOrion.md` (v2.8.0 — 45.909 linhas, ~110 ferrament
 
 > Deps: E5–E22 concluídos.
 
-- [ ] T109: Auditoria de segurança em todas as skills (ADR-002 compliance)
-- [ ] T110: Testes de smoke (pré-flight) automatizados
-- [ ] T111: Validação de idempotência (re-execução sem efeitos colaterais)
-- [ ] T112: Documentação final de cada skill (README padronizado)
-- [ ] T113: Atualizar ESTADO_ORQUESTRATOR.md com resultado da auditoria
+- [x] T109: Auditoria de segurança em todas as skills (ADR-002 compliance)
+- [x] T110: Testes de smoke (pré-flight) automatizados
+- [x] T111: Validação de idempotência (re-execução sem efeitos colaterais)
+- [x] T112: Documentação final de cada skill (README padronizado)
+- [x] T113: Atualizar ESTADO_ORQUESTRATOR.md com resultado da auditoria
 
 ---
 
@@ -312,4 +312,5 @@ Fonte de verdade: `docs/SetupOrion.md` (v2.8.0 — 45.909 linhas, ~110 ferrament
 | E6 | 11 | ✅ Concluído |
 | E7 | 5 | ✅ Concluído |
 | E8–E22 | ~70 | ✅ Concluído |
-| **Total** | **~102 skills** | **102 feitas / 0 pendentes** |
+| E23 | - | ✅ Concluído |
+| **Total** | **~105 skills** | **105 feitas / 0 pendentes** |

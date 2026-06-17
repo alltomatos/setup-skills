@@ -1,7 +1,12 @@
 {
+  "version": "1.0.0",
   "name": "app-firecrawl",
   "description": "Instala o Firecrawl (Web Scraping para LLMs) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-redis"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-redis"
+  ],
   "required_inputs": [
     {
       "name": "DOMAIN_FIRECRAWL",

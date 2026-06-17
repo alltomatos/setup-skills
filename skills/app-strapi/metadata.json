@@ -1,5 +1,6 @@
 {
   "name": "app-strapi",
+  "version": "1.0.0",
   "description": "Instala o Strapi (Headless CMS open-source) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
   "required_inputs": [

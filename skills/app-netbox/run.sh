@@ -14,10 +14,17 @@ reset="\e[0m"
 STACK_NAME="netbox"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Geração de chaves (ADR-002: runtime)
-SECRET_KEY=$(openssl rand -hex 25)
-TOKEN_PEPPER=$(openssl rand -hex 16)
-DB_PASSWORD=$(openssl rand -hex 16)
+# Persistência de Segredos (ADR-001)
+if service_exists "app-netbox"; then
+    DB_PASSWORD=$(read_data "app-netbox" | grep "DB_PASSWORD:" | awk '{print $2}')
+    SECRET_KEY=$(read_data "app-netbox" | grep "SECRET_KEY:" | awk '{print $2}')
+    TOKEN_PEPPER=$(read_data "app-netbox" | grep "TOKEN_PEPPER:" | awk '{print $2}')
+fi
+
+# Geração de chaves se não existirem (ADR-002: runtime fallback)
+DB_PASSWORD=${DB_PASSWORD:-$(openssl rand -hex 16)}
+SECRET_KEY=${SECRET_KEY:-$(openssl rand -hex 25)}
+TOKEN_PEPPER=${TOKEN_PEPPER:-$(openssl rand -hex 16)}
 
 echo -e "${amarelo}Instalando NetBox em $DOMAIN_NETBOX...${reset}"
 
@@ -166,7 +173,7 @@ deploy_via_portainer "$STACK_NAME" "netbox${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-netbox" "# NetBox\n\n- Status: Instalado\n- URL: https://$DOMAIN_NETBOX\n- Usuário: admin\n- Senha: admin"
+    save_data "app-netbox" "# NetBox\n\n- Status: Instalado\n- URL: https://$DOMAIN_NETBOX\n- Usuário: admin\n- Senha: admin\n- DB_PASSWORD: $DB_PASSWORD\n- SECRET_KEY: $SECRET_KEY\n- TOKEN_PEPPER: $TOKEN_PEPPER"
 else
     exit 1
 fi

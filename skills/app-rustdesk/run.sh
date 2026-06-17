@@ -14,8 +14,15 @@ reset="\e[0m"
 STACK_NAME="rustdesk"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Geração de chave do RustDesk (ADR-002)
-RUSTDESK_KEY=$(openssl rand -hex 16)
+# Geração ou recuperação de chave do RustDesk (ADR-001/002)
+RUSTDESK_KEY=""
+if service_exists "app-rustdesk"; then
+    RUSTDESK_KEY=$(read_data "app-rustdesk" | grep "\- Public Key:" | cut -d ':' -f 2 | xargs)
+fi
+
+if [ -z "$RUSTDESK_KEY" ]; then
+    RUSTDESK_KEY=$(openssl rand -hex 16)
+fi
 
 # Função para gerar a string de configuração base64 (rev)
 generate_rustdesk_string() {

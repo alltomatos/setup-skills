@@ -1,5 +1,6 @@
 {
   "name": "app-nocobase",
+  "version": "1.0.0",
   "description": "Instala o NocoBase (no-code BaaS open-source) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
   "required_inputs": [

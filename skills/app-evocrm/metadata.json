@@ -1,5 +1,6 @@
 {
   "name": "app-evocrm",
+  "version": "1.0.0",
   "description": "Instala o EvoCRM (Sistema de CRM microservices focado em AI) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-pgvector"],
   "required_inputs": [

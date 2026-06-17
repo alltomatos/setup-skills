@@ -1,0 +1,11 @@
+{
+  "name": "app-wekan",
+  "version": "1.0.0",
+  "description": "Wekan - Kanban Open-Source",
+  "dependencies": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-mongodb"
+  ],
+  "persistence_path": "/root/dados_vps/app-wekan.md"
+}

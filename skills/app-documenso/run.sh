@@ -5,7 +5,19 @@ source "$SKILL_DIR/../00-core/lib-persistence.sh"
 amarelo="\e[33m"; verde="\e[32m"; reset="\e[0m"
 STACK_NAME="documenso"; NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 if ! docker service ls --format "{{.Name}}" | grep -q "^postgres$"; then echo -e "\e[31mErro: infra-postgres nao instalado.\e[0m"; exit 1; fi
-KEY1=$(openssl rand -hex 16); KEY2=$(openssl rand -hex 16); KEY3=$(openssl rand -hex 16)
+
+# Persistencia de Segredos (ADR-001)
+if service_exists "app-documenso"; then
+    EXISTING_DATA=$(read_data "app-documenso")
+    KEY1=$(echo "$EXISTING_DATA" | grep "NextAuth Secret: " | sed 's/.*NextAuth Secret: //')
+    KEY2=$(echo "$EXISTING_DATA" | grep "Encryption Key: " | sed 's/.*Encryption Key: //')
+    KEY3=$(echo "$EXISTING_DATA" | grep "Encryption Secondary Key: " | sed 's/.*Encryption Secondary Key: //')
+fi
+
+[ -z "$KEY1" ] && KEY1=$(openssl rand -hex 16)
+[ -z "$KEY2" ] && KEY2=$(openssl rand -hex 16)
+[ -z "$KEY3" ] && KEY3=$(openssl rand -hex 16)
+
 SMTP_SECURE="false"; [ "$SMTP_PORT" -eq 465 ] && SMTP_SECURE="true"
 echo -e "${amarelo}Instalando Documenso...${reset}"
 docker volume create documenso_cert > /dev/null 2>&1
@@ -57,5 +69,5 @@ networks:
     external: true
 YAML
 deploy_via_portainer "$STACK_NAME" "documenso.yaml"
-[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-documenso" "# Documenso\n\n- Status: Instalado\n- URL: https://$DOMAIN_DOCUMENSO"
+[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-documenso" "# Documenso\n\n- Status: Instalado\n- URL: https://$DOMAIN_DOCUMENSO\n- NextAuth Secret: $KEY1\n- Encryption Key: $KEY2\n- Encryption Secondary Key: $KEY3"
 rm -f documenso.yaml; exit 0

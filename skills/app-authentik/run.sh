@@ -5,7 +5,13 @@ source "$SKILL_DIR/../00-core/lib-persistence.sh"
 amarelo="\e[33m"; verde="\e[32m"; reset="\e[0m"
 STACK_NAME="authentik"; NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 if ! docker service ls --format "{{.Name}}" | grep -q "^postgres$"; then echo -e "\e[31mErro: infra-postgres nao instalado.\e[0m"; exit 1; fi
-SECRET_KEY=$(openssl rand -hex 32)
+
+# Persistencia de Segredos (ADR-001)
+if service_exists "app-authentik"; then
+    SECRET_KEY=$(read_data "app-authentik" | grep "Secret Key: " | sed 's/.*Secret Key: //')
+fi
+[ -z "$SECRET_KEY" ] && SECRET_KEY=$(openssl rand -hex 32)
+
 echo -e "${amarelo}Instalando Authentik...${reset}"
 docker volume create authentik_media > /dev/null 2>&1
 docker volume create authentik_templates > /dev/null 2>&1
@@ -92,5 +98,5 @@ networks:
     external: true
 YAML
 deploy_via_portainer "$STACK_NAME" "authentik.yaml"
-[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-authentik" "# Authentik\n\n- Status: Instalado\n- URL: https://$DOMAIN_AUTHENTIK"
+[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-authentik" "# Authentik\n\n- Status: Instalado\n- URL: https://$DOMAIN_AUTHENTIK\n- Secret Key: $SECRET_KEY"
 rm -f authentik.yaml; exit 0

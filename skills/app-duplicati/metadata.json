@@ -1,0 +1,19 @@
+{
+  "name": "app-duplicati",
+  "version": "1.0.0",
+  "description": "Instala o Duplicati (backup com criptografia) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_DUPLICATI",
+      "description": "Domínio para o Duplicati (ex: duplicati.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "PASS_DUPLICATI",
+      "description": "Senha para acessar o Duplicati",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-duplicati.md"
+}

@@ -1,4 +1,5 @@
 {
+  "version": "1.0.0",
   "name": "infra-bootstrap",
   "description": "Verifica e prepara o ambiente Debian 11 para rodar as skills Orion.",
   "required_inputs": [],

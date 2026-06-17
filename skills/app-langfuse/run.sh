@@ -14,6 +14,14 @@ reset="\e[0m"
 STACK_NAME="langfuse"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
+# Recuperar ou gerar segredos (idempotência)
+if [ -z "$NEXTAUTH_SECRET" ]; then
+    NEXTAUTH_SECRET=$(read_data "app-langfuse" | grep -oP '(?<=- NextAuth Secret: ).*' || openssl rand -base64 32)
+fi
+if [ -z "$SALT" ]; then
+    SALT=$(read_data "app-langfuse" | grep -oP '(?<=- Salt: ).*' || openssl rand -base64 32)
+fi
+
 echo -e "${amarelo}Instalando Langfuse no domínio $DOMAIN_LANGFUSE...${reset}"
 
 cat > langfuse.yaml <<EOL
@@ -26,8 +34,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:\$POSTGRES_PASSWORD@postgres:5432/langfuse
       - NEXTAUTH_URL=https://$DOMAIN_LANGFUSE
-      - NEXTAUTH_SECRET=$(openssl rand -base64 32)
-      - SALT=$(openssl rand -base64 32)
+      - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+      - SALT=$SALT
     deploy:
       labels:
         - "traefik.enable=true"
@@ -49,7 +57,7 @@ deploy_via_portainer "$STACK_NAME" "langfuse.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-langfuse" "# Langfuse (AI/Observability)\n\n- Status: Instalado\n- URL: https://$DOMAIN_LANGFUSE"
+    save_data "app-langfuse" "# Langfuse (AI/Observability)\n\n- Status: Instalado\n- URL: https://$DOMAIN_LANGFUSE\n- NextAuth Secret: $NEXTAUTH_SECRET\n- Salt: $SALT"
 else
     exit 1
 fi

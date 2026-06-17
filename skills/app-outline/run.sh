@@ -20,9 +20,16 @@ if ! docker service ls --format "{{.Name}}" | grep -q "^postgres$"; then
     exit 1
 fi
 
-# Gerar segredos (ADR-002)
-SECRET_KEY=$(openssl rand -hex 32)
-UTILS_SECRET=$(openssl rand -hex 32)
+# Persistencia de Segredos (ADR-001)
+if service_exists "app-outline"; then
+    EXISTING_DATA=$(read_data "app-outline")
+    SECRET_KEY=$(echo "$EXISTING_DATA" | grep "Secret Key: " | sed 's/.*Secret Key: //')
+    UTILS_SECRET=$(echo "$EXISTING_DATA" | grep "Utils Secret: " | sed 's/.*Utils Secret: //')
+fi
+
+# Gerar segredos se nao existirem
+[ -z "$SECRET_KEY" ] && SECRET_KEY=$(openssl rand -hex 32)
+[ -z "$UTILS_SECRET" ] && UTILS_SECRET=$(openssl rand -hex 32)
 
 # TLS SMTP
 SMTP_SSL="false"
@@ -110,7 +117,7 @@ deploy_via_portainer "$STACK_NAME" "outline.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-outline" "# Outline\n\n- Status: Instalado\n- URL: https://$DOMAIN_OUTLINE\n- Login via Google OAuth"
+    save_data "app-outline" "# Outline\n\n- Status: Instalado\n- URL: https://$DOMAIN_OUTLINE\n- Login via Google OAuth\n- Secret Key: $SECRET_KEY\n- Utils Secret: $UTILS_SECRET"
 else
     exit 1
 fi

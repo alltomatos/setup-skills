@@ -21,8 +21,8 @@ else
     POSTGRES_PASS=$POSTGRES_PASSWORD
 fi
 
-# Geração de segredo (ADR-002)
-SECRET_KEY=$(openssl rand -hex 16)
+# Recupera ou gera segredo (ADR-001)
+SECRET_KEY=$(read_data "app-planka" | grep -oP '(?<=- Secret Key: ).*' || openssl rand -hex 32)
 
 # Configuração SMTP SSL
 if [ "$SMTP_PORT" -eq 465 ]; then
@@ -120,7 +120,7 @@ deploy_via_portainer "$STACK_NAME" "planka${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-planka" "# Planka\n\n- Status: Instalado\n- URL: https://$DOMAIN_PLANKA\n- Admin: $PLANKA_ADMIN_USER"
+    save_data "app-planka" "# Planka\n\n- Status: Instalado\n- URL: https://$DOMAIN_PLANKA\n- Admin: $PLANKA_ADMIN_USER\n- Secret Key: $SECRET_KEY"
 else
     exit 1
 fi

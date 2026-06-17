@@ -1,0 +1,49 @@
+{
+  "name": "app-redisinsight",
+  "version": "1.0.0",
+  "description": "RedisInsight is a powerful GUI for Redis. It allows you to visualize, analyze, and manage your Redis data with ease. This skill deploys RedisInsight via Docker Swarm with basic authentication.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "security_level": "medium",
+  "persistence": {
+    "redisinsight": "/root/dados_vps/redisinsight.md",
+    "yaml_files": ["/root/redisinsight.yaml"]
+  },
+  "required_inputs": [
+    {
+      "var": "URL_REDISINSIGHT",
+      "label": "Domínio do RedisInsight",
+      "description": "Subdomínio para acessar a interface do RedisInsight",
+      "example": "redisinsight.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "USER_REDISINSIGHT",
+      "label": "Usuário do RedisInsight",
+      "description": "Usuário para autenticação básica no acesso",
+      "example": "admin",
+      "sensitive": false
+    },
+    {
+      "var": "PASS_REDISINSIGHT",
+      "label": "Senha do RedisInsight",
+      "description": "Senha para autenticação básica no acesso",
+      "example": "",
+      "sensitive": true
+    },
+    {
+      "var": "NOME_REDE_INTERNA",
+      "label": "Nome da Rede Interna",
+      "description": "Nome da rede overlay Docker (padrão: OrionNet)",
+      "example": "OrionNet",
+      "sensitive": false
+    }
+  ],
+  "pre_flight_checks": [
+    "DNS do URL_REDISINSIGHT deve apontar para o IP desta VPS",
+    "Rede overlay NOME_REDE_INTERNA deve existir"
+  ],
+  "post_install_guide": [
+    "Acesse https://{URL_REDISINSIGHT} usando o usuário e senha configurados",
+    "Adicione suas instâncias Redis usando o host e porta correspondentes na rede interna"
+  ]
+}

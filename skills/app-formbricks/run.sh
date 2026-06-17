@@ -31,10 +31,21 @@ else
     exit 1
 fi
 
-# Geração de segredos (ADR-002)
-ENCRYPTION_KEY=$(openssl rand -hex 32)
-NEXTAUTH_SECRET=$(openssl rand -hex 32)
-CRON_SECRET=$(openssl rand -hex 32)
+# Geração ou recuperação de segredos (ADR-001/002)
+ENCRYPTION_KEY=""
+NEXTAUTH_SECRET=""
+CRON_SECRET=""
+
+if service_exists "app-formbricks"; then
+    DATA=$(read_data "app-formbricks")
+    ENCRYPTION_KEY=$(echo "$DATA" | grep "\- Encryption Key:" | cut -d ':' -f 2 | xargs)
+    NEXTAUTH_SECRET=$(echo "$DATA" | grep "\- NextAuth Secret:" | cut -d ':' -f 2 | xargs)
+    CRON_SECRET=$(echo "$DATA" | grep "\- Cron Secret:" | cut -d ':' -f 2 | xargs)
+fi
+
+[ -z "$ENCRYPTION_KEY" ] && ENCRYPTION_KEY=$(openssl rand -hex 32)
+[ -z "$NEXTAUTH_SECRET" ] && NEXTAUTH_SECRET=$(openssl rand -hex 32)
+[ -z "$CRON_SECRET" ] && CRON_SECRET=$(openssl rand -hex 32)
 
 # SSL para SMTP
 if [ "$SMTP_PORT" -eq 465 ] || [ "$SMTP_PORT" -eq 25 ]; then
@@ -129,7 +140,7 @@ deploy_via_portainer "$STACK_NAME" "formbricks${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-formbricks" "# Formbricks\n\n- Status: Instalado\n- URL: https://$DOMAIN_FORMBRICKS"
+    save_data "app-formbricks" "# Formbricks\n\n- Status: Instalado\n- URL: https://$DOMAIN_FORMBRICKS\n- Encryption Key: $ENCRYPTION_KEY\n- NextAuth Secret: $NEXTAUTH_SECRET\n- Cron Secret: $CRON_SECRET"
 else
     exit 1
 fi

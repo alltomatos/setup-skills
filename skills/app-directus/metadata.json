@@ -1,5 +1,6 @@
 {
   "name": "app-directus",
+  "version": "1.0.0",
   "description": "Instala o Directus (Headless CMS + BaaS open-source) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "infra-redis", "app-minio"],
   "required_inputs": [

@@ -1,5 +1,6 @@
 {
   "name": "app-tooljet",
+  "version": "1.0.0",
   "description": "Instala o ToolJet (low-code internal tools platform) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "infra-redis"],
   "required_inputs": [

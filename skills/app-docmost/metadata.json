@@ -1,9 +1,18 @@
 {
   "name": "app-docmost",
   "description": "Instala o Docmost (docs colaborativo open-source) como Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
-  "required_inputs": [
-    { "name": "DOMAIN_DOCMOST", "description": "Domínio para o Docmost (ex: docs.oriondesign.art.br)", "type": "text" }
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-postgres"
   ],
-  "persistence_path": "/root/dados_vps/app-docmost.md"
+  "required_inputs": [
+    {
+      "name": "DOMAIN_DOCMOST",
+      "description": "Dom\u00ednio para o Docmost (ex: docs.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-docmost.md",
+  "version": "1.0.0"
 }

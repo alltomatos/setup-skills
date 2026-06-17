@@ -1,5 +1,6 @@
 {
   "name": "app-pgadmin",
+  "version": "1.0.0",
   "description": "Instala o pgAdmin 4 (interface web para PostgreSQL) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

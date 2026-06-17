@@ -25,11 +25,9 @@ if ! docker service ls --format "{{.Name}}" | grep -q "^redis$"; then
     echo -e "\e[31mErro: infra-redis nao instalado.\e[0m"
     exit 1
 fi
-
-# Gerar segredos (ADR-002)
-MASTER_KEY=$(openssl rand -hex 16)
-LOCKBOX_KEY=$(openssl rand -hex 16)
-JWT_SECRET=$(openssl rand -hex 16)
+# Ler ou gerar segredos (idempotência)
+LOCKBOX_MASTER_KEY=$(read_data "app-tooljet" | grep -oP '(?<=- LOCKBOX_MASTER_KEY: ).*' || openssl rand -hex 16)
+SECRET_KEY_BASE=$(read_data "app-tooljet" | grep -oP '(?<=- SECRET_KEY_BASE: ).*' || openssl rand -hex 16)
 
 echo -e "${amarelo}Instalando ToolJet no dominio $DOMAIN_TOOLJET...${reset}"
 
@@ -50,10 +48,12 @@ services:
       - TOOLJET_HOST=https://$DOMAIN_TOOLJET
       - SERVE_CLIENT=true
       - LANGUAGE=pt
-      - LOCKBOX_MASTER_KEY=$MASTER_KEY
-      - SECRET_KEY_BASE=$LOCKBOX_KEY
+      - LOCKBOX_MASTER_KEY=$LOCKBOX_MASTER_KEY
+      - SECRET_KEY_BASE=$SECRET_KEY_BASE
       - DATABASE_URL=postgres://postgres:$POSTGRES_PASSWORD@postgres:5432/tooljet?sslmode=disable
       - REDIS_HOST=redis
+    deploy:
+
       - REDIS_PORT=6379
       - DEFAULT_FROM_EMAIL=$SMTP_FROM_EMAIL
       - SMTP_USERNAME=$SMTP_USER
@@ -101,7 +101,7 @@ deploy_via_portainer "$STACK_NAME" "tooljet.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-tooljet" "# ToolJet\n\n- Status: Instalado\n- URL: https://$DOMAIN_TOOLJET"
+    save_data "app-tooljet" "# ToolJet\n\n- Status: Instalado\n- URL: https://$DOMAIN_TOOLJET\n- LOCKBOX_MASTER_KEY: $LOCKBOX_MASTER_KEY\n- SECRET_KEY_BASE: $SECRET_KEY_BASE"
 else
     exit 1
 fi

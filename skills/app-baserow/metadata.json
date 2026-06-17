@@ -1,5 +1,6 @@
 {
   "name": "app-baserow",
+  "version": "1.0.0",
   "description": "Instala o Baserow (banco de dados no-code open-source) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

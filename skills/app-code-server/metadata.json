@@ -1,5 +1,6 @@
 {
   "name": "app-code-server",
+  "version": "1.0.0",
   "description": "Instala o VS Code no browser (code-server) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

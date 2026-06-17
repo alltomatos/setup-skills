@@ -1,0 +1,6 @@
+{
+  "name": "app-papra",
+  "version": "1.0.0",
+  "description": "Self-hosted document management and signing platform",
+  "persistence_path": "/root/dados_vps/papra.md"
+}

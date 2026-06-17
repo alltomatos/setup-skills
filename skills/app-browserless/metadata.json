@@ -1,0 +1,6 @@
+{
+  "name": "app-browserless",
+  "version": "1.0.0",
+  "description": "Headless browser utility for automation and scraping",
+  "persistence_path": "/root/dados_vps/browserless.md"
+}

@@ -1,0 +1,43 @@
+{
+  "name": "app-easyappointments",
+  "version": "1.0.0",
+  "description": "Easy!Appointments is a highly customizable web application that allows your customers to book appointments with you via the web. It is written in PHP and uses MySQL as its database backend.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-mysql"],
+  "security_level": "medium",
+  "persistence": {
+    "easyappointments": "/root/dados_vps/easyappointments.md",
+    "yaml_files": ["/root/easyappointments.yaml"]
+  },
+  "required_inputs": [
+    {
+      "var": "URL_EASYAPPOINTMENTS",
+      "label": "Domínio do Easy!Appointments",
+      "description": "Subdomínio para acessar a interface do Easy!Appointments",
+      "example": "agenda.seudominio.com.br",
+      "sensitive": false
+    },
+    {
+      "var": "SENHA_MYSQL",
+      "label": "Senha do MySQL",
+      "description": "Senha do usuário 'root' no banco de dados MySQL (host: mysql)",
+      "example": "",
+      "sensitive": true
+    },
+    {
+      "var": "NOME_REDE_INTERNA",
+      "label": "Nome da Rede Interna",
+      "description": "Nome da rede overlay Docker (padrão: OrionNet)",
+      "example": "OrionNet",
+      "sensitive": false
+    }
+  ],
+  "pre_flight_checks": [
+    "DNS do URL_EASYAPPOINTMENTS deve apontar para o IP desta VPS",
+    "Banco de dados MySQL deve estar ativo (host: mysql)",
+    "Rede overlay NOME_REDE_INTERNA deve existir"
+  ],
+  "post_install_guide": [
+    "Acesse https://{URL_EASYAPPOINTMENTS} para configurar sua conta de administrador",
+    "O sistema criará automaticamente as tabelas necessárias no banco 'easyappointments' no primeiro acesso."
+  ]
+}

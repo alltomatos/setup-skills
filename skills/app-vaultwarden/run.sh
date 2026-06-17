@@ -5,7 +5,13 @@ source "$SKILL_DIR/../00-core/lib-persistence.sh"
 amarelo="\e[33m"; verde="\e[32m"; reset="\e[0m"
 STACK_NAME="vaultwarden"; NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 if ! docker service ls --format "{{.Name}}" | grep -q "^postgres$"; then echo -e "\e[31mErro: infra-postgres nao instalado.\e[0m"; exit 1; fi
-ADMIN_TOKEN=$(openssl rand -hex 16)
+
+# Persistencia de Segredos (ADR-001)
+if service_exists "app-vaultwarden"; then
+    ADMIN_TOKEN=$(read_data "app-vaultwarden" | grep "Admin Token: " | sed 's/.*Admin Token: //')
+fi
+[ -z "$ADMIN_TOKEN" ] && ADMIN_TOKEN=$(openssl rand -hex 16)
+
 SSL_MODE="starttls"; [ "$SMTP_PORT" -eq 465 ] && SSL_MODE="force_tls"
 echo -e "${amarelo}Instalando Vaultwarden...${reset}"
 docker volume create vaultwarden_data > /dev/null 2>&1
@@ -52,5 +58,5 @@ networks:
     external: true
 YAML
 deploy_via_portainer "$STACK_NAME" "vaultwarden.yaml"
-[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-vaultwarden" "# Vaultwarden\n\n- Status: Instalado\n- URL: https://$DOMAIN_VAULTWARDEN\n- Admin: /admin"
+[ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-vaultwarden" "# Vaultwarden\n\n- Status: Instalado\n- URL: https://$DOMAIN_VAULTWARDEN\n- Admin: /admin\n- Admin Token: $ADMIN_TOKEN"
 rm -f vaultwarden.yaml; exit 0

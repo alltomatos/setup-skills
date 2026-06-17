@@ -1,11 +1,28 @@
 {
   "name": "app-keycloak",
   "description": "Instala o Keycloak (SSO/identity provider open-source) como Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
-  "required_inputs": [
-    { "name": "DOMAIN_KEYCLOAK", "description": "Domínio (ex: sso.oriondesign.art.br)", "type": "text" },
-    { "name": "KEYCLOAK_USER", "description": "Usuário admin do Keycloak", "type": "text" },
-    { "name": "KEYCLOAK_PASS", "description": "Senha do admin Keycloak", "type": "password" }
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-postgres"
   ],
-  "persistence_path": "/root/dados_vps/app-keycloak.md"
+  "required_inputs": [
+    {
+      "name": "DOMAIN_KEYCLOAK",
+      "description": "Dom\u00ednio (ex: sso.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "KEYCLOAK_USER",
+      "description": "Usu\u00e1rio admin do Keycloak",
+      "type": "text"
+    },
+    {
+      "name": "KEYCLOAK_PASS",
+      "description": "Senha do admin Keycloak",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-keycloak.md",
+  "version": "1.0.0"
 }

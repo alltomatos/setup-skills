@@ -1,7 +1,10 @@
 {
+  "version": "1.0.0",
   "name": "app-ollama",
   "description": "Instala o Ollama para rodar modelos LLM locais (Llama 3, Mistral, etc) via Docker Swarm.",
-  "depends_on": ["infra-bootstrap"],
+  "depends_on": [
+    "infra-bootstrap"
+  ],
   "required_inputs": [],
   "persistence_path": "/root/dados_vps/app-ollama.md"
 }

@@ -1,5 +1,6 @@
 {
   "name": "app-odoo",
+  "version": "1.0.0",
   "description": "Instala o Odoo (ERP completo open-source) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

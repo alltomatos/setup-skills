@@ -16,8 +16,15 @@ NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}
 
 echo -e "${amarelo}Instalando Traccar em $DOMAIN_TRACCAR...${reset}"
 
-# Geração de senha interna para o banco (ADR-002)
-MYSQL_PASS=$(openssl rand -hex 16)
+# Geração ou recuperação de senha interna para o banco (ADR-001/002)
+MYSQL_PASS=""
+if service_exists "app-traccar"; then
+    MYSQL_PASS=$(read_data "app-traccar" | grep "\- MySQL Pass:" | cut -d ':' -f 2 | xargs)
+fi
+
+if [ -z "$MYSQL_PASS" ]; then
+    MYSQL_PASS=$(openssl rand -hex 16)
+fi
 
 # Preparando o arquivo de configuração
 mkdir -p /opt/traccar/logs
@@ -108,7 +115,7 @@ deploy_via_portainer "$STACK_NAME" "traccar${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-traccar" "# Traccar\n\n- Status: Instalado\n- URL: https://$DOMAIN_TRACCAR\n- Nota: Crie sua conta de administrador no primeiro acesso."
+    save_data "app-traccar" "# Traccar\n\n- Status: Instalado\n- URL: https://$DOMAIN_TRACCAR\n- MySQL Pass: $MYSQL_PASS\n- Nota: Crie sua conta de administrador no primeiro acesso."
 else
     exit 1
 fi

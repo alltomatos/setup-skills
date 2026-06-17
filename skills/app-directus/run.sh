@@ -14,9 +14,9 @@ reset="\e[0m"
 STACK_NAME="directus"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Gerar chaves aleatórias
-KEY=$(openssl rand -hex 16)
-SECRET=$(openssl rand -hex 16)
+# Ler ou gerar segredos (idempotência)
+KEY=$(read_data "app-directus" | grep -oP '(?<=- KEY: ).*' || openssl rand -hex 16)
+SECRET=$(read_data "app-directus" | grep -oP '(?<=- SECRET: ).*' || openssl rand -hex 16)
 
 # Configuração SMTP
 SMTP_SECURE="false"
@@ -111,7 +111,7 @@ deploy_via_portainer "$STACK_NAME" "directus.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-directus" "# Directus\n\n- Status: Instalado\n- URL: https://$DOMAIN_DIRECTUS\n- Admin: $ADMIN_EMAIL"
+    save_data "app-directus" "# Directus\n\n- Status: Instalado\n- URL: https://$DOMAIN_DIRECTUS\n- Admin: $ADMIN_EMAIL\n- KEY: $KEY\n- SECRET: $SECRET"
 else
     exit 1
 fi

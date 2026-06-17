@@ -14,9 +14,13 @@ reset="\e[0m"
 STACK_NAME="krayin"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Gerar chaves aleatórias
-APP_KEY="base64:$(openssl rand -base64 32)"
-MYSQL_ROOT_PASSWORD=$(openssl rand -hex 16)
+# Persistência de Segredos (ADR-001)
+EXISTING_DATA=$(read_data "app-krayincrm" 2>/dev/null)
+APP_KEY=$(echo "$EXISTING_DATA" | grep "APP_KEY:" | sed 's/.*APP_KEY: //')
+DB_PASSWORD=$(echo "$EXISTING_DATA" | grep "DB_PASSWORD:" | sed 's/.*DB_PASSWORD: //')
+
+[ -z "$APP_KEY" ] && APP_KEY="base64:$(openssl rand -base64 32)"
+[ -z "$DB_PASSWORD" ] && DB_PASSWORD=$(openssl rand -hex 16)
 
 # Configuração SMTP
 SMTP_ENCRYPTION="tls"
@@ -51,7 +55,7 @@ services:
       - DB_PORT=3306
       - DB_DATABASE=krayincrm
       - DB_USERNAME=root
-      - DB_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - DB_PASSWORD=$DB_PASSWORD
       - REDIS_HOST=krayin_redis
       - REDIS_PORT=6379
       - MAIL_MAILER=smtp
@@ -85,7 +89,7 @@ services:
     volumes:
       - krayin_db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
       - MYSQL_DATABASE=krayincrm
       - TZ=America/Sao_Paulo
 
@@ -114,7 +118,13 @@ deploy_via_portainer "$STACK_NAME" "krayin.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-krayincrm" "# Krayin CRM\n\n- Status: Instalado\n- URL: https://$DOMAIN_KRAYIN\n- DB: MySQL (interno)\n- App Key: $APP_KEY"
+    save_data "app-krayincrm" "# Krayin CRM
+
+- Status: Instalado
+- URL: https://$DOMAIN_KRAYIN
+- DB: MySQL (interno)
+- APP_KEY: $APP_KEY
+- DB_PASSWORD: $DB_PASSWORD"
 else
     exit 1
 fi

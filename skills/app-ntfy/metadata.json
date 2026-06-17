@@ -1,5 +1,6 @@
 {
   "name": "app-ntfy",
+  "version": "1.0.0",
   "description": "Instala o ntfy (notificações push baseadas em HTTP) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

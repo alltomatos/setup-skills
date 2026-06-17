@@ -1,7 +1,11 @@
 {
+  "version": "1.0.0",
   "name": "infra-mysql",
   "description": "Instala o MySQL 8.0 como uma stack Docker Swarm otimizada.",
-  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik"
+  ],
   "required_inputs": [
     {
       "name": "MYSQL_ROOT_PASSWORD",

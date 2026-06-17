@@ -1,7 +1,11 @@
 {
+  "version": "1.0.0",
   "name": "app-langflow",
   "description": "Instala o Langflow (Builder visual de fluxos LLM) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik"
+  ],
   "required_inputs": [
     {
       "name": "DOMAIN_LANGFLOW",

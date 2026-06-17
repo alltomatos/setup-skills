@@ -14,9 +14,9 @@ reset="\e[0m"
 STACK_NAME="openproject"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Geração de chaves (ADR-002)
-SECRET_KEY=$(openssl rand -hex 16)
-DB_PASSWORD=$(openssl rand -hex 16)
+# Recupera ou gera chaves (ADR-001)
+SECRET_KEY=$(read_data "app-openproject" | grep -oP '(?<=- Secret Key: ).*' || openssl rand -hex 32)
+DB_PASSWORD=$(read_data "app-openproject" | grep -oP '(?<=- DB Password Interno: ).*' || openssl rand -hex 16)
 
 echo -e "${amarelo}Instalando OpenProject em $DOMAIN_OPENPROJECT...${reset}"
 
@@ -111,7 +111,7 @@ deploy_via_portainer "$STACK_NAME" "openproject${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-openproject" "# OpenProject\n\n- Status: Instalado\n- URL: https://$DOMAIN_OPENPROJECT\n- Usuário: admin\n- Senha: admin"
+    save_data "app-openproject" "# OpenProject\n\n- Status: Instalado\n- URL: https://$DOMAIN_OPENPROJECT\n- Usuário: admin\n- Senha: admin\n- Secret Key: $SECRET_KEY\n- DB Password Interno: $DB_PASSWORD"
 else
     exit 1
 fi

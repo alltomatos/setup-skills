@@ -1,5 +1,6 @@
 {
   "name": "app-twentycrm",
+  "version": "1.0.0",
   "description": "Instala o Twenty CRM (CRM moderno open-source) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

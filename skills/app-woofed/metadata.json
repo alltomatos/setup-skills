@@ -1,5 +1,6 @@
 {
   "name": "app-woofed",
+  "version": "1.0.0",
   "description": "Instala o WoofedCRM (CRM focado em WhatsApp) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-pgvector", "infra-redis"],
   "required_inputs": [

@@ -1,7 +1,11 @@
 {
+  "version": "1.0.0",
   "name": "app-transcrevezap",
   "description": "Instala o TranscreveZap (Transcrição de áudio WhatsApp) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik"
+  ],
   "required_inputs": [
     {
       "name": "DOMAIN_TRANSCREVE_API",

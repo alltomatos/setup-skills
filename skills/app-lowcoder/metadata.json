@@ -1,5 +1,6 @@
 {
   "name": "app-lowcoder",
+  "version": "1.0.0",
   "description": "Instala o Lowcoder (plataforma low-code para construir apps) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-mongodb", "infra-redis"],
   "required_inputs": [

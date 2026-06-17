@@ -1,12 +1,32 @@
 {
   "name": "app-jitsi",
-  "description": "Instala o Jitsi Meet (videoconferência open-source) como Docker Swarm com 4 serviços.",
-  "depends_on": ["infra-bootstrap", "app-traefik"],
-  "required_inputs": [
-    { "name": "DOMAIN_JITSI", "description": "Domínio para o Jitsi (ex: jitsi.oriondesign.art.br)", "type": "text" },
-    { "name": "JITSI_PUBLIC_IP", "description": "IP público da VPS", "type": "text" },
-    { "name": "JITSI_USER", "description": "Usuário admin do Jitsi", "type": "text" },
-    { "name": "JITSI_PASS", "description": "Senha do admin Jitsi", "type": "password" }
+  "description": "Instala o Jitsi Meet (videoconfer\u00eancia open-source) como Docker Swarm com 4 servi\u00e7os.",
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik"
   ],
-  "persistence_path": "/root/dados_vps/app-jitsi.md"
+  "required_inputs": [
+    {
+      "name": "DOMAIN_JITSI",
+      "description": "Dom\u00ednio para o Jitsi (ex: jitsi.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "JITSI_PUBLIC_IP",
+      "description": "IP p\u00fablico da VPS",
+      "type": "text"
+    },
+    {
+      "name": "JITSI_USER",
+      "description": "Usu\u00e1rio admin do Jitsi",
+      "type": "text"
+    },
+    {
+      "name": "JITSI_PASS",
+      "description": "Senha do admin Jitsi",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-jitsi.md",
+  "version": "1.0.0"
 }

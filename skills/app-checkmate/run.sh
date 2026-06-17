@@ -14,8 +14,13 @@ reset="\e[0m"
 STACK_NAME="checkmate"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Geração de chaves (ADR-002: runtime)
-JWT_SECRET=$(openssl rand -hex 16)
+# Persistência de Segredos (ADR-001)
+if service_exists "app-checkmate"; then
+    JWT_SECRET=$(read_data "app-checkmate" | grep "JWT_SECRET:" | awk '{print $2}')
+fi
+
+# Geração de chaves se não existirem (ADR-002: runtime fallback)
+JWT_SECRET=${JWT_SECRET:-$(openssl rand -hex 16)}
 
 # Carregar credenciais do MongoDB (ADR-001)
 if [ -f "/root/dados_vps/infra-mongodb.md" ]; then
@@ -125,7 +130,7 @@ deploy_via_portainer "$STACK_NAME" "checkmate${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-checkmate" "# Checkmate\n\n- Status: Instalado\n- URL: https://$DOMAIN_CHECKMATE\n- API: https://$DOMAIN_CHECKMATE_API"
+    save_data "app-checkmate" "# Checkmate\n\n- Status: Instalado\n- URL: https://$DOMAIN_CHECKMATE\n- API: https://$DOMAIN_CHECKMATE_API\n- JWT_SECRET: $JWT_SECRET"
 else
     exit 1
 fi

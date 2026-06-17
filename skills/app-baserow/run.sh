@@ -13,10 +13,9 @@ reset="\e[0m"
 
 STACK_NAME="baserow"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
-
-# Gerar segredos (ADR-002)
-SECRET_KEY=$(openssl rand -hex 16)
-JWT_KEY=$(openssl rand -hex 16)
+# Ler ou gerar segredos (idempotência)
+SECRET_KEY=$(read_data "app-baserow" | grep -oP '(?<=- SECRET_KEY: ).*' || openssl rand -hex 16)
+BASEROW_JWT_SECRET_KEY=$(read_data "app-baserow" | grep -oP '(?<=- BASEROW_JWT_SECRET_KEY: ).*' || openssl rand -hex 16)
 
 # TLS SMTP
 SMTP_SECURE="false"
@@ -41,10 +40,12 @@ services:
     environment:
       - BASEROW_PUBLIC_URL=https://\$DOMAIN_BASEROW
       - SECRET_KEY=$SECRET_KEY
-      - BASEROW_JWT_SIGNING_KEY=$JWT_KEY
+      - BASEROW_JWT_SIGNING_KEY=$BASEROW_JWT_SECRET_KEY
       - EMAIL_SMTP=true
       - FROM_EMAIL=\$SMTP_FROM_EMAIL
       - EMAIL_SMTP_USER=\$SMTP_USER
+    deploy:
+
       - EMAIL_SMTP_PASSWORD=\$SMTP_PASS
       - EMAIL_SMTP_HOST=\$SMTP_HOST
       - EMAIL_SMTP_PORT=\$SMTP_PORT
@@ -94,7 +95,7 @@ deploy_via_portainer "$STACK_NAME" "baserow.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-baserow" "# Baserow\n\n- Status: Instalado\n- URL: https://$DOMAIN_BASEROW"
+    save_data "app-baserow" "# Baserow\n\n- Status: Instalado\n- URL: https://$DOMAIN_BASEROW\n- SECRET_KEY: $SECRET_KEY\n- BASEROW_JWT_SECRET_KEY: $BASEROW_JWT_SECRET_KEY"
 else
     exit 1
 fi

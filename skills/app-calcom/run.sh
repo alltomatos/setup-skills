@@ -21,9 +21,15 @@ else
     POSTGRES_PASS=$POSTGRES_PASSWORD
 fi
 
-# Geração de segredos (ADR-002)
-NEXTAUTH_SECRET=$(openssl rand -hex 16)
-CALENDSO_ENCRYPTION_KEY=$(openssl rand -hex 16)
+# Persistência de Segredos (ADR-001)
+if service_exists "app-calcom"; then
+    NEXTAUTH_SECRET=$(read_data "app-calcom" | grep "NEXTAUTH_SECRET:" | awk '{print $2}')
+    CALENDSO_ENCRYPTION_KEY=$(read_data "app-calcom" | grep "CALENDSO_ENCRYPTION_KEY:" | awk '{print $2}')
+fi
+
+# Geração de segredos se não existirem (ADR-002 fallback)
+NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-$(openssl rand -hex 16)}
+CALENDSO_ENCRYPTION_KEY=${CALENDSO_ENCRYPTION_KEY:-$(openssl rand -hex 16)}
 
 echo -e "${amarelo}Instalando Cal.com em $DOMAIN_CALCOM...${reset}"
 
@@ -80,7 +86,7 @@ deploy_via_portainer "$STACK_NAME" "calcom${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-calcom" "# Cal.com\n\n- Status: Instalado\n- URL: https://$DOMAIN_CALCOM"
+    save_data "app-calcom" "# Cal.com\n\n- Status: Instalado\n- URL: https://$DOMAIN_CALCOM\n- NEXTAUTH_SECRET: $NEXTAUTH_SECRET\n- CALENDSO_ENCRYPTION_KEY: $CALENDSO_ENCRYPTION_KEY"
 else
     exit 1
 fi

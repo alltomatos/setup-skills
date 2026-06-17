@@ -1,5 +1,6 @@
 {
   "name": "app-calcom",
+  "version": "1.0.0",
   "description": "Instala o Cal.com (agendamento open-source) como uma stack Docker Swarm.",
   "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
   "required_inputs": [

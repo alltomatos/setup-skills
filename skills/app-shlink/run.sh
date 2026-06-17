@@ -23,8 +23,13 @@ fi
 
 echo -e "${amarelo}Instalando Shlink em $DOMAIN_SHLINK_API...${reset}"
 
-# Geração de chave de API (ADR-002)
-SHLINK_API_KEY=$(openssl rand -hex 16)
+# Persistência de Segredos (ADR-001)
+if service_exists "app-shlink"; then
+    SHLINK_API_KEY=$(read_data "app-shlink" | grep "SHLINK_API_KEY:" | awk '{print $2}')
+fi
+
+# Geração de chave de API se não existir (ADR-002 fallback)
+SHLINK_API_KEY=${SHLINK_API_KEY:-$(openssl rand -hex 16)}
 
 # Gerar Hash para Basic Auth no Traefik (ADR-002)
 # Requer apache2-utils instalado ou usar python
@@ -116,7 +121,7 @@ deploy_via_portainer "$STACK_NAME" "shlink${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-shlink" "# Shlink\n\n- Status: Instalado\n- Painel UI: https://$DOMAIN_SHLINK_UI\n- API/URLs: https://$DOMAIN_SHLINK_API\n- API Key Interna: $SHLINK_API_KEY"
+    save_data "app-shlink" "# Shlink\n\n- Status: Instalado\n- Painel UI: https://$DOMAIN_SHLINK_UI\n- API/URLs: https://$DOMAIN_SHLINK_API\n- SHLINK_API_KEY: $SHLINK_API_KEY"
 else
     exit 1
 fi

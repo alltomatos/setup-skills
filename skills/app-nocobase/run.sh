@@ -14,9 +14,9 @@ reset="\e[0m"
 STACK_NAME="nocobase"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Geração de chaves (ADR-002: runtime, nunca hardcoded)
-APP_KEY=$(openssl rand -hex 16)
-ENCRYPTION_KEY=$(openssl rand -hex 16)
+# Ler ou gerar segredos (idempotência)
+APP_KEY=$(read_data "app-nocobase" | grep -oP '(?<=- APP_KEY: ).*' || openssl rand -hex 16)
+ENCRYPTION_KEY=$(read_data "app-nocobase" | grep -oP '(?<=- ENCRYPTION_KEY: ).*' || openssl rand -hex 16)
 
 # Resolver banco — usa infra-postgres se já existir, caso contrário falha
 # O orquestrador (devops) garante que depends_on está satisfeito antes de chamar
@@ -88,7 +88,7 @@ deploy_via_portainer "$STACK_NAME" "nocobase${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-nocobase" "# NocoBase\n\n- Status: Instalado\n- URL: https://$DOMAIN_NOCOBASE\n- Admin: $NOCOBASE_EMAIL"
+    save_data "app-nocobase" "# NocoBase\n\n- Status: Instalado\n- URL: https://$DOMAIN_NOCOBASE\n- Admin: $NOCOBASE_EMAIL\n- APP_KEY: $APP_KEY\n- ENCRYPTION_KEY: $ENCRYPTION_KEY"
 else
     exit 1
 fi

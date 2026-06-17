@@ -1,5 +1,6 @@
 {
   "name": "app-monitor",
+  "version": "1.0.0",
   "description": "Stack de monitoramento Orion (Grafana, Prometheus, cAdvisor, NodeExporter).",
   "depends_on": ["infra-bootstrap", "app-traefik"],
   "required_inputs": [

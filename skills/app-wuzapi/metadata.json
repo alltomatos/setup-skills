@@ -1,7 +1,12 @@
 {
+  "version": "1.0.0",
   "name": "app-wuzapi",
   "description": "Instala o Wuzapi (Gateway WhatsApp leve) como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-postgres"
+  ],
   "required_inputs": [
     {
       "name": "DOMAIN_WUZAPI",

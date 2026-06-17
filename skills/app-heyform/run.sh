@@ -25,9 +25,18 @@ fi
 
 echo -e "${amarelo}Instalando HeyForm em $DOMAIN_HEYFORM...${reset}"
 
-# Geração de chaves (ADR-002)
-SESSION_KEY=$(openssl rand -hex 16)
-FORM_ENCRYPTION_KEY=$(openssl rand -hex 16)
+# Geração ou recuperação de chaves (ADR-001/002)
+SESSION_KEY=""
+FORM_ENCRYPTION_KEY=""
+
+if service_exists "app-heyform"; then
+    DATA=$(read_data "app-heyform")
+    SESSION_KEY=$(echo "$DATA" | grep "\- Session Key:" | cut -d ':' -f 2 | xargs)
+    FORM_ENCRYPTION_KEY=$(echo "$DATA" | grep "\- Form Encryption Key:" | cut -d ':' -f 2 | xargs)
+fi
+
+[ -z "$SESSION_KEY" ] && SESSION_KEY=$(openssl rand -hex 16)
+[ -z "$FORM_ENCRYPTION_KEY" ] && FORM_ENCRYPTION_KEY=$(openssl rand -hex 16)
 
 docker volume create heyform_uploads > /dev/null 2>&1
 docker volume create heyform_redis > /dev/null 2>&1
@@ -108,7 +117,7 @@ deploy_via_portainer "$STACK_NAME" "heyform${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
-    save_data "app-heyform" "# HeyForm\n\n- Status: Instalado\n- URL: https://$DOMAIN_HEYFORM\n- Nota: Crie sua conta de administrador no primeiro acesso."
+    save_data "app-heyform" "# HeyForm\n\n- Status: Instalado\n- URL: https://$DOMAIN_HEYFORM\n- Session Key: $SESSION_KEY\n- Form Encryption Key: $FORM_ENCRYPTION_KEY\n- Nota: Crie sua conta de administrador no primeiro acesso."
 else
     exit 1
 fi

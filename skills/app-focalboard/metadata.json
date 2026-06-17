@@ -1,0 +1,6 @@
+{
+  "name": "app-focalboard",
+  "version": "1.0.0",
+  "description": "Open source project management platform (alternative to Trello/Notion)",
+  "persistence_path": "/root/dados_vps/focalboard.md"
+}

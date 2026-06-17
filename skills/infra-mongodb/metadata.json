@@ -1,7 +1,11 @@
 {
+  "version": "1.0.0",
   "name": "infra-mongodb",
   "description": "Instala o MongoDB 6.0 como uma stack Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik"
+  ],
   "required_inputs": [
     {
       "name": "MONGO_INITDB_ROOT_PASSWORD",

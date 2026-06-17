@@ -14,8 +14,10 @@ reset="\e[0m"
 STACK_NAME="zep"
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 
-# Zep API Key gerada automaticamente se não existisse (Orion pattern)
-ZEP_AUTH_SECRET=$(openssl rand -hex 16)
+# Recuperar ou gerar Zep API Key (idempotência)
+if [ -z "$ZEP_AUTH_SECRET" ]; then
+    ZEP_AUTH_SECRET=$(read_data "app-zep" | grep -oP '(?<=- API Key: ).*' || openssl rand -hex 16)
+fi
 
 # Basic Auth para Traefik (painel admin)
 HASHED_PASS=$(htpasswd -nb "$ZEP_USER" "$ZEP_PASS" | sed -e 's/\$/\$\$/g')

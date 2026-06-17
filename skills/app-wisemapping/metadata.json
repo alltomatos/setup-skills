@@ -1,9 +1,18 @@
 {
   "name": "app-wisemapping",
   "description": "Instala o WiseMapping (mind mapping open-source) como Docker Swarm.",
-  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
-  "required_inputs": [
-    { "name": "DOMAIN_WISEMAPPING", "description": "Domínio para o WiseMapping (ex: mind.oriondesign.art.br)", "type": "text" }
+  "depends_on": [
+    "infra-bootstrap",
+    "app-traefik",
+    "infra-postgres"
   ],
-  "persistence_path": "/root/dados_vps/app-wisemapping.md"
+  "required_inputs": [
+    {
+      "name": "DOMAIN_WISEMAPPING",
+      "description": "Dom\u00ednio para o WiseMapping (ex: mind.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-wisemapping.md",
+  "version": "1.0.0"
 }
