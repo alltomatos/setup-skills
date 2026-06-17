@@ -1,0 +1,23 @@
+{
+  "name": "app-ntfy",
+  "description": "Instala o ntfy (notificações push baseadas em HTTP) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_NTFY",
+      "description": "Domínio para o ntfy (ex: ntfy.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "NTFY_USER",
+      "description": "Usuário administrador",
+      "type": "text"
+    },
+    {
+      "name": "NTFY_PASSWORD",
+      "description": "Senha para o administrador",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-ntfy.md"
+}

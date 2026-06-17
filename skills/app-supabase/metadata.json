@@ -1,0 +1,23 @@
+{
+  "name": "app-supabase",
+  "description": "Instala o Supabase (BaaS open-source) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_SUPABASE",
+      "description": "Domínio para o Supabase (ex: supabase.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "SUPABASE_USER",
+      "description": "Usuário para o Dashboard",
+      "type": "text"
+    },
+    {
+      "name": "SUPABASE_PASSWORD",
+      "description": "Senha para o Dashboard",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-supabase.md"
+}

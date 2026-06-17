@@ -1,0 +1,38 @@
+{
+  "name": "app-calcom",
+  "description": "Instala o Cal.com (agendamento open-source) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_CALCOM",
+      "description": "Domínio para o Cal.com (ex: cal.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_EMAIL",
+      "description": "Email para envio de notificações",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_USER",
+      "description": "Usuário do servidor SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PASSWORD",
+      "description": "Senha do servidor SMTP",
+      "type": "password"
+    },
+    {
+      "name": "SMTP_HOST",
+      "description": "Host do servidor SMTP (ex: smtp.gmail.com)",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PORT",
+      "description": "Porta do servidor SMTP (ex: 465 ou 587)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-calcom.md"
+}

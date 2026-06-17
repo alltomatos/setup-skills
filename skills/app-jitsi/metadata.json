@@ -1,0 +1,12 @@
+{
+  "name": "app-jitsi",
+  "description": "Instala o Jitsi Meet (videoconferência open-source) como Docker Swarm com 4 serviços.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    { "name": "DOMAIN_JITSI", "description": "Domínio para o Jitsi (ex: jitsi.oriondesign.art.br)", "type": "text" },
+    { "name": "JITSI_PUBLIC_IP", "description": "IP público da VPS", "type": "text" },
+    { "name": "JITSI_USER", "description": "Usuário admin do Jitsi", "type": "text" },
+    { "name": "JITSI_PASS", "description": "Senha do admin Jitsi", "type": "password" }
+  ],
+  "persistence_path": "/root/dados_vps/app-jitsi.md"
+}

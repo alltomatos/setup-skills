@@ -1,0 +1,28 @@
+{
+  "name": "app-shlink",
+  "description": "Instala o Shlink (encurtador de URL self-hosted) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_SHLINK_UI",
+      "description": "Domínio para o Painel Web do Shlink (ex: painel.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "DOMAIN_SHLINK_API",
+      "description": "Domínio para a API/Encurtador do Shlink (ex: s.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "SHLINK_USER",
+      "description": "Usuário para acesso ao painel",
+      "type": "text"
+    },
+    {
+      "name": "SHLINK_PASSWORD",
+      "description": "Senha para acesso ao painel",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-shlink.md"
+}

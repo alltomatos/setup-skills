@@ -1,0 +1,16 @@
+{
+  "name": "app-outline",
+  "description": "Instala o Outline (wiki/knowledge base colaborativa) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "infra-redis"],
+  "required_inputs": [
+    { "name": "DOMAIN_OUTLINE", "description": "Domínio para o Outline (ex: wiki.oriondesign.art.br)", "type": "text" },
+    { "name": "OUTLINE_GOOGLE_CLIENT_ID", "description": "OAuth Client ID Google (Google Cloud Console)", "type": "text" },
+    { "name": "OUTLINE_GOOGLE_CLIENT_SECRET", "description": "OAuth Client Secret Google", "type": "password" },
+    { "name": "SMTP_FROM_EMAIL", "description": "Email remetente SMTP", "type": "text" },
+    { "name": "SMTP_USER", "description": "Usuário SMTP", "type": "text" },
+    { "name": "SMTP_PASS", "description": "Senha SMTP", "type": "password" },
+    { "name": "SMTP_HOST", "description": "Host SMTP (ex: smtp.hostinger.com)", "type": "text" },
+    { "name": "SMTP_PORT", "description": "Porta SMTP (465 ou 587)", "type": "text" }
+  ],
+  "persistence_path": "/root/dados_vps/app-outline.md"
+}

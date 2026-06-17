@@ -1,0 +1,11 @@
+{
+  "name": "app-gotenberg",
+  "description": "Instala o Gotenberg (API REST para conversão de documentos em PDF) como Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    { "name": "DOMAIN_GOTENBERG", "description": "Domínio (ex: pdf.oriondesign.art.br)", "type": "text" },
+    { "name": "GOTENBERG_USER", "description": "Usuário para basic auth da API", "type": "text" },
+    { "name": "GOTENBERG_PASS", "description": "Senha para basic auth da API", "type": "password" }
+  ],
+  "persistence_path": "/root/dados_vps/app-gotenberg.md"
+}

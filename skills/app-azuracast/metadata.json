@@ -1,0 +1,13 @@
+{
+  "name": "app-azuracast",
+  "description": "Instala o AzuraCast (plataforma completa de gerenciamento de rádio web) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_AZURACAST",
+      "description": "Domínio para o AzuraCast (ex: radio.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-azuracast.md"
+}

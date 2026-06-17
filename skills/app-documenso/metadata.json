@@ -1,0 +1,14 @@
+{
+  "name": "app-documenso",
+  "description": "Instala o Documenso (assinatura digital open-source) como Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "app-minio"],
+  "required_inputs": [
+    { "name": "DOMAIN_DOCUMENSO", "description": "Domínio (ex: sign.oriondesign.art.br)", "type": "text" },
+    { "name": "SMTP_FROM_EMAIL", "description": "Email remetente SMTP", "type": "text" },
+    { "name": "SMTP_USER", "description": "Usuário SMTP", "type": "text" },
+    { "name": "SMTP_PASS", "description": "Senha SMTP", "type": "password" },
+    { "name": "SMTP_HOST", "description": "Host SMTP", "type": "text" },
+    { "name": "SMTP_PORT", "description": "Porta SMTP", "type": "text" }
+  ],
+  "persistence_path": "/root/dados_vps/app-documenso.md"
+}

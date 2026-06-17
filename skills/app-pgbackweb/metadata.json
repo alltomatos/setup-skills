@@ -1,0 +1,13 @@
+{
+  "name": "app-pgbackweb",
+  "description": "Instala o PgBackWeb (gerenciador de backups PostgreSQL via interface web) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_PGBACKWEB",
+      "description": "Domínio para o PgBackWeb (ex: backup.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-pgbackweb.md"
+}

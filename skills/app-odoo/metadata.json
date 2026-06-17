@@ -1,0 +1,18 @@
+{
+  "name": "app-odoo",
+  "description": "Instala o Odoo (ERP completo open-source) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_ODOO",
+      "description": "Domínio para o Odoo (ex: odoo.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "ODOO_VERSION",
+      "description": "Versão do Odoo (ex: 17.0, 18.0, 19.0)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-odoo.md"
+}

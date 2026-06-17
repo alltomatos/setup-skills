@@ -1,0 +1,18 @@
+{
+  "name": "app-wordpress",
+  "description": "Instala o WordPress (CMS/Blog) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-mysql"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_WORDPRESS",
+      "description": "Domínio para o WordPress (ex: blog.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "WORDPRESS_SITE_NAME",
+      "description": "Nome identificador do site (ex: meu_blog - apenas letras e sublinhado)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-wordpress.md"
+}

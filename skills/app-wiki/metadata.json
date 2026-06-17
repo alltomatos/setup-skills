@@ -1,0 +1,9 @@
+{
+  "name": "app-wiki",
+  "description": "Instala o Wiki.js (wiki moderna open-source) como Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    { "name": "DOMAIN_WIKI", "description": "Domínio para o Wiki.js (ex: wiki.oriondesign.art.br)", "type": "text" }
+  ],
+  "persistence_path": "/root/dados_vps/app-wiki.md"
+}

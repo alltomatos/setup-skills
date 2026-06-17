@@ -1,0 +1,11 @@
+{
+  "name": "app-authentik",
+  "description": "Instala o Authentik (SSO/identity provider moderno) como Docker Swarm com 2 serviços.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "infra-redis"],
+  "required_inputs": [
+    { "name": "DOMAIN_AUTHENTIK", "description": "Domínio (ex: sso.oriondesign.art.br)", "type": "text" },
+    { "name": "AUTHENTIK_EMAIL", "description": "Email do admin inicial", "type": "text" },
+    { "name": "AUTHENTIK_PASS", "description": "Senha do admin inicial", "type": "password" }
+  ],
+  "persistence_path": "/root/dados_vps/app-authentik.md"
+}

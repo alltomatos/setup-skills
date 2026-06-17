@@ -1,0 +1,23 @@
+{
+  "name": "app-yourls",
+  "description": "Instala o YOURLS (Your Own URL Shortener) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-mysql"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_YOURLS",
+      "description": "Domínio para o YOURLS (ex: seu.link)",
+      "type": "text"
+    },
+    {
+      "name": "YOURLS_USER",
+      "description": "Usuário para acesso ao painel",
+      "type": "text"
+    },
+    {
+      "name": "YOURLS_PASSWORD",
+      "description": "Senha para acesso ao painel",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-yourls.md"
+}

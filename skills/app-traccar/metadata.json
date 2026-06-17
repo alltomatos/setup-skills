@@ -1,0 +1,13 @@
+{
+  "name": "app-traccar",
+  "description": "Instala o Traccar (plataforma de rastreamento GPS open-source) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_TRACCAR",
+      "description": "Domínio para o Traccar (ex: gps.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-traccar.md"
+}

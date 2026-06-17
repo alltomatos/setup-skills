@@ -1,0 +1,48 @@
+{
+  "name": "app-lowcoder",
+  "description": "Instala o Lowcoder (plataforma low-code para construir apps) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-mongodb", "infra-redis"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_LOWCODER",
+      "description": "Domínio para o Lowcoder (ex: lowcoder.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "ADMIN_EMAIL",
+      "description": "Email do superadmin",
+      "type": "text"
+    },
+    {
+      "name": "ADMIN_PASSWORD",
+      "description": "Senha do superadmin",
+      "type": "password"
+    },
+    {
+      "name": "SMTP_FROM_EMAIL",
+      "description": "Email remetente SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_HOST",
+      "description": "Host SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PORT",
+      "description": "Porta SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_USER",
+      "description": "Usuário SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PASS",
+      "description": "Senha SMTP",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-lowcoder.md"
+}

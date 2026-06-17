@@ -1,0 +1,28 @@
+{
+  "name": "app-nocobase",
+  "description": "Instala o NocoBase (no-code BaaS open-source) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_NOCOBASE",
+      "description": "Domínio para o NocoBase (ex: nocobase.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "NOCOBASE_EMAIL",
+      "description": "Email do administrador inicial",
+      "type": "text"
+    },
+    {
+      "name": "NOCOBASE_USERNAME",
+      "description": "Nome de usuário para o admin",
+      "type": "text"
+    },
+    {
+      "name": "NOCOBASE_PASSWORD",
+      "description": "Senha do administrador inicial",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-nocobase.md"
+}

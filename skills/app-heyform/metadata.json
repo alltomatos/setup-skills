@@ -1,0 +1,13 @@
+{
+  "name": "app-heyform",
+  "description": "Instala o HeyForm (criador de formulários open-source interativo) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-mongodb"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_HEYFORM",
+      "description": "Domínio para o HeyForm (ex: forms.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-heyform.md"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "app-activepieces",
+  "description": "Instala o ActivePieces (automação no-code alternativa ao Zapier/Make) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_ACTIVEPIECES",
+      "description": "Domínio para o ActivePieces (ex: automacao.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-activepieces.md"
+}

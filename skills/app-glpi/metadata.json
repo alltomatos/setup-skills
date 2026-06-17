@@ -1,0 +1,13 @@
+{
+  "name": "app-glpi",
+  "description": "Instala o GLPI (gestão de ativos e helpdesk) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-mysql"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_GLPI",
+      "description": "Domínio para o GLPI (ex: glpi.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-glpi.md"
+}

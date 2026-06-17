@@ -1,0 +1,23 @@
+{
+  "name": "app-pgadmin",
+  "description": "Instala o pgAdmin 4 (interface web para PostgreSQL) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_PGADMIN",
+      "description": "Domínio para o pgAdmin (ex: pgadmin.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "PGADMIN_USER",
+      "description": "Email para login",
+      "type": "text"
+    },
+    {
+      "name": "PGADMIN_PASSWORD",
+      "description": "Senha para login",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-pgadmin.md"
+}

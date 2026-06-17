@@ -1,0 +1,13 @@
+{
+  "name": "app-openproject",
+  "description": "Instala o OpenProject (gestão de projetos clássica e ágil) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_OPENPROJECT",
+      "description": "Domínio para o OpenProject (ex: projetos.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-openproject.md"
+}

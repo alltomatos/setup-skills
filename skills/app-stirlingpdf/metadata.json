@@ -1,0 +1,10 @@
+{
+  "name": "app-stirlingpdf",
+  "description": "Instala o Stirling PDF (manipulação de PDF open-source) como Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    { "name": "DOMAIN_STIRLINGPDF", "description": "Domínio (ex: pdf.oriondesign.art.br)", "type": "text" },
+    { "name": "STIRLING_APP_NAME", "description": "Nome exibido no app (ex: OrionPDF)", "type": "text" }
+  ],
+  "persistence_path": "/root/dados_vps/app-stirlingpdf.md"
+}

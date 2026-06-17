@@ -1,0 +1,38 @@
+{
+  "name": "app-tooljet",
+  "description": "Instala o ToolJet (low-code internal tools platform) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "infra-redis"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_TOOLJET",
+      "description": "Domínio para o ToolJet (ex: tooljet.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_FROM_EMAIL",
+      "description": "Email remetente para SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_HOST",
+      "description": "Host SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PORT",
+      "description": "Porta SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_USER",
+      "description": "Usuário SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PASS",
+      "description": "Senha SMTP",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-tooljet.md"
+}

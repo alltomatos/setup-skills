@@ -1,0 +1,38 @@
+{
+  "name": "app-baserow",
+  "description": "Instala o Baserow (banco de dados no-code open-source) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_BASEROW",
+      "description": "Domínio para o Baserow (ex: baserow.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_FROM_EMAIL",
+      "description": "Email remetente para envio de emails",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_HOST",
+      "description": "Host do servidor SMTP (ex: smtp.hostinger.com)",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PORT",
+      "description": "Porta SMTP (465 ou 587)",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_USER",
+      "description": "Usuário ou email para autenticação SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PASS",
+      "description": "Senha SMTP",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-baserow.md"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "app-mattermost",
+  "description": "Instala o Mattermost (alternativa open-source ao Slack) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_MATTERMOST",
+      "description": "Domínio para o Mattermost (ex: chat.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-mattermost.md"
+}

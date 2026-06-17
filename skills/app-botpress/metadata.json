@@ -1,0 +1,13 @@
+{
+  "name": "app-botpress",
+  "description": "Instala o Botpress (plataforma de chatbots) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres", "infra-redis"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_BOTPRESS",
+      "description": "Domínio para o Botpress (ex: botpress.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-botpress.md"
+}

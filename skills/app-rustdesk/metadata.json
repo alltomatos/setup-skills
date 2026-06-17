@@ -1,0 +1,18 @@
+{
+  "name": "app-rustdesk",
+  "description": "Instala o RustDesk Server (servidor de acesso remoto self-hosted) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_HBBS",
+      "description": "Domínio para o Servidor de ID (HBBS) (ex: hbbs.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "DOMAIN_HBBR",
+      "description": "Domínio para o Servidor de Relay (HBBR) (ex: hbbr.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-rustdesk.md"
+}

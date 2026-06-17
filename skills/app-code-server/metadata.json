@@ -1,0 +1,23 @@
+{
+  "name": "app-code-server",
+  "description": "Instala o VS Code no browser (code-server) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_CODE_SERVER",
+      "description": "Domínio para o Code-Server (ex: code.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "CODE_SERVER_PASSWORD",
+      "description": "Senha de acesso ao VS Code",
+      "type": "password"
+    },
+    {
+      "name": "CODE_SERVER_SUDO_PASSWORD",
+      "description": "Senha de sudo dentro do container",
+      "type": "password"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-code-server.md"
+}

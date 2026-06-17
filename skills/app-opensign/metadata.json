@@ -1,0 +1,9 @@
+{
+  "name": "app-opensign",
+  "description": "Instala o OpenSign (assinatura digital open-source) como Docker Swarm com 2 serviços.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-mongodb"],
+  "required_inputs": [
+    { "name": "DOMAIN_OPENSIGN", "description": "Domínio (ex: opensign.oriondesign.art.br)", "type": "text" }
+  ],
+  "persistence_path": "/root/dados_vps/app-opensign.md"
+}

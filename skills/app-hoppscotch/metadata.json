@@ -1,0 +1,16 @@
+{
+  "name": "app-hoppscotch",
+  "description": "Instala o Hoppscotch (cliente API open-source) como Docker Swarm com frontend+admin+backend.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    { "name": "DOMAIN_HOPPSCOTCH", "description": "Domínio frontend (ex: api.oriondesign.art.br)", "type": "text" },
+    { "name": "DOMAIN_HOPPSCOTCH_ADMIN", "description": "Domínio admin (ex: admin-api.oriondesign.art.br)", "type": "text" },
+    { "name": "DOMAIN_HOPPSCOTCH_BACKEND", "description": "Domínio backend (ex: backend-api.oriondesign.art.br)", "type": "text" },
+    { "name": "SMTP_FROM_EMAIL", "description": "Email remetente SMTP", "type": "text" },
+    { "name": "SMTP_USER", "description": "Usuário SMTP", "type": "text" },
+    { "name": "SMTP_PASS", "description": "Senha SMTP", "type": "password" },
+    { "name": "SMTP_HOST", "description": "Host SMTP", "type": "text" },
+    { "name": "SMTP_PORT", "description": "Porta SMTP", "type": "text" }
+  ],
+  "persistence_path": "/root/dados_vps/app-hoppscotch.md"
+}

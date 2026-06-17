@@ -1,0 +1,17 @@
+{
+  "name": "app-humhub",
+  "description": "Instala o HumHub (rede social/coworking open-source) como Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-mysql"],
+  "required_inputs": [
+    { "name": "DOMAIN_HUMHUB", "description": "Domínio para o HumHub (ex: humhub.oriondesign.art.br)", "type": "text" },
+    { "name": "HUMHUB_ADMIN_USER", "description": "Nome de usuário do admin", "type": "text" },
+    { "name": "HUMHUB_ADMIN_EMAIL", "description": "Email do admin", "type": "text" },
+    { "name": "HUMHUB_ADMIN_PASS", "description": "Senha do admin", "type": "password" },
+    { "name": "SMTP_FROM_EMAIL", "description": "Email remetente", "type": "text" },
+    { "name": "SMTP_USER", "description": "Usuário SMTP", "type": "text" },
+    { "name": "SMTP_PASS", "description": "Senha SMTP", "type": "password" },
+    { "name": "SMTP_HOST", "description": "Host SMTP", "type": "text" },
+    { "name": "SMTP_PORT", "description": "Porta SMTP", "type": "text" }
+  ],
+  "persistence_path": "/root/dados_vps/app-humhub.md"
+}

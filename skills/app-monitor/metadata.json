@@ -1,0 +1,28 @@
+{
+  "name": "app-monitor",
+  "description": "Stack de monitoramento Orion (Grafana, Prometheus, cAdvisor, NodeExporter).",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_GRAFANA",
+      "description": "Domínio para o Grafana",
+      "type": "text"
+    },
+    {
+      "name": "DOMAIN_PROMETHEUS",
+      "description": "Domínio para o Prometheus",
+      "type": "text"
+    },
+    {
+      "name": "DOMAIN_CADVISOR",
+      "description": "Domínio para o cAdvisor",
+      "type": "text"
+    },
+    {
+      "name": "DOMAIN_NODEEXPORTER",
+      "description": "Domínio para o NodeExporter",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-monitor.md"
+}

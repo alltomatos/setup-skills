@@ -1,0 +1,13 @@
+{
+  "name": "app-appsmith",
+  "description": "Instala o Appsmith (low-code platform para construir aplicações) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_APPSMITH",
+      "description": "Domínio para o Appsmith (ex: appsmith.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-appsmith.md"
+}

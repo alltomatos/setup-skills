@@ -1,0 +1,13 @@
+{
+  "name": "app-netbox",
+  "description": "Instala o NetBox (inventário de rede e IPAM) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_NETBOX",
+      "description": "Domínio para o NetBox (ex: netbox.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-netbox.md"
+}

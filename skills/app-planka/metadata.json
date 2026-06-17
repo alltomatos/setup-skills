@@ -1,0 +1,58 @@
+{
+  "name": "app-planka",
+  "description": "Instala o Planka (quadro Kanban elegante e open-source) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_PLANKA",
+      "description": "Domínio para o Planka (ex: kanban.oriondesign.art.br)",
+      "type": "text"
+    },
+    {
+      "name": "PLANKA_ADMIN_NAME",
+      "description": "Nome do administrador",
+      "type": "text"
+    },
+    {
+      "name": "PLANKA_ADMIN_EMAIL",
+      "description": "Email do administrador",
+      "type": "text"
+    },
+    {
+      "name": "PLANKA_ADMIN_USER",
+      "description": "Usuário do administrador",
+      "type": "text"
+    },
+    {
+      "name": "PLANKA_ADMIN_PASSWORD",
+      "description": "Senha do administrador",
+      "type": "password"
+    },
+    {
+      "name": "SMTP_EMAIL",
+      "description": "Email para envio de notificações",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_USER",
+      "description": "Usuário SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PASSWORD",
+      "description": "Senha SMTP",
+      "type": "password"
+    },
+    {
+      "name": "SMTP_HOST",
+      "description": "Host SMTP",
+      "type": "text"
+    },
+    {
+      "name": "SMTP_PORT",
+      "description": "Porta SMTP (ex: 465 ou 587)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-planka.md"
+}

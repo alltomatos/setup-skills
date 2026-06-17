@@ -1,0 +1,18 @@
+{
+  "name": "app-checkmate",
+  "description": "Instala o Checkmate (monitoramento alternativo) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-mongodb"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_CHECKMATE",
+      "description": "Domínio para o Frontend do Checkmate",
+      "type": "text"
+    },
+    {
+      "name": "DOMAIN_CHECKMATE_API",
+      "description": "Domínio para a API do Checkmate",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-checkmate.md"
+}

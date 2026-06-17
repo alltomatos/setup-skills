@@ -1,0 +1,13 @@
+{
+  "name": "app-nocodb",
+  "description": "Instala o NocoDB (Airtable open-source) como uma stack Docker Swarm.",
+  "depends_on": ["infra-bootstrap", "app-traefik", "infra-postgres"],
+  "required_inputs": [
+    {
+      "name": "DOMAIN_NOCODB",
+      "description": "Domínio para o NocoDB (ex: nocodb.oriondesign.art.br)",
+      "type": "text"
+    }
+  ],
+  "persistence_path": "/root/dados_vps/app-nocodb.md"
+}
