@@ -38,7 +38,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.zerobyte.rule=Host(\`$DOMAIN_ZEROBYTE\`)
         - traefik.http.routers.zerobyte.entrypoints=websecure
-        - traefik.http.routers.zerobyte.tls.certresolver=letsencrypt
+        - traefik.http.routers.zerobyte.tls.certresolver=letsencryptresolver
         - traefik.http.services.zerobyte.loadbalancer.server.port=4096
         - traefik.http.routers.zerobyte.service=zerobyte
       resources:

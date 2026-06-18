@@ -52,7 +52,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.quepasa.rule=Host(\`$DOMAIN_QUEPASA\`)"
         - "traefik.http.routers.quepasa.entrypoints=websecure"
-        - "traefik.http.routers.quepasa.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.quepasa.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.quepasa.loadbalancer.server.port=31000"
       resources:
         limits:

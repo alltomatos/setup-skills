@@ -61,7 +61,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.wordpress_$WORDPRESS_SITE_NAME.rule=Host(\`$DOMAIN_WORDPRESS\`)
         - traefik.http.routers.wordpress_$WORDPRESS_SITE_NAME.entrypoints=websecure
-        - traefik.http.routers.wordpress_$WORDPRESS_SITE_NAME.tls.certresolver=letsencrypt
+        - traefik.http.routers.wordpress_$WORDPRESS_SITE_NAME.tls.certresolver=letsencryptresolver
         - traefik.http.routers.wordpress_$WORDPRESS_SITE_NAME.service=wordpress_$WORDPRESS_SITE_NAME
         - traefik.http.services.wordpress_$WORDPRESS_SITE_NAME.loadbalancer.server.port=80
 

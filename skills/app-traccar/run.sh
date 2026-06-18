@@ -77,7 +77,7 @@ services:
         - traefik.http.services.traccar.loadbalancer.server.port=8082
         - traefik.http.routers.traccar.service=traccar
         - traefik.http.routers.traccar.entrypoints=websecure
-        - traefik.http.routers.traccar.tls.certresolver=letsencrypt
+        - traefik.http.routers.traccar.tls.certresolver=letsencryptresolver
         - traefik.http.routers.traccar.tls=true
 
   db:

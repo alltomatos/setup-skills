@@ -73,7 +73,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.lowcoder_api.rule=Host(`$DOMAIN_LOWCODER`) && PathPrefix(`/api`)
         - traefik.http.routers.lowcoder_api.entrypoints=websecure
-        - traefik.http.routers.lowcoder_api.tls.certresolver=letsencrypt
+        - traefik.http.routers.lowcoder_api.tls.certresolver=letsencryptresolver
         - traefik.http.services.lowcoder_api.loadbalancer.server.port=8080
       resources:
         limits:
@@ -108,7 +108,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.lowcoder_frontend.rule=Host(`$DOMAIN_LOWCODER`)
         - traefik.http.routers.lowcoder_frontend.entrypoints=websecure
-        - traefik.http.routers.lowcoder_frontend.tls.certresolver=letsencrypt
+        - traefik.http.routers.lowcoder_frontend.tls.certresolver=letsencryptresolver
         - traefik.http.services.lowcoder_frontend.loadbalancer.server.port=3000
       resources:
         limits:

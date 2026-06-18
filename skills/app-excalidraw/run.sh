@@ -22,7 +22,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.excalidraw.rule=Host(`$DOMAIN_EXCALIDRAW`)
         - traefik.http.routers.excalidraw.entrypoints=websecure
-        - traefik.http.routers.excalidraw.tls.certresolver=letsencrypt
+        - traefik.http.routers.excalidraw.tls.certresolver=letsencryptresolver
         - traefik.http.services.excalidraw.loadbalancer.server.port=80
       resources:
         limits:

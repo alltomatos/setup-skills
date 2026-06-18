@@ -38,7 +38,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.dify-web.rule=Host(\`$DOMAIN_DIFY\`)"
         - "traefik.http.routers.dify-web.entrypoints=websecure"
-        - "traefik.http.routers.dify-web.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.dify-web.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.dify-web.loadbalancer.server.port=3000"
 
   dify-api:

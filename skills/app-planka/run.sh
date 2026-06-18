@@ -86,7 +86,7 @@ services:
         - traefik.http.services.planka.loadbalancer.server.port=1337
         - traefik.http.routers.planka.service=planka
         - traefik.http.routers.planka.entrypoints=websecure
-        - traefik.http.routers.planka.tls.certresolver=letsencrypt
+        - traefik.http.routers.planka.tls.certresolver=letsencryptresolver
         - traefik.http.routers.planka.tls=true
 
   redis:

@@ -92,7 +92,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.prometheus.rule=Host(\`$DOMAIN_PROMETHEUS\`)
         - traefik.http.routers.prometheus.entrypoints=websecure
-        - traefik.http.routers.prometheus.tls.certresolver=letsencrypt
+        - traefik.http.routers.prometheus.tls.certresolver=letsencryptresolver
         - traefik.http.routers.prometheus.service=prometheus
         - traefik.http.services.prometheus.loadbalancer.server.port=9090
 
@@ -115,7 +115,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.grafana.rule=Host(\`$DOMAIN_GRAFANA\`)
         - traefik.http.routers.grafana.entrypoints=websecure
-        - traefik.http.routers.grafana.tls.certresolver=letsencrypt
+        - traefik.http.routers.grafana.tls.certresolver=letsencryptresolver
         - traefik.http.routers.grafana.service=grafana
         - traefik.http.services.grafana.loadbalancer.server.port=3000
 
@@ -133,7 +133,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.node-exporter.rule=Host(\`$DOMAIN_NODEEXPORTER\`)
         - traefik.http.routers.node-exporter.entrypoints=websecure
-        - traefik.http.routers.node-exporter.tls.certresolver=letsencrypt
+        - traefik.http.routers.node-exporter.tls.certresolver=letsencryptresolver
         - traefik.http.routers.node-exporter.service=node-exporter
         - traefik.http.services.node-exporter.loadbalancer.server.port=9100
 
@@ -157,7 +157,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.cadvisor.rule=Host(\`$DOMAIN_CADVISOR\`)
         - traefik.http.routers.cadvisor.entrypoints=websecure
-        - traefik.http.routers.cadvisor.tls.certresolver=letsencrypt
+        - traefik.http.routers.cadvisor.tls.certresolver=letsencryptresolver
         - traefik.http.routers.cadvisor.service=cadvisor
         - traefik.http.services.cadvisor.loadbalancer.server.port=8080
 

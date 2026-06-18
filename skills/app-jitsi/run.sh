@@ -71,7 +71,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.jitsi_web.rule=Host(`$DOMAIN_JITSI`)
         - traefik.http.routers.jitsi_web.entrypoints=websecure
-        - traefik.http.routers.jitsi_web.tls.certresolver=letsencrypt
+        - traefik.http.routers.jitsi_web.tls.certresolver=letsencryptresolver
         - traefik.http.services.jitsi_web.loadbalancer.server.port=80
       resources:
         limits:

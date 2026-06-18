@@ -90,7 +90,7 @@ services:
         - traefik.http.routers.azuracast.rule=Host(\`$DOMAIN_AZURACAST\`)
         - traefik.http.services.azuracast.loadbalancer.server.port=80
         - traefik.http.routers.azuracast.entrypoints=websecure
-        - traefik.http.routers.azuracast.tls.certresolver=letsencrypt
+        - traefik.http.routers.azuracast.tls.certresolver=letsencryptresolver
         - traefik.http.routers.azuracast.tls=true
 
   updater:

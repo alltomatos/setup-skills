@@ -43,7 +43,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.vaultwarden.rule=Host(`$DOMAIN_VAULTWARDEN`)
         - traefik.http.routers.vaultwarden.entrypoints=websecure
-        - traefik.http.routers.vaultwarden.tls.certresolver=letsencrypt
+        - traefik.http.routers.vaultwarden.tls.certresolver=letsencryptresolver
         - traefik.http.services.vaultwarden.loadbalancer.server.port=80
         - traefik.http.services.vaultwarden.loadbalancer.passHostHeader=true
       resources:

@@ -55,7 +55,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.woofed.rule=Host(\`$DOMAIN_WOOFED\`)"
         - "traefik.http.routers.woofed.entrypoints=websecure"
-        - "traefik.http.routers.woofed.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.woofed.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.woofed.loadbalancer.server.port=3000"
         - "traefik.http.middlewares.woofed-ssl.headers.customrequestheaders.X-Forwarded-Proto=https"
         - "traefik.http.routers.woofed.middlewares=woofed-ssl"

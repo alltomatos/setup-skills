@@ -39,7 +39,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.docuseal.rule=Host(`$DOMAIN_DOCUSEAL`)
         - traefik.http.routers.docuseal.entrypoints=websecure
-        - traefik.http.routers.docuseal.tls.certresolver=letsencrypt
+        - traefik.http.routers.docuseal.tls.certresolver=letsencryptresolver
         - traefik.http.services.docuseal.loadbalancer.server.port=3000
       resources:
         limits:

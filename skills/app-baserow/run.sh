@@ -60,7 +60,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.baserow.rule=Host(\`\$DOMAIN_BASEROW\`)
         - traefik.http.routers.baserow.entrypoints=websecure
-        - traefik.http.routers.baserow.tls.certresolver=letsencrypt
+        - traefik.http.routers.baserow.tls.certresolver=letsencryptresolver
         - traefik.http.services.baserow.loadbalancer.server.port=80
       resources:
         limits:

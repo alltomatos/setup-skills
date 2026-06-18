@@ -50,7 +50,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.mautic.rule=Host(\`$DOMAIN_MAUTIC\`)"
         - "traefik.http.routers.mautic.entrypoints=websecure"
-        - "traefik.http.routers.mautic.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.mautic.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.mautic.loadbalancer.server.port=80"
       resources:
         limits:

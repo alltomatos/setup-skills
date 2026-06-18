@@ -52,7 +52,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.yourls.rule=Host(\`$DOMAIN_YOURLS\`)
         - traefik.http.routers.yourls.entrypoints=websecure
-        - traefik.http.routers.yourls.tls.certresolver=letsencrypt
+        - traefik.http.routers.yourls.tls.certresolver=letsencryptresolver
         - traefik.http.routers.yourls.service=yourls
         - traefik.http.services.yourls.loadbalancer.server.port=80
         - traefik.http.routers.yourls.tls=true

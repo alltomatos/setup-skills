@@ -55,7 +55,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.nextcloud.rule=Host(`$DOMAIN_NEXTCLOUD`)
         - traefik.http.routers.nextcloud.entrypoints=web,websecure
-        - traefik.http.routers.nextcloud.tls.certresolver=letsencrypt
+        - traefik.http.routers.nextcloud.tls.certresolver=letsencryptresolver
         - traefik.http.services.nextcloud.loadbalancer.server.port=80
         - traefik.http.routers.nextcloud.middlewares=nextcloud_redirect
         - traefik.http.middlewares.nextcloud_redirect.redirectregex.regex=https://(.*)/.well-known/(?:card|cal)dav

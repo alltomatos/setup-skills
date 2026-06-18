@@ -56,7 +56,7 @@ services:
         - traefik.http.services.code-server.loadbalancer.server.port=8443
         - traefik.http.routers.code-server.service=code-server
         - traefik.http.routers.code-server.entrypoints=websecure
-        - traefik.http.routers.code-server.tls.certresolver=letsencrypt
+        - traefik.http.routers.code-server.tls.certresolver=letsencryptresolver
         - traefik.http.routers.code-server.tls=true
 
 volumes:

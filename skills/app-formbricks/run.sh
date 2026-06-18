@@ -109,7 +109,7 @@ services:
         - traefik.http.routers.formbricks.rule=Host(\`$DOMAIN_FORMBRICKS\`)
         - traefik.http.services.formbricks.loadbalancer.server.port=3000
         - traefik.http.routers.formbricks.service=formbricks
-        - traefik.http.routers.formbricks.tls.certresolver=letsencrypt
+        - traefik.http.routers.formbricks.tls.certresolver=letsencryptresolver
         - traefik.http.routers.formbricks.entrypoints=websecure
         - traefik.http.routers.formbricks.tls=true
 

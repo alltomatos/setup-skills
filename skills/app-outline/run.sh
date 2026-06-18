@@ -82,7 +82,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.outline.rule=Host(`$DOMAIN_OUTLINE`)
         - traefik.http.routers.outline.entrypoints=websecure
-        - traefik.http.routers.outline.tls.certresolver=letsencrypt
+        - traefik.http.routers.outline.tls.certresolver=letsencryptresolver
         - traefik.http.services.outline.loadbalancer.server.port=3000
       resources:
         limits:

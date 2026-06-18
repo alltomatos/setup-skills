@@ -71,7 +71,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.krayin.rule=Host(\`$DOMAIN_KRAYIN\`)"
         - "traefik.http.routers.krayin.entrypoints=websecure"
-        - "traefik.http.routers.krayin.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.krayin.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.krayin.loadbalancer.server.port=80"
       resources:
         limits:

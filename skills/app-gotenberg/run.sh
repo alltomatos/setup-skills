@@ -27,7 +27,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.gotenberg.rule=Host(`$DOMAIN_GOTENBERG`)
         - traefik.http.routers.gotenberg.entrypoints=websecure
-        - traefik.http.routers.gotenberg.tls.certresolver=letsencrypt
+        - traefik.http.routers.gotenberg.tls.certresolver=letsencryptresolver
         - traefik.http.services.gotenberg.loadbalancer.server.port=3000
       resources:
         limits:

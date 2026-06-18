@@ -35,7 +35,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.langflow.rule=Host(\`$DOMAIN_LANGFLOW\`)"
         - "traefik.http.routers.langflow.entrypoints=websecure"
-        - "traefik.http.routers.langflow.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.langflow.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.langflow.loadbalancer.server.port=7860"
       resources:
         limits:

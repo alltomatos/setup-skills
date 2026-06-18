@@ -55,7 +55,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.documenso.rule=Host(`$DOMAIN_DOCUMENSO`)
         - traefik.http.routers.documenso.entrypoints=websecure
-        - traefik.http.routers.documenso.tls.certresolver=letsencrypt
+        - traefik.http.routers.documenso.tls.certresolver=letsencryptresolver
         - traefik.http.services.documenso.loadbalancer.server.port=3000
       resources:
         limits:

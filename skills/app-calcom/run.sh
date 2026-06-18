@@ -73,7 +73,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.calcom.rule=Host(\`$DOMAIN_CALCOM\`)
         - traefik.http.routers.calcom.entrypoints=websecure
-        - traefik.http.routers.calcom.tls.certresolver=letsencrypt
+        - traefik.http.routers.calcom.tls.certresolver=letsencryptresolver
         - traefik.http.routers.calcom.service=calcom
         - traefik.http.services.calcom.loadbalancer.server.port=3000
 

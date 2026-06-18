@@ -38,7 +38,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.passbolt.rule=Host(`$DOMAIN_PASSBOLT`)
         - traefik.http.routers.passbolt.entrypoints=websecure
-        - traefik.http.routers.passbolt.tls.certresolver=letsencrypt
+        - traefik.http.routers.passbolt.tls.certresolver=letsencryptresolver
         - traefik.http.services.passbolt.loadbalancer.server.port=80
       resources:
         limits:

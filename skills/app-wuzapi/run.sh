@@ -54,7 +54,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.wuzapi.rule=Host(\`$DOMAIN_WUZAPI\`)"
         - "traefik.http.routers.wuzapi.entrypoints=websecure"
-        - "traefik.http.routers.wuzapi.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.wuzapi.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.wuzapi.loadbalancer.server.port=8080"
       resources:
         limits:

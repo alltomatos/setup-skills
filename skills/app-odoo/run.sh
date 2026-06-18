@@ -57,7 +57,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.odoo.rule=Host(\`$DOMAIN_ODOO\`)
         - traefik.http.routers.odoo.entrypoints=websecure
-        - traefik.http.routers.odoo.tls.certresolver=letsencrypt
+        - traefik.http.routers.odoo.tls.certresolver=letsencryptresolver
         - traefik.http.routers.odoo.service=odoo
         - traefik.http.services.odoo.loadbalancer.server.port=8069
         - traefik.http.routers.odoo.tls=true

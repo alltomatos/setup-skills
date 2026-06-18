@@ -54,7 +54,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.strapi.rule=Host(\`$DOMAIN_STRAPI\`)"
         - "traefik.http.routers.strapi.entrypoints=websecure"
-        - "traefik.http.routers.strapi.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.strapi.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.strapi.loadbalancer.server.port=1337"
       resources:
         limits:

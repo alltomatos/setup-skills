@@ -45,7 +45,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.duplicati.rule=Host(\`$DOMAIN_DUPLICATI\`)
         - traefik.http.routers.duplicati.entrypoints=websecure
-        - traefik.http.routers.duplicati.tls.certresolver=letsencrypt
+        - traefik.http.routers.duplicati.tls.certresolver=letsencryptresolver
         - traefik.http.services.duplicati.loadbalancer.server.port=8200
         - traefik.http.routers.duplicati.service=duplicati
       resources:

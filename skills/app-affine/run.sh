@@ -54,7 +54,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.affine.rule=Host(`$DOMAIN_AFFINE`)
         - traefik.http.routers.affine.entrypoints=websecure
-        - traefik.http.routers.affine.tls.certresolver=letsencrypt
+        - traefik.http.routers.affine.tls.certresolver=letsencryptresolver
         - traefik.http.services.affine.loadbalancer.server.port=3010
         - traefik.frontend.headers.STSPreload=true
         - traefik.frontend.headers.STSSeconds=31536000

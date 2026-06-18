@@ -46,7 +46,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.uptimekuma.rule=Host(\`$DOMAIN_UPTIMEKUMA\`)
         - traefik.http.routers.uptimekuma.entrypoints=websecure
-        - traefik.http.routers.uptimekuma.tls.certresolver=letsencrypt
+        - traefik.http.routers.uptimekuma.tls.certresolver=letsencryptresolver
         - traefik.http.services.uptimekuma.loadbalancer.server.port=3001
         - traefik.http.routers.uptimekuma.service=uptimekuma
         - traefik.http.routers.uptimekuma.tls=true

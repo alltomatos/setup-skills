@@ -37,7 +37,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.humhub.rule=Host(`$DOMAIN_HUMHUB`)
         - traefik.http.routers.humhub.entrypoints=websecure
-        - traefik.http.routers.humhub.tls.certresolver=letsencrypt
+        - traefik.http.routers.humhub.tls.certresolver=letsencryptresolver
         - traefik.http.services.humhub.loadbalancer.server.port=80
 volumes:
   humhub_data:

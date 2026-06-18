@@ -23,7 +23,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.wiki.rule=Host(`$DOMAIN_WIKI`)
         - traefik.http.routers.wiki.entrypoints=websecure
-        - traefik.http.routers.wiki.tls.certresolver=letsencrypt
+        - traefik.http.routers.wiki.tls.certresolver=letsencryptresolver
         - traefik.http.services.wiki.loadbalancer.server.port=3000
       resources:
         limits:

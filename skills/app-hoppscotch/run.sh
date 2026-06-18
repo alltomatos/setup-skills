@@ -39,7 +39,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.hoppscotch_frontend.rule=Host(`$DOMAIN_HOPPSCOTCH`)
         - traefik.http.routers.hoppscotch_frontend.entrypoints=websecure
-        - traefik.http.routers.hoppscotch_frontend.tls.certresolver=letsencrypt
+        - traefik.http.routers.hoppscotch_frontend.tls.certresolver=letsencryptresolver
         - traefik.http.services.hoppscotch_frontend.loadbalancer.server.port=3000
       resources:
         limits:
@@ -70,7 +70,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.hoppscotch_backend.rule=Host(`$DOMAIN_HOPPSCOTCH_BACKEND`)
         - traefik.http.routers.hoppscotch_backend.entrypoints=websecure
-        - traefik.http.routers.hoppscotch_backend.tls.certresolver=letsencrypt
+        - traefik.http.routers.hoppscotch_backend.tls.certresolver=letsencryptresolver
         - traefik.http.services.hoppscotch_backend.loadbalancer.server.port=3000
       resources:
         limits:

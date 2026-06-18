@@ -60,7 +60,7 @@ services:
         - traefik.http.services.pgbackweb.loadbalancer.server.port=8085
         - traefik.http.routers.pgbackweb.service=pgbackweb
         - traefik.http.routers.pgbackweb.entrypoints=websecure
-        - traefik.http.routers.pgbackweb.tls.certresolver=letsencrypt
+        - traefik.http.routers.pgbackweb.tls.certresolver=letsencryptresolver
         - traefik.http.routers.pgbackweb.tls=true
 
 volumes:

@@ -84,7 +84,7 @@ services:
         - traefik.http.routers.netbox.rule=Host(\`$DOMAIN_NETBOX\`)
         - traefik.http.services.netbox.loadbalancer.server.port=8080
         - traefik.http.routers.netbox.service=netbox
-        - traefik.http.routers.netbox.tls.certresolver=letsencrypt
+        - traefik.http.routers.netbox.tls.certresolver=letsencryptresolver
         - traefik.http.routers.netbox.entrypoints=websecure
         - traefik.http.routers.netbox.tls=true
 

@@ -42,7 +42,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.authentik.rule=Host(`$DOMAIN_AUTHENTIK`)
         - traefik.http.routers.authentik.entrypoints=websecure
-        - traefik.http.routers.authentik.tls.certresolver=letsencrypt
+        - traefik.http.routers.authentik.tls.certresolver=letsencryptresolver
         - traefik.http.services.authentik.loadbalancer.server.port=9000
       resources:
         limits:

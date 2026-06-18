@@ -46,7 +46,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.flowise.rule=Host(\`$DOMAIN_FLOWISE\`)"
         - "traefik.http.routers.flowise.entrypoints=websecure"
-        - "traefik.http.routers.flowise.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.flowise.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.flowise.loadbalancer.server.port=3000"
       resources:
         limits:

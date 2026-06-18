@@ -40,7 +40,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.appsmith.rule=Host(`$DOMAIN_APPSMITH`)
         - traefik.http.routers.appsmith.entrypoints=websecure
-        - traefik.http.routers.appsmith.tls.certresolver=letsencrypt
+        - traefik.http.routers.appsmith.tls.certresolver=letsencryptresolver
         - traefik.http.services.appsmith.loadbalancer.server.port=80
         - traefik.http.services.appsmith.loadbalancer.passHostHeader=true
       resources:

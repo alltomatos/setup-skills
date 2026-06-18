@@ -45,7 +45,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.opensign_server.rule=Host(`$DOMAIN_OPENSIGN`) && PathPrefix(`/app`)
         - traefik.http.routers.opensign_server.entrypoints=websecure
-        - traefik.http.routers.opensign_server.tls.certresolver=letsencrypt
+        - traefik.http.routers.opensign_server.tls.certresolver=letsencryptresolver
         - traefik.http.services.opensign_server.loadbalancer.server.port=8080
       resources:
         limits:
@@ -66,7 +66,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.opensign_client.rule=Host(`$DOMAIN_OPENSIGN`) && !PathPrefix(`/app`)
         - traefik.http.routers.opensign_client.entrypoints=websecure
-        - traefik.http.routers.opensign_client.tls.certresolver=letsencrypt
+        - traefik.http.routers.opensign_client.tls.certresolver=letsencryptresolver
         - traefik.http.services.opensign_client.loadbalancer.server.port=3000
       resources:
         limits:

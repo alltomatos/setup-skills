@@ -53,7 +53,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.stirlingpdf.rule=Host(`$DOMAIN_STIRLINGPDF`)
         - traefik.http.routers.stirlingpdf.entrypoints=websecure
-        - traefik.http.routers.stirlingpdf.tls.certresolver=letsencrypt
+        - traefik.http.routers.stirlingpdf.tls.certresolver=letsencryptresolver
         - traefik.http.services.stirlingpdf.loadbalancer.server.port=8080
       resources:
         limits:

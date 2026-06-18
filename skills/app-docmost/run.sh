@@ -38,7 +38,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.docmost.rule=Host(`$DOMAIN_DOCMOST`)
         - traefik.http.routers.docmost.entrypoints=websecure
-        - traefik.http.routers.docmost.tls.certresolver=letsencrypt
+        - traefik.http.routers.docmost.tls.certresolver=letsencryptresolver
         - traefik.http.services.docmost.loadbalancer.server.port=3000
       resources:
         limits:

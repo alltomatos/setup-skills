@@ -34,7 +34,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.anythingllm.rule=Host(\`$DOMAIN_ANYTHINGLLM\`)"
         - "traefik.http.routers.anythingllm.entrypoints=websecure"
-        - "traefik.http.routers.anythingllm.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.anythingllm.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.anythingllm.loadbalancer.server.port=3001"
       resources:
         limits:

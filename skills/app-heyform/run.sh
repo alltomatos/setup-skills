@@ -86,7 +86,7 @@ services:
         - traefik.http.routers.heyform.rule=Host(\`$DOMAIN_HEYFORM\`)
         - traefik.http.services.heyform.loadbalancer.server.port=9157
         - traefik.http.routers.heyform.service=heyform
-        - traefik.http.routers.heyform.tls.certresolver=letsencrypt
+        - traefik.http.routers.heyform.tls.certresolver=letsencryptresolver
         - traefik.http.routers.heyform.entrypoints=websecure
         - traefik.http.routers.heyform.tls=true
 

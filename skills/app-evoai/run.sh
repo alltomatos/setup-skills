@@ -72,7 +72,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.evoai_api.rule=Host(\`$DOMAIN_EVOAI_API\`)"
         - "traefik.http.routers.evoai_api.entrypoints=websecure"
-        - "traefik.http.routers.evoai_api.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.evoai_api.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.evoai_api.loadbalancer.server.port=8000"
 
   evoai_frontend:
@@ -86,7 +86,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.evoai_front.rule=Host(\`$DOMAIN_EVOAI_FRONT\`)"
         - "traefik.http.routers.evoai_front.entrypoints=websecure"
-        - "traefik.http.routers.evoai_front.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.evoai_front.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.evoai_front.loadbalancer.server.port=3000"
 
   evoai_redis:

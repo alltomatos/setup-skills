@@ -47,7 +47,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.pgadmin.rule=Host(\`$DOMAIN_PGADMIN\`)
         - traefik.http.routers.pgadmin.entrypoints=websecure
-        - traefik.http.routers.pgadmin.tls.certresolver=letsencrypt
+        - traefik.http.routers.pgadmin.tls.certresolver=letsencryptresolver
         - traefik.http.services.pgadmin.loadbalancer.server.port=80
         - traefik.http.routers.pgadmin.service=pgadmin
         - traefik.http.routers.pgadmin.tls=true

@@ -56,7 +56,7 @@ services:
         - traefik.http.services.ntfy.loadbalancer.server.port=80
         - traefik.http.routers.ntfy.service=ntfy
         - traefik.http.routers.ntfy.entrypoints=websecure
-        - traefik.http.routers.ntfy.tls.certresolver=letsencrypt
+        - traefik.http.routers.ntfy.tls.certresolver=letsencryptresolver
         - traefik.http.middlewares.ntfy-auth.basicauth.users=$TRAEFIK_AUTH
         - traefik.http.routers.ntfy.middlewares=ntfy-auth
         - traefik.http.routers.ntfy.tls=true

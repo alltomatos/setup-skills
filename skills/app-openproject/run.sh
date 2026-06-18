@@ -60,7 +60,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.openproject.rule=Host(\`$DOMAIN_OPENPROJECT\`)
         - traefik.http.routers.openproject.entrypoints=websecure
-        - traefik.http.routers.openproject.tls.certresolver=letsencrypt
+        - traefik.http.routers.openproject.tls.certresolver=letsencryptresolver
         - traefik.http.routers.openproject.service=openproject
         - traefik.http.services.openproject.loadbalancer.server.port=8080
 

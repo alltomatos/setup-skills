@@ -63,7 +63,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.mattermost.rule=Host(\`$DOMAIN_MATTERMOST\`)
         - traefik.http.routers.mattermost.entrypoints=websecure
-        - traefik.http.routers.mattermost.tls.certresolver=letsencrypt
+        - traefik.http.routers.mattermost.tls.certresolver=letsencryptresolver
         - traefik.http.routers.mattermost.service=mattermost
         - traefik.http.services.mattermost.loadbalancer.server.port=8065
         - traefik.http.services.mattermost.loadbalancer.passHostHeader=true

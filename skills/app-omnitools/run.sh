@@ -28,7 +28,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.omnitools.rule=Host(\`$DOMAIN_OMNITOOLS\`)"
         - "traefik.http.routers.omnitools.entrypoints=websecure"
-        - "traefik.http.routers.omnitools.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.omnitools.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.omnitools.loadbalancer.server.port=3000"
       resources:
         limits:

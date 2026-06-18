@@ -90,7 +90,7 @@ services:
         - traefik.http.services.activepieces.loadbalancer.server.port=80
         - traefik.http.routers.activepieces.service=activepieces
         - traefik.http.routers.activepieces.entrypoints=websecure
-        - traefik.http.routers.activepieces.tls.certresolver=letsencrypt
+        - traefik.http.routers.activepieces.tls.certresolver=letsencryptresolver
         - traefik.http.routers.activepieces.tls=true
 
   redis:

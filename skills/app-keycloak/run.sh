@@ -36,7 +36,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.keycloak.rule=Host(`$DOMAIN_KEYCLOAK`)
         - traefik.http.routers.keycloak.entrypoints=websecure
-        - traefik.http.routers.keycloak.tls.certresolver=letsencrypt
+        - traefik.http.routers.keycloak.tls.certresolver=letsencryptresolver
         - traefik.http.routers.keycloak.tls=true
         - traefik.http.services.keycloak.loadbalancer.server.port=8080
         - traefik.http.routers.keycloak.middlewares=keycloak_headers

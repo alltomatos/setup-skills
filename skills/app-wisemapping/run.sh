@@ -29,7 +29,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.wisemapping.rule=Host(\`\$DOMAIN_WISEMAPPING\`)
         - traefik.http.routers.wisemapping.entrypoints=websecure
-        - traefik.http.routers.wisemapping.tls.certresolver=letsencrypt
+        - traefik.http.routers.wisemapping.tls.certresolver=letsencryptresolver
         - traefik.http.services.wisemapping.loadbalancer.server.port=3000
       resources:
         limits:

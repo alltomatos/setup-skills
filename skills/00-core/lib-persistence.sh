@@ -82,14 +82,32 @@ ensure_db() {
         echo "[db] ERRO: container da infra '${infra}' não encontrado (instale a dependência)." >&2
         return 1
     fi
-    if docker exec "$cid" psql -U postgres -lqt 2>/dev/null | cut -d'|' -f1 | grep -qw "$db"; then
-        echo "[db] banco '$db' já existe em ${infra}."
-        return 0
-    fi
-    if docker exec "$cid" psql -U postgres -c "CREATE DATABASE \"$db\";" >/dev/null 2>&1; then
-        echo "[db] banco '$db' criado em ${infra}."
-        return 0
-    fi
+    case "$infra" in
+      *mysql*|*mariadb*)
+        # MySQL/MariaDB: senha root vem de dados_mysql (Senha:)
+        local mpass
+        mpass=$(grep "Senha:" "$DATA_DIR/dados_mysql" 2>/dev/null | awk -F"Senha:" '{print $2}' | xargs)
+        if docker exec -e MYSQL_PWD="$mpass" "$cid" mysql -u root -e "SHOW DATABASES LIKE '$db';" 2>/dev/null | grep -qw "$db"; then
+            echo "[db] banco '$db' já existe em ${infra}."
+            return 0
+        fi
+        if docker exec -e MYSQL_PWD="$mpass" "$cid" mysql -u root -e "CREATE DATABASE IF NOT EXISTS $db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" >/dev/null 2>&1; then
+            echo "[db] banco '$db' criado em ${infra}."
+            return 0
+        fi
+        ;;
+      *)
+        # PostgreSQL / pgvector
+        if docker exec "$cid" psql -U postgres -lqt 2>/dev/null | cut -d'|' -f1 | grep -qw "$db"; then
+            echo "[db] banco '$db' já existe em ${infra}."
+            return 0
+        fi
+        if docker exec "$cid" psql -U postgres -c "CREATE DATABASE \"$db\";" >/dev/null 2>&1; then
+            echo "[db] banco '$db' criado em ${infra}."
+            return 0
+        fi
+        ;;
+    esac
     echo "[db] ERRO ao criar o banco '$db' em ${infra}." >&2
     return 1
 }

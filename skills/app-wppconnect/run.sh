@@ -32,7 +32,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.wppconnect.rule=Host(\`$DOMAIN_WPPCONNECT\`)"
         - "traefik.http.routers.wppconnect.entrypoints=websecure"
-        - "traefik.http.routers.wppconnect.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.wppconnect.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.wppconnect.loadbalancer.server.port=21465"
       resources:
         limits:

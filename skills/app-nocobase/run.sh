@@ -71,7 +71,7 @@ services:
         - traefik.http.routers.nocobase.rule=Host(`$DOMAIN_NOCOBASE`)
         - traefik.http.services.nocobase.loadbalancer.server.port=80
         - traefik.http.routers.nocobase.service=nocobase
-        - traefik.http.routers.nocobase.tls.certresolver=letsencrypt
+        - traefik.http.routers.nocobase.tls.certresolver=letsencryptresolver
         - traefik.http.routers.nocobase.entrypoints=websecure
         - traefik.http.routers.nocobase.tls=true
 

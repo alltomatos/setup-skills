@@ -41,7 +41,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.langfuse.rule=Host(\`$DOMAIN_LANGFUSE\`)"
         - "traefik.http.routers.langfuse.entrypoints=websecure"
-        - "traefik.http.routers.langfuse.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.langfuse.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.langfuse.loadbalancer.server.port=3000"
       resources:
         limits:

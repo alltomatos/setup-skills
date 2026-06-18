@@ -69,7 +69,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.rustdesk-hbbs.rule=Host(\`$DOMAIN_HBBS\`)
         - traefik.http.routers.rustdesk-hbbs.entrypoints=websecure
-        - traefik.http.routers.rustdesk-hbbs.tls.certresolver=letsencrypt
+        - traefik.http.routers.rustdesk-hbbs.tls.certresolver=letsencryptresolver
         - traefik.http.services.rustdesk-hbbs.loadbalancer.server.port=21116
 
   hbbr:
@@ -98,7 +98,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.rustdesk-hbbr.rule=Host(\`$DOMAIN_HBBR\`)
         - traefik.http.routers.rustdesk-hbbr.entrypoints=websecure
-        - traefik.http.routers.rustdesk-hbbr.tls.certresolver=letsencrypt
+        - traefik.http.routers.rustdesk-hbbr.tls.certresolver=letsencryptresolver
         - traefik.http.services.rustdesk-hbbr.loadbalancer.server.port=21117
 
 volumes:

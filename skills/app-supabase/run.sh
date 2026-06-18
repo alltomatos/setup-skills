@@ -152,7 +152,7 @@ services:
         - traefik.http.routers.supabase.rule=Host(\`$DOMAIN_SUPABASE\`)
         - traefik.http.services.supabase.loadbalancer.server.port=8000
         - traefik.http.routers.supabase.entrypoints=websecure
-        - traefik.http.routers.supabase.tls.certresolver=letsencrypt
+        - traefik.http.routers.supabase.tls.certresolver=letsencryptresolver
 
   db:
     image: supabase/postgres:15.8.1.085

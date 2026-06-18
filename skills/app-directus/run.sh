@@ -74,7 +74,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.directus.rule=Host(\`$DOMAIN_DIRECTUS\`)"
         - "traefik.http.routers.directus.entrypoints=websecure"
-        - "traefik.http.routers.directus.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.directus.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.directus.loadbalancer.server.port=8055"
       resources:
         limits:

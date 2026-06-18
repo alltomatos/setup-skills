@@ -58,7 +58,7 @@ services:
         - traefik.http.services.metabase.loadbalancer.server.port=3000
         - traefik.http.routers.metabase.service=metabase
         - traefik.http.routers.metabase.entrypoints=websecure
-        - traefik.http.routers.metabase.tls.certresolver=letsencrypt
+        - traefik.http.routers.metabase.tls.certresolver=letsencryptresolver
         - traefik.http.routers.metabase.tls=true
 
 volumes:

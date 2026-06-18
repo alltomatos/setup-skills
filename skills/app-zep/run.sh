@@ -53,13 +53,13 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.zep.rule=Host(\`$DOMAIN_ZEP\`)"
         - "traefik.http.routers.zep.entrypoints=websecure"
-        - "traefik.http.routers.zep.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.zep.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.zep.loadbalancer.server.port=8000"
         
         # Admin Panel Auth
         - "traefik.http.routers.zep-admin.rule=Host(\`$DOMAIN_ZEP\`) && PathPrefix(\`/admin\`)"
         - "traefik.http.routers.zep-admin.entrypoints=websecure"
-        - "traefik.http.routers.zep-admin.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.zep-admin.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.zep-admin.middlewares=zep-auth"
         - "traefik.http.middlewares.zep-auth.basicauth.users=$HASHED_PASS"
       resources:

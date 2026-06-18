@@ -70,7 +70,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.shlink-ui.rule=Host(\`$DOMAIN_SHLINK_UI\`)
         - traefik.http.routers.shlink-ui.entrypoints=websecure
-        - traefik.http.routers.shlink-ui.tls.certresolver=letsencrypt
+        - traefik.http.routers.shlink-ui.tls.certresolver=letsencryptresolver
         - traefik.http.services.shlink-ui.loadbalancer.server.port=8080
         - traefik.http.routers.shlink-ui.middlewares=shlink-auth
         - traefik.http.middlewares.shlink-auth.basicauth.users=$TRAEFIK_AUTH
@@ -104,7 +104,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.shlink-api.rule=Host(\`$DOMAIN_SHLINK_API\`)
         - traefik.http.routers.shlink-api.entrypoints=websecure
-        - traefik.http.routers.shlink-api.tls.certresolver=letsencrypt
+        - traefik.http.routers.shlink-api.tls.certresolver=letsencryptresolver
         - traefik.http.services.shlink-api.loadbalancer.server.port=8080
         - traefik.http.routers.shlink-api.tls=true
 

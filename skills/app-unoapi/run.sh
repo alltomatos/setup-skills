@@ -54,7 +54,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.unoapi.rule=Host(\`$DOMAIN_UNOAPI\`)"
         - "traefik.http.routers.unoapi.entrypoints=websecure"
-        - "traefik.http.routers.unoapi.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.unoapi.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.unoapi.loadbalancer.server.port=9876"
 
   unoapi_redis:

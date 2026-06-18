@@ -59,7 +59,7 @@ services:
         - traefik.http.routers.botpress.rule=Host(\`$DOMAIN_BOTPRESS\`)
         - traefik.http.services.botpress.loadbalancer.server.port=3000
         - traefik.http.routers.botpress.service=botpress
-        - traefik.http.routers.botpress.tls.certresolver=letsencrypt
+        - traefik.http.routers.botpress.tls.certresolver=letsencryptresolver
         - traefik.http.routers.botpress.entrypoints=websecure
         - traefik.http.routers.botpress.tls=true
 

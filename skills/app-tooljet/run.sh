@@ -67,7 +67,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.tooljet.rule=Host(`$DOMAIN_TOOLJET`)
         - traefik.http.routers.tooljet.entrypoints=websecure
-        - traefik.http.routers.tooljet.tls.certresolver=letsencrypt
+        - traefik.http.routers.tooljet.tls.certresolver=letsencryptresolver
         - traefik.http.services.tooljet.loadbalancer.server.port=80
       resources:
         limits:

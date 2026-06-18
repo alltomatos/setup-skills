@@ -31,7 +31,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.firecrawl.rule=Host(\`$DOMAIN_FIRECRAWL\`)"
         - "traefik.http.routers.firecrawl.entrypoints=websecure"
-        - "traefik.http.routers.firecrawl.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.firecrawl.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.firecrawl.loadbalancer.server.port=3002"
       resources:
         limits:

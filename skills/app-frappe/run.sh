@@ -61,7 +61,7 @@ services:
         - traefik.http.routers.erpnext.rule=Host(\`$DOMAIN_FRAPPE\`)
         - traefik.http.services.erpnext.loadbalancer.server.port=8080
         - traefik.http.routers.erpnext.entrypoints=websecure
-        - traefik.http.routers.erpnext.tls.certresolver=letsencrypt
+        - traefik.http.routers.erpnext.tls.certresolver=letsencryptresolver
         - traefik.http.routers.erpnext.tls=true
 
   backend:

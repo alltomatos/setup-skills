@@ -48,7 +48,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.nocodb_app.rule=Host(`$DOMAIN_NOCODB`)
         - traefik.http.routers.nocodb_app.entrypoints=websecure
-        - traefik.http.routers.nocodb_app.tls.certresolver=letsencrypt
+        - traefik.http.routers.nocodb_app.tls.certresolver=letsencryptresolver
         - traefik.http.services.nocodb_app.loadbalancer.server.port=8080
         - traefik.http.routers.nocodb_app.service=nocodb_app
       resources:

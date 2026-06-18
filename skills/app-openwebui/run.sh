@@ -34,7 +34,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.openwebui.rule=Host(\`$DOMAIN_OPENWEBUI\`)"
         - "traefik.http.routers.openwebui.entrypoints=websecure"
-        - "traefik.http.routers.openwebui.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.openwebui.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.openwebui.loadbalancer.server.port=8080"
       resources:
         limits:

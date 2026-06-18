@@ -39,11 +39,11 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.transcreve_api.rule=Host(\`$DOMAIN_TRANSCREVE_API\`)"
         - "traefik.http.routers.transcreve_api.entrypoints=websecure"
-        - "traefik.http.routers.transcreve_api.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.transcreve_api.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.transcreve_api.loadbalancer.server.port=8005"
         - "traefik.http.routers.transcreve_mgr.rule=Host(\`$DOMAIN_TRANSCREVE_MANAGER\`)"
         - "traefik.http.routers.transcreve_mgr.entrypoints=websecure"
-        - "traefik.http.routers.transcreve_mgr.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.transcreve_mgr.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.transcreve_mgr.loadbalancer.server.port=8501"
       resources:
         limits:

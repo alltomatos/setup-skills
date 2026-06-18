@@ -57,7 +57,7 @@ services:
         - traefik.http.services.glpi.loadbalancer.server.port=80
         - traefik.http.routers.glpi.service=glpi
         - traefik.http.routers.glpi.entrypoints=websecure
-        - traefik.http.routers.glpi.tls.certresolver=letsencrypt
+        - traefik.http.routers.glpi.tls.certresolver=letsencryptresolver
         - traefik.http.routers.glpi.tls=true
 
 volumes:

@@ -54,7 +54,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.phpmyadmin.rule=Host(\`$DOMAIN_PHPMYADMIN\`)
         - traefik.http.routers.phpmyadmin.entrypoints=websecure
-        - traefik.http.routers.phpmyadmin.tls.certresolver=letsencrypt
+        - traefik.http.routers.phpmyadmin.tls.certresolver=letsencryptresolver
         - traefik.http.services.phpmyadmin.loadbalancer.server.port=80
         - traefik.http.routers.phpmyadmin.service=phpmyadmin
         - traefik.http.routers.phpmyadmin.tls=true
