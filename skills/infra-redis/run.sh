@@ -15,7 +15,7 @@ reset="\e[0m"
 
 # Variáveis
 STACK_NAME="redis"
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 echo -e "${amarelo}Instalando Redis via Docker Swarm...${reset}"
 

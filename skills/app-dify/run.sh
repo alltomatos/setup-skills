@@ -12,7 +12,7 @@ verde="\e[32m"
 reset="\e[0m"
 
 STACK_NAME="dify"
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 echo -e "${amarelo}Instalando Dify no domínio $DOMAIN_DIFY...${reset}"
 

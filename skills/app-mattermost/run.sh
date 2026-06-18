@@ -12,7 +12,7 @@ verde="\e[32m"
 reset="\e[0m"
 
 STACK_NAME="mattermost"
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 # Carregar credenciais do Postgres (ADR-001)
 if [ -f "/root/dados_vps/dados_postgres" ]; then

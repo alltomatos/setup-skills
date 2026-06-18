@@ -29,7 +29,7 @@ if [ -z "${DOMAIN_WEKAN:-}" ]; then
 fi
 
 # 2. Rede
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" | head -n 1 || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 # 3. Segredos (Persistência e Reuso conforme solicitado)
 # Tentamos ler do arquivo de persistência primeiro para garantir idempotência

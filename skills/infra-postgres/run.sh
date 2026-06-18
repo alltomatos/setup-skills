@@ -26,7 +26,7 @@ DATA_FILE="/root/dados_vps/dados_postgres"
 # 1. Obter Nome da Rede Interna
 # No ecossistema Setup Orion, a rede é definida no bootstrap/traefik. 
 # Tentamos descobrir o nome da rede criada pelo traefik.
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 # 2. Gerar senha se não fornecida
 if [ -z "$POSTGRES_PASSWORD" ]; then

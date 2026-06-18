@@ -12,7 +12,7 @@ verde="\e[32m"
 reset="\e[0m"
 
 STACK_NAME="erpnext"
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 # Recupera ou gera senhas (ADR-001)
 DB_PASSWORD=$(read_data "app-frappe" | grep -oP '(?<=- DB Password Interno: ).*' || openssl rand -hex 16)

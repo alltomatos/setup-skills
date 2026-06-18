@@ -12,7 +12,7 @@ verde="\e[32m"
 reset="\e[0m"
 
 STACK_NAME="kafka"
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 # KRaft cluster ID — único por deploy (ADR-002: gerado em runtime)
 KAFKA_CLUSTER_ID=$(echo -n "$(openssl rand -hex 22)" | base64 | tr '+/' '-_' | tr -d '=')

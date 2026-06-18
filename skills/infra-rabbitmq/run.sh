@@ -15,7 +15,7 @@ reset="\e[0m"
 
 # Variáveis
 STACK_NAME="rabbitmq"
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 if [ -z "$RABBITMQ_DEFAULT_PASS" ]; then
     RABBITMQ_DEFAULT_PASS=$(openssl rand -hex 16)

@@ -12,7 +12,7 @@ verde="\e[32m"
 reset="\e[0m"
 
 STACK_NAME="strapi"
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 # Ler ou gerar segredos (idempotência)
 APP_KEYS=$(read_data "app-strapi" | grep -oP '(?<=- APP_KEYS: ).*' || echo "$(openssl rand -hex 16),$(openssl rand -hex 16),$(openssl rand -hex 16),$(openssl rand -hex 16)")

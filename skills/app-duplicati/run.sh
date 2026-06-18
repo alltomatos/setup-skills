@@ -12,7 +12,7 @@ verde="\e[32m"
 reset="\e[0m"
 
 STACK_NAME="duplicati"
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 # Ler ou gerar segredo (idempotência)
 ENCRYPTION_KEY=$(read_data "app-duplicati" | grep -oP '(?<=- ENCRYPTION_KEY: ).*' || openssl rand -hex 16)

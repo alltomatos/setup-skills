@@ -15,7 +15,7 @@ reset="\e[0m"
 
 # Variáveis
 STACK_NAME="mysql"
-NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
+NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
 if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
     MYSQL_ROOT_PASSWORD=$(openssl rand -hex 16)
