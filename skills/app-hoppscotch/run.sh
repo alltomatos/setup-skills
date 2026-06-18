@@ -78,7 +78,6 @@ services:
           cpus: "1"
           memory: 1024M
 
-volumes:
 networks:
   $NOME_REDE_INTERNA:
     external: true
