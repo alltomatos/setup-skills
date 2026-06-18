@@ -213,6 +213,23 @@ Token: <jwt>
 - Segredos de app (senhas de banco, etc.) seguem indo por **env via STDIN** ao `run.sh`;
   eles são embutidos no YAML e enviados à API (o Portainer passa a ser a fonte da stack).
 
+### ✅ Checklist de armadilhas em skills (lições da varredura — verifique ao criar/editar)
+1. **Heredoc do YAML SEM aspas**: use `cat > x.yaml <<YAML` (NÃO `<<'YAML'`). Com aspas,
+   `$VARS` viram literais e o deploy quebra. Ao usar sem aspas, **escape as crases** do
+   Traefik: `Host(\`$DOMINIO\`)`, e `\$\$` para `$` literal (ex.: saída de htpasswd).
+2. **certresolver**: é `letsencryptresolver` (o resolver definido no Traefik), nunca `letsencrypt`.
+3. **Senha de dependência**: leia do arquivo persistido e use a var SEM escape:
+   `POSTGRES_PASSWORD=$(grep "Senha:" /root/dados_vps/dados_postgres | awk -F"Senha:" '{print $2}' | xargs)`
+   (idem `dados_pgvector`, `dados_mysql`). Nunca deixe `\$POSTGRES_PASSWORD` no YAML.
+4. **Criar o banco antes do deploy**: apps rodam só `db:migrate` (não criam o banco).
+   Chame `ensure_db "<infra>" "<db>"` antes de `deploy_via_portainer` (postgres/pgvector/mysql;
+   MongoDB cria sozinho). Helper em `00-core/lib-persistence.sh`.
+5. **`sslmode=disable`** em toda conexão Postgres (o Postgres/pgvector do Orion não tem SSL).
+6. **Checagem de serviço**: o serviço no Swarm é `postgres_postgres`. Use
+   `grep -qE "(^|_)postgres"`, nunca `grep -q "^postgres$"`.
+7. **Workers sidekiq/sem-HTTP**: se a imagem tem healthcheck HTTP embutido, desative no worker
+   (`healthcheck: disable: true`), senão o Swarm o mata em loop.
+
 ---
 
 ## Diagnóstico rápido
