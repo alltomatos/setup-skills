@@ -19,7 +19,6 @@
 #   /root/n8n.yaml           — stack Docker Swarm
 # =============================================================================
 
-set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SKILL_DIR/../00-core/lib-persistence.sh"
@@ -276,7 +275,7 @@ Rede: ${NOME_REDE_INTERNA}"
 # =============================================================================
 # EXECUÇÃO PRINCIPAL
 # =============================================================================
-clear
+clear 2>/dev/null || true
 echo -e "${amarelo}============================================================${reset}"
 echo -e "${branco}       ORION DESIGN — Deploy N8N (Modo Queue)               ${reset}"
 echo -e "${amarelo}============================================================${reset}"

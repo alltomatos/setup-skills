@@ -18,7 +18,6 @@
 #   /root/dados_vps/dados_evolution  — metadados (NUNCA grava SENHA_POSTGRES)
 # =============================================================================
 
-set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 # shellcheck source=/root/devops/skills/00-core/lib-persistence.sh
@@ -206,7 +205,7 @@ Rede: $NOME_REDE_INTERNA"
 # =============================================================================
 # EXECUÇÃO PRINCIPAL
 # =============================================================================
-clear
+clear 2>/dev/null || true
 echo -e "${amarelo}============================================================${reset}"
 echo -e "${branco}         ORION DESIGN — Deploy Evolution API                ${reset}"
 echo -e "${amarelo}============================================================${reset}"

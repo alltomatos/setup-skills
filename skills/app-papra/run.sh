@@ -8,7 +8,6 @@
 #   NOME_REDE_INTERNA  — nome da rede overlay Docker
 # =============================================================================
 
-set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SKILL_DIR/../00-core/lib-persistence.sh"
@@ -138,7 +137,7 @@ Rede: ${NOME_REDE_INTERNA}"
     echo -e "${verde}      Metadados salvos.${reset}"
 }
 
-clear
+clear 2>/dev/null || true
 echo -e "${amarelo}============================================================${reset}"
 echo -e "${branco}       ORION DESIGN — Deploy Papra                         ${reset}"
 echo -e "${amarelo}============================================================${reset}"

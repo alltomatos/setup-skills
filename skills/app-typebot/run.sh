@@ -26,7 +26,6 @@
 #   /root/dados_vps/dados_typebot   — metadados (SEM senhas)
 # =============================================================================
 
-set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 # shellcheck source=/dev/null
@@ -225,7 +224,7 @@ Rede: $NOME_REDE_INTERNA"
 # =============================================================================
 # EXECUÇÃO PRINCIPAL
 # =============================================================================
-clear
+clear 2>/dev/null || true
 echo -e "${amarelo}============================================================${reset}"
 echo -e "${branco}         ORION DESIGN — Deploy Typebot (Builder+Viewer)     ${reset}"
 echo -e "${amarelo}============================================================${reset}"

@@ -4,7 +4,6 @@
 # Skill: Deploy do SerpBear via Docker Swarm (Padrão Orion)
 # =============================================================================
 
-set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SKILL_DIR/../00-core/lib-persistence.sh"
