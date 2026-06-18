@@ -70,6 +70,7 @@ networks:
     external: true
 EOL
 
+ensure_db "postgres" "strapi" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "strapi.yaml"
 
 if [ $? -eq 0 ]; then

@@ -257,6 +257,7 @@ YAML
 deploy_stack() {
     echo -e "${amarelo}[4/5] Executando deploy da stack chatwoot...${reset}"
 
+    ensure_db "pgvector" "chatwoot" || { echo "Erro ao preparar o banco"; exit 1; }
     if deploy_via_portainer "chatwoot" "/root/chatwoot.yaml" > /dev/null 2>&1; then
         echo -e "${verde}      [OK] Stack chatwoot deployada.${reset}"
     else

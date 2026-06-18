@@ -72,6 +72,7 @@ networks:
     external: true
 EOL
 
+ensure_db "pgvector" "zep" || { echo "Erro ao preparar o banco"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "zep.yaml"
 
 if [ $? -eq 0 ]; then

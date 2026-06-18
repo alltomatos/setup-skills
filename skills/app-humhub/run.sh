@@ -46,6 +46,7 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
+ensure_db "mysql" "humhub" || { echo "Erro ao preparar o banco no mysql"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "humhub.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-humhub" "[ HUMHUB ]
 

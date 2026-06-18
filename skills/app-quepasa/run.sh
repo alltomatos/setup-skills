@@ -68,6 +68,7 @@ networks:
     external: true
 EOL
 
+ensure_db "postgres" "quepasa" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "quepasa.yaml"
 
 if [ $? -eq 0 ]; then

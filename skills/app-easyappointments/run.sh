@@ -127,6 +127,7 @@ YAML
 deploy_stack() {
     echo -e "${amarelo}[4/5] Executando deploy da stack easyappointments...${reset}"
 
+    ensure_db "mysql" "easyappointments" || { echo "Erro ao preparar o banco no mysql"; exit 1; }
     if deploy_via_portainer "easyappointments" "/root/easyappointments.yaml" > /dev/null 2>&1; then
         echo -e "${verde}      [OK] Stack easyappointments deployada.${reset}"
     else

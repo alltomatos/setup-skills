@@ -158,6 +158,7 @@ YAML
 deploy_stack() {
     echo -e "${amarelo}[4/5] Executando deploy da stack astracampaign...${reset}"
 
+    ensure_db "postgres" "astracampaign" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
     if deploy_via_portainer "astracampaign" "/root/astracampaign.yaml" > /dev/null 2>&1; then
         echo -e "${verde}      [OK] Stack astracampaign deployada.${reset}"
     else

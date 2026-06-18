@@ -42,6 +42,7 @@ networks:
   \$NOME_REDE_INTERNA:
     external: true
 YAML
+ensure_db "postgres" "wisemapping" || { echo "Erro ao preparar o banco"; exit 1; }
 deploy_via_portainer "\$STACK_NAME" "wisemapping.yaml"
 [ \$? -eq 0 ] && echo -e "\${verde}OK\${reset}" && save_data "app-wisemapping" "[ WISEMAPPING ]
 

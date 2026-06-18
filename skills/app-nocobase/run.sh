@@ -84,6 +84,7 @@ networks:
     external: true
 YAML
 
+ensure_db "postgres" "nocobase" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "nocobase${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then

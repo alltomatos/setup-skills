@@ -64,6 +64,7 @@ EOL
 
 # Nota: POSTGRES_PASSWORD deve vir do contexto ou ser solicitada se necessário.
 # Aqui assumimos que o orquestrador gerencia a injeção conforme ADR-002.
+ensure_db "postgres" "flowise" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "flowise.yaml"
 
 if [ $? -eq 0 ]; then

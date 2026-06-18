@@ -136,6 +136,7 @@ networks:
     external: true
 YAML
 
+ensure_db "pgvector" "formbricks" || { echo "Erro ao preparar o banco"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "formbricks${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then

@@ -118,6 +118,7 @@ networks:
     external: true
 EOL
 
+ensure_db "mysql" "mautic" || { echo "Erro ao preparar o banco no mysql"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "mautic.yaml"
 
 if [ $? -eq 0 ]; then

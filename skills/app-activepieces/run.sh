@@ -120,6 +120,7 @@ networks:
     external: true
 YAML
 
+ensure_db "postgres" "activepieces" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "activepieces${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then

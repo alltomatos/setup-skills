@@ -97,6 +97,7 @@ networks:
     external: true
 YAML
 
+ensure_db "postgres" "tooljet" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "tooljet.yaml"
 
 if [ $? -eq 0 ]; then

@@ -53,6 +53,7 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
+ensure_db "mysql" "passbolt" || { echo "Erro ao preparar o banco no mysql"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "passbolt.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-passbolt" "[ PASSBOLT ]
 

@@ -82,6 +82,7 @@ networks:
     external: true
 YAML
 
+ensure_db "postgres" "calcom" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "calcom${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then

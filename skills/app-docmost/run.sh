@@ -65,6 +65,7 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
+ensure_db "postgres" "docmost" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "docmost.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-docmost" "[ DOCMOST ]
 

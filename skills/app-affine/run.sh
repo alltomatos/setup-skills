@@ -85,6 +85,7 @@ networks:
     external: true
 YAML
 
+ensure_db "pgvector" "affine" || { echo "Erro ao preparar o banco"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "affine.yaml"
 
 if [ $? -eq 0 ]; then

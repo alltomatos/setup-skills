@@ -80,6 +80,7 @@ networks:
     external: true
 YAML
 
+ensure_db "postgres" "nocodb" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "nocodb.yaml"
 
 if [ $? -eq 0 ]; then

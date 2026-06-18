@@ -53,6 +53,7 @@ networks:
     external: true
 EOL
 
+ensure_db "postgres" "langfuse" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "langfuse.yaml"
 
 if [ $? -eq 0 ]; then

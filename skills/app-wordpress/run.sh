@@ -90,6 +90,7 @@ networks:
     external: true
 YAML
 
+ensure_db "mysql" "$WORDPRESS_SITE_NAME" || { echo "Erro ao preparar o banco no mysql"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "wordpress_${WORDPRESS_SITE_NAME}${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then

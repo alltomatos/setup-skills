@@ -57,6 +57,7 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 YAML
+ensure_db "postgres" "vaultwarden" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "vaultwarden.yaml"
 [ $? -eq 0 ] && echo -e "${verde}OK${reset}" && save_data "app-vaultwarden" "[ VAULTWARDEN ]
 

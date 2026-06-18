@@ -113,6 +113,7 @@ networks:
     external: true
 YAML
 
+ensure_db "postgres" "outline" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "outline.yaml"
 
 if [ $? -eq 0 ]; then
