@@ -63,6 +63,7 @@ cp vector.yml $BASE_DIR/docker/volumes/logs/
 cd ../pooler
 cp pooler.exs $BASE_DIR/docker/volumes/pooler/
 rm -rf $TMP_DIR
+cd "$BASE_DIR"
 
 # Hash para o MCP
 HASH=$(openssl rand -hex 5)
