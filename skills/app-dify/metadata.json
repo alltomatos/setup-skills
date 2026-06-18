@@ -5,13 +5,17 @@
   "depends_on": [
     "infra-bootstrap",
     "app-traefik",
-    "infra-postgres",
-    "infra-redis"
+    "infra-postgres"
   ],
   "required_inputs": [
     {
       "name": "DOMAIN_DIFY",
-      "description": "Domínio para o Dify (ex: dify.exemplo.com)",
+      "description": "Domínio para o frontend do Dify (ex: dify.exemplo.com)",
+      "type": "text"
+    },
+    {
+      "name": "DOMAIN_DIFY_API",
+      "description": "Domínio para a API do Dify (ex: dify-api.exemplo.com)",
       "type": "text"
     }
   ],
