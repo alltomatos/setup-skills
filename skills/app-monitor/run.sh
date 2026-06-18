@@ -73,7 +73,7 @@ sudo mv /root/prometheus.yml /opt/monitor-orion/prometheus/
 # Determinar sufixo de ambiente se fornecido via $1
 SUFFIX="${1:+_$1}"
 
-cat > monitor${SUFFIX}.yaml <<YAML
+cat > /root/monitor${SUFFIX}.yaml <<YAML
 version: "3.7"
 services:
   prometheus:
@@ -166,7 +166,7 @@ networks:
     external: true
 YAML
 
-deploy_via_portainer "$STACK_NAME" "monitor${SUFFIX}.yaml"
+deploy_via_portainer "$STACK_NAME" "/root/monitor${SUFFIX}.yaml"
 
 if [ $? -eq 0 ]; then
     echo -e "${verde}Stack $STACK_NAME enviada com sucesso!${reset}"
@@ -181,5 +181,5 @@ else
     exit 1
 fi
 
-rm -f monitor${SUFFIX}.yaml
+rm -f /root/monitor${SUFFIX}.yaml
 exit 0
