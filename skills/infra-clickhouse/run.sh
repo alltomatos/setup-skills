@@ -45,6 +45,16 @@ services:
         limits:
           cpus: "2"
           memory: 2048M
+
+volumes:
+  clickhouse_data:
+    external: true
+    name: clickhouse_data
+
+networks:
+  $NOME_REDE_INTERNA:
+    external: true
+    name: $NOME_REDE_INTERNA
 EOL
 
 deploy_via_portainer "$STACK_NAME" "clickhouse.yaml"

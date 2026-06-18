@@ -47,6 +47,12 @@ services:
 volumes:
   kafka_data:
     external: true
+    name: kafka_data
+
+networks:
+  $NOME_REDE_INTERNA:
+    external: true
+    name: $NOME_REDE_INTERNA
 EOL
 
 deploy_via_portainer "$STACK_NAME" "kafka.yaml"
