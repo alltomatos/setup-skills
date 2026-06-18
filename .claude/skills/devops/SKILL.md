@@ -160,9 +160,20 @@ O catálogo (com status ✅/⬜ real) é renderizado por `scripts/catalog.sh`, *
 
 7. Confirmar persistência
    REMOTO: ssh $SSH_HOST "cat /root/dados_vps/dados_<nome>"
-```
 
----
+8. Resumo pós-deploy + continuação (SEMPRE, ao final de TODO deploy)
+   → Exiba um RESUMO do que foi instalado:
+        • App + versão/imagem e nº de serviços (réplicas ex.: 1/1)
+        • URL de acesso (https://...) quando houver, ou host:porta interno
+        • Credenciais essenciais (mascarando senha: "Senha: ***") e arquivo
+          de persistência `/root/dados_vps/dados_<nome>`
+        • Dependências que foram instaladas junto, se alguma
+   → Em seguida PERGUNTE: "Deseja instalar mais alguma aplicação?"
+   → Se a resposta for POSITIVA (sim/quero/outra/etc.): renderize NOVAMENTE o
+        catálogo (passo 1 do Fluxo de Execução — `catalog.sh` no destino) com o
+        status ✅/⬜ atualizado e aguarde a próxima escolha.
+   → Se for NEGATIVA: encerre com uma mensagem curta do estado final do ecossistema.
+```
 
 ## 🏛️ Arquitetura de Deploy (técnica Setup Orion — OBRIGATÓRIA)
 
