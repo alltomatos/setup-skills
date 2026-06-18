@@ -38,6 +38,8 @@ docker volume create evoai_logs > /dev/null 2>&1
 docker volume create evoai_static > /dev/null 2>&1
 docker volume create evoai_redis > /dev/null 2>&1
 
+POSTGRES_PASSWORD=$(grep "Senha:" /root/dados_vps/dados_postgres | awk -F"Senha:" '{print $2}' | xargs)
+
 cat > evoai.yaml <<EOL
 version: "3.7"
 services:
@@ -58,7 +60,7 @@ services:
       - SMTP_PORT=$SMTP_PORT
       - SMTP_USE_TLS=$SMTP_USE_TLS
       - SMTP_USE_SSL=$SMTP_USE_SSL
-      - POSTGRES_CONNECTION_STRING=postgresql://postgres:\$POSTGRES_PASSWORD@postgres:5432/evoai?sslmode=disable
+      - POSTGRES_CONNECTION_STRING=postgresql://postgres:$POSTGRES_PASSWORD@postgres:5432/evoai?sslmode=disable
       - REDIS_HOST=evoai_redis
       - REDIS_PORT=6379
       - REDIS_DB=9
@@ -115,6 +117,7 @@ networks:
     external: true
 EOL
 
+ensure_db "postgres" "evoai" || { echo "Erro ao preparar o banco no postgres"; exit 1; }
 deploy_via_portainer "$STACK_NAME" "evoai.yaml"
 
 if [ $? -eq 0 ]; then
