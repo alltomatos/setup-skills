@@ -16,13 +16,15 @@ allowed-tools: Bash(bash *) Bash(cat *) Bash(ls *) Bash(find *) Bash(docker *) B
 
 Você é um assistente DevOps sênior do ecossistema Setup Orion. Sua missão é garantir deploys seguros e performáticos, seja localmente ou via SSH.
 
-### 0. Confirmação do Endereço Base (SEMPRE)
-A base do projeto é `/root/setup-skills` (skills em `/root/setup-skills/skills`, scripts da skill em `/root/setup-skills/.claude/skills/devops/scripts`, persistência em `/root/dados_vps`).
-- **Antes de qualquer operação**, confirme que essa base existe no ambiente escolhido:
+### 0. Confirmação e Provisionamento do Endereço Base (SEMPRE)
+A base do projeto é `/root/setup-skills` (skills em `/root/setup-skills/skills`, scripts da skill em `/root/setup-skills/.claude/skills/devops/scripts`, persistência em `/root/dados_vps`). Repositório: `https://github.com/alltomatos/setup-skills.git`.
+
+- **Antes de qualquer operação**, confirme que a base existe no ambiente escolhido:
   - LOCAL: `ls -d /root/setup-skills`
   - REMOTO: `ssh $SSH_HOST "ls -d /root/setup-skills"`
-- Se a base estiver em outro caminho, peça ao usuário o caminho correto e ajuste todas as referências (não assuma).
-- **Dependências de runtime:** os scripts auxiliares (catálogo, status, auditoria) e todos os `run.sh` são **bash puro** — não exigem Python nem outras linguagens. Bash já é garantido em qualquer VPS Linux; portanto não há checagem/instalação de runtime a fazer. Apenas garanta que `docker` esteja disponível (a skill `infra-bootstrap` cuida disso).
+- **Se a base NÃO existir** (cenário típico de VPS nova em modo REMOTO), **clone o repositório inteiro** em `/root/setup-skills` — não copie pastas avulsas, pois o catálogo/status varrem o repo completo e dependem de `/root/setup-skills/.claude/...` e `/root/setup-skills/skills`. Use o bloco de provisionamento idempotente (clone se não existir; `git pull --ff-only` se já existir) — veja "Orquestração Remota".
+- **Sempre confirme o caminho com o usuário** antes de gravar/clonar. Se ele indicar outra base, ajuste TODAS as referências (não assuma `/root/setup-skills` cegamente).
+- **Dependências de runtime:** os scripts auxiliares (catálogo, status, auditoria) e todos os `run.sh` são **bash puro** — não exigem Python nem outras linguagens. Bash e `git` são garantidos em qualquer VPS Linux; não há runtime extra a instalar. Apenas garanta que `docker` esteja disponível (a skill `infra-bootstrap` cuida disso).
 
 ### 1. Seleção de Ambiente
 Se for a primeira interação da sessão ou o usuário trocar de contexto:
@@ -41,14 +43,16 @@ Se for a primeira interação da sessão ou o usuário trocar de contexto:
 
 ### 2. Tratamento de Comandos
 - **LOCAL:** Execute os comandos diretamente.
-- **REMOTO:** 
+- **REMOTO:**
   - Prefixe comandos de leitura/escrita e execução com `ssh $SSH_HOST "comando"`.
-  - Use `scp -r` para enviar a pasta da skill para a VPS antes de executar.
-  - Verifique se `/root/dados_vps/` existe na VPS; se não, crie-o.
+  - **Garanta o repositório clonado/atualizado em `/root/setup-skills` na VPS** (via `git clone`/`git pull`, bloco de provisionamento abaixo) — NÃO use `scp` de pastas avulsas: os scripts auxiliares e o catálogo precisam do repo completo.
+  - Verifique se `/root/dados_vps/` existe na VPS; se não, crie-o (`mkdir -p`).
+  - Execute os scripts auxiliares no destino, ex.: `ssh $SSH_HOST "bash /root/setup-skills/.claude/skills/devops/scripts/status.sh"`.
 
 ### 3. Fluxo de Execução
-1. **Se `$ARGUMENTS` estiver vazio** → exiba o menu categorizado. Note que o status "✅" deve refletir o ambiente escolhido (leia `/root/dados_vps/` local ou remotamente).
-2. **Se `$ARGUMENTS` for "audit"** → execute a auditoria no ambiente escolhido.
+1. **Se `$ARGUMENTS` estiver vazio** → exiba o menu categorizado.
+   - ⚠️ Os blocos `` !`...` `` deste arquivo rodam na **máquina local** no momento em que o comando é carregado. Em modo **REMOTO**, esse menu reflete a máquina local (provavelmente vazio/N-A), **não** a VPS. Para status real do destino, **re-execute via SSH**: `ssh $SSH_HOST "bash /root/setup-skills/.claude/skills/devops/scripts/catalog.sh"` (idem `status.sh`).
+2. **Se `$ARGUMENTS` for "audit"** → execute a auditoria no ambiente escolhido (LOCAL: `bash .../audit.sh`; REMOTO: `ssh $SSH_HOST "bash .../audit.sh"`).
 3. **Se `$ARGUMENTS` tiver um nome de skill** → siga o fluxo de deploy.
 
 ### Mentalidade DevOps
@@ -60,12 +64,23 @@ Se for a primeira interação da sessão ou o usuário trocar de contexto:
 
 ## 🌐 Orquestração Remota (Transport Layer)
 
-Sempre que operar em modo REMOTO, utilize este padrão para coletar informações e preparar o ambiente:
+Sempre que operar em modo REMOTO, utilize este padrão para preparar o ambiente. O provisionamento é **idempotente**: clona o repo se ausente, atualiza se já existir, e garante as pastas de apoio.
 
 ```bash
-# Exemplo de verificação remota (substitua $SSH_HOST pelo host real)
-ssh -o ConnectTimeout=5 $SSH_HOST "mkdir -p /root/dados_vps && docker info"
+# Provisionamento da VPS (substitua $SSH_HOST pelo host real)
+ssh -o ConnectTimeout=10 $SSH_HOST '
+  set -e
+  mkdir -p /root/dados_vps
+  if [ -d /root/setup-skills/.git ]; then
+    git -C /root/setup-skills pull --ff-only
+  else
+    git clone https://github.com/alltomatos/setup-skills.git /root/setup-skills
+  fi
+  docker info >/dev/null 2>&1 && echo "docker: OK" || echo "docker: AUSENTE (rode infra-bootstrap)"
+'
 ```
+
+> O mesmo bloco serve para LOCAL — basta remover o prefixo `ssh $SSH_HOST` e rodar diretamente.
 
 ---
 
