@@ -106,7 +106,7 @@ services:
 
   app:
     image: chatwoot/chatwoot:latest
-    command: bundle exec rails s -p 3000 -b 0.0.0.0
+    command: sh -c "bundle exec rails db:chatwoot_prepare && bundle exec rails s -p 3000 -b 0.0.0.0"
     entrypoint: docker/entrypoints/rails.sh
 
     environment:
