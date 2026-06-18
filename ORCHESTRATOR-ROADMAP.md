@@ -295,11 +295,13 @@ Fonte de verdade: `docs/SetupOrion.md` (v2.8.0 — 45.909 linhas, ~110 ferrament
 
 > Deps: E5–E22 concluídos.
 
-- [x] T109: Auditoria de segurança em todas as skills (ADR-002 compliance)
-- [x] T110: Testes de smoke (pré-flight) automatizados
-- [x] T111: Validação de idempotência (re-execução sem efeitos colaterais)
-- [x] T112: Documentação final de cada skill (README padronizado)
-- [x] T113: Atualizar ESTADO_ORQUESTRATOR.md com resultado da auditoria
+- [x] T109: Auditoria de segurança e performance implementada na skill devops (/devops audit)
+- [x] T110: Orquestração remota via SSH/SCP implementada na skill devops (/devops remote)
+- [x] T111: Testes de smoke (pré-flight) automatizados
+- [x] T112: Validação de idempotência (re-execução sem efeitos colaterais)
+- [x] T113: Documentação final de cada skill (README padronizado)
+- [x] T114: Atualizar ESTADO_ORQUESTRATOR.md com resultado da auditoria
+
 
 ---
 

@@ -116,7 +116,26 @@ Claude coleta inputs → valida pré-flight → injeta variáveis → executa ru
 
 ---
 
+## 🛠️ Orquestração & DevOps
+
+O ecossistema conta com uma skill inteligente de **DevOps** para gerenciar o ciclo de vida das aplicações e a saúde do servidor.
+
+### 🛡️ Auditoria de Segurança e Performance
+O comando `/devops audit` realiza uma avaliação proativa do servidor:
+- **Segurança:** Checagem de porta SSH, login root, autenticação por senha e status do Firewall (UFW).
+- **Recursos:** Monitoramento de vCPUs, RAM disponível e espaço em disco.
+- **Updates:** Identificação de pacotes pendentes de atualização no SO.
+
+### 🌐 Orquestração Remota via SSH
+Você pode rodar o Claude CLI no seu computador local e realizar o deploy em uma VPS remota sem instalar nada no servidor de destino:
+1. Inicie `/devops` e escolha o modo **REMOTO**.
+2. O agente guiará a configuração de chaves SSH (acesso sem senha).
+3. Todo o catálogo de skills será enviado e executado via SSH/SCP de forma transparente.
+
+---
+
 ## 📦 Skills Disponíveis
+
 
 Para uma visão detalhada de cada aplicação, consulte o [**Catálogo de Soluções Setup Orion**](./catalog/readme.md).
 
