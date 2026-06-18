@@ -16,11 +16,11 @@ NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=over
 
 # Persistência de Segredos (ADR-001)
 EXISTING_DATA=$(read_data "app-woofed" 2>/dev/null)
-DB_PASSWORD=$(echo "$EXISTING_DATA" | grep "DB_PASSWORD:" | sed 's/.*DB_PASSWORD: //')
 SECRET_KEY_BASE=$(echo "$EXISTING_DATA" | grep "SECRET_KEY_BASE:" | sed 's/.*SECRET_KEY_BASE: //')
-
-[ -z "$DB_PASSWORD" ] && DB_PASSWORD=$(openssl rand -hex 16)
 [ -z "$SECRET_KEY_BASE" ] && SECRET_KEY_BASE=$(openssl rand -hex 32)
+
+# Senha do banco = senha REAL do pgvector (nao gerar aleatoria)
+DB_PASSWORD=$(grep "Senha:" /root/dados_vps/dados_pgvector | awk -F"Senha:" '{print $2}' | xargs)
 
 echo -e "${amarelo}Instalando WoofedCRM no domínio $DOMAIN_WOOFED...${reset}"
 
