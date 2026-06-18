@@ -27,8 +27,10 @@ A base do projeto é `/root/setup-skills` (skills em `/root/setup-skills/skills`
 - **Dependências de runtime:** os scripts auxiliares (catálogo, status, auditoria) e todos os `run.sh` são **bash puro** — não exigem Python nem outras linguagens. Bash e `git` são garantidos em qualquer VPS Linux; não há runtime extra a instalar. Apenas garanta que `docker` esteja disponível (a skill `infra-bootstrap` cuida disso).
 
 ### 1. Seleção de Ambiente
+> **Windows = sempre REMOTO.** Stacks Docker Swarm rodam em Linux. Se o Claude está num host Windows, não existe modo LOCAL viável (não há `/root`, nem Docker Swarm Linux); trate como REMOTO e opere a VPS via SSH. O modo LOCAL só vale quando o Claude roda **na própria VPS Linux**.
+
 Se for a primeira interação da sessão ou o usuário trocar de contexto:
-- Pergunte: "Deseja realizar o deploy **LOCAL** (nesta máquina) ou **REMOTO** (via SSH em uma VPS)?"
+- Pergunte: "Deseja realizar o deploy **LOCAL** (nesta máquina) ou **REMOTO** (via SSH em uma VPS)?" (No Windows, assuma REMOTO e apenas confirme o `SSH_HOST`.)
 - **Se REMOTO:**
   - Solicite o `SSH_HOST` (ex: root@1.2.3.4).
   - **Verificação de Acesso:** Tente `ssh -o BatchMode=yes -o ConnectTimeout=5 $SSH_HOST exit`.
@@ -50,9 +52,12 @@ Se for a primeira interação da sessão ou o usuário trocar de contexto:
   - Execute os scripts auxiliares no destino, ex.: `ssh $SSH_HOST "bash /root/setup-skills/.claude/skills/devops/scripts/status.sh"`.
 
 ### 3. Fluxo de Execução
-1. **Se `$ARGUMENTS` estiver vazio** → exiba o menu categorizado.
-   - ⚠️ Os blocos `` !`...` `` deste arquivo rodam na **máquina local** no momento em que o comando é carregado. Em modo **REMOTO**, esse menu reflete a máquina local (provavelmente vazio/N-A), **não** a VPS. Para status real do destino, **re-execute via SSH**: `ssh $SSH_HOST "bash /root/setup-skills/.claude/skills/devops/scripts/catalog.sh"` (idem `status.sh`).
-2. **Se `$ARGUMENTS` for "audit"** → execute a auditoria no ambiente escolhido (LOCAL: `bash .../audit.sh`; REMOTO: `ssh $SSH_HOST "bash .../audit.sh"`).
+> Esta skill **não** auto-executa nada no carregamento. **Você (agente)** renderiza o menu/status/auditoria rodando os scripts **no host de destino** — no Windows, sempre via `ssh $SSH_HOST`. Sequência: selecionar ambiente → (remoto) validar SSH → provisionar repo → rodar o script.
+
+1. **Se `$ARGUMENTS` estiver vazio** → após selecionar o ambiente e provisionar, **renderize o catálogo** executando `catalog.sh` no destino e exiba a saída:
+   - REMOTO (Windows → VPS): `ssh $SSH_HOST "bash /root/setup-skills/.claude/skills/devops/scripts/catalog.sh"`
+   - LOCAL (Claude na VPS): `bash /root/setup-skills/.claude/skills/devops/scripts/catalog.sh`
+2. **Se `$ARGUMENTS` for "audit"** → execute `audit.sh` no destino (REMOTO: `ssh $SSH_HOST "bash .../audit.sh"`; LOCAL: `bash .../audit.sh`).
 3. **Se `$ARGUMENTS` tiver um nome de skill** → siga o fluxo de deploy.
 
 ### Mentalidade DevOps
@@ -86,18 +91,25 @@ ssh -o ConnectTimeout=10 $SSH_HOST '
 
 ## 🛡️ Auditoria de Segurança e Performance
 
-Execute este bloco para avaliar a saúde do servidor:
+A auditoria é feita por `scripts/audit.sh`, executado **no host de destino** (nunca no Windows local). O agente roda e exibe a saída:
 
 ```bash
-!`bash /root/setup-skills/.claude/skills/devops/scripts/audit.sh`
+# LOCAL (Claude rodando na própria VPS Linux):
+bash /root/setup-skills/.claude/skills/devops/scripts/audit.sh
+
+# REMOTO (Windows → VPS via SSH):
+ssh $SSH_HOST "bash /root/setup-skills/.claude/skills/devops/scripts/audit.sh"
 ```
 
 ---
 
 ## Estado atual do ecossistema
 
-```
-!`bash /root/setup-skills/.claude/skills/devops/scripts/status.sh`
+Renderizado por `scripts/status.sh`, **no host de destino**:
+
+```bash
+# LOCAL:   bash /root/setup-skills/.claude/skills/devops/scripts/status.sh
+# REMOTO:  ssh $SSH_HOST "bash /root/setup-skills/.claude/skills/devops/scripts/status.sh"
 ```
 
 ---
@@ -106,20 +118,26 @@ Execute este bloco para avaliar a saúde do servidor:
 ## ║              ORION DEVOPS — Catálogo de Deploy               ║
 ## ╚══════════════════════════════════════════════════════════════╝
 
-```
-!`bash /root/setup-skills/.claude/skills/devops/scripts/catalog.sh`
+O catálogo (com status ✅/⬜ real) é renderizado por `scripts/catalog.sh`, **no host de destino**. Execute e exiba a saída ao usuário:
+
+```bash
+# LOCAL:   bash /root/setup-skills/.claude/skills/devops/scripts/catalog.sh
+# REMOTO:  ssh $SSH_HOST "bash /root/setup-skills/.claude/skills/devops/scripts/catalog.sh"
 ```
 
 ---
 
 ## Fluxo de deploy (após escolha do usuário)
 
+> No modo **REMOTO** (Windows → VPS), todo comando roda na VPS via `ssh $SSH_HOST "..."`. Os comandos abaixo mostram a forma LOCAL; prefixe com SSH quando remoto.
+
 ```
 1. Ler metadata.json da skill escolhida
-   → cat /root/setup-skills/skills/<nome>/metadata.json
+   LOCAL : cat /root/setup-skills/skills/<nome>/metadata.json
+   REMOTO: ssh $SSH_HOST "cat /root/setup-skills/skills/<nome>/metadata.json"
 
 2. Verificar e instalar depends_on pendentes
-   → ls /root/dados_vps/*.md | grep <dep>
+   REMOTO: ssh $SSH_HOST "ls /root/dados_vps/*.md" | grep <dep>
 
 3. Coletar required_inputs NÃO sensitive (todos de uma vez)
    → perguntar domínio, email, host SMTP, etc.
@@ -127,14 +145,21 @@ Execute este bloco para avaliar a saúde do servidor:
 4. Coletar required_inputs sensitive (UM A UM, sem eco)
    → senha: "Senha recebida ✓" (não repetir o valor)
 
-5. Exportar variáveis e executar
-   → bash /root/setup-skills/skills/<nome>/run.sh
+5. Exportar variáveis e executar run.sh NO DESTINO
+   LOCAL : VAR1='...' VAR2='...' bash /root/setup-skills/skills/<nome>/run.sh
+   REMOTO: passe as variáveis pela STDIN do shell remoto (NÃO em argv — segredos
+           ficariam visíveis em `ps`). Padrão seguro:
+             ssh $SSH_HOST 'bash -s' <<'EOF'
+             export VAR1='...'
+             export VAR2='...'
+             bash /root/setup-skills/skills/<nome>/run.sh
+             EOF
 
 6. Verificar resultado
-   → docker service ls | grep <nome>
+   REMOTO: ssh $SSH_HOST "docker service ls | grep <nome>"
 
 7. Confirmar persistência
-   → cat /root/dados_vps/<nome>.md
+   REMOTO: ssh $SSH_HOST "cat /root/dados_vps/<nome>.md"
 ```
 
 ## Diagnóstico rápido
