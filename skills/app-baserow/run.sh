@@ -14,13 +14,17 @@ reset="\e[0m"
 STACK_NAME="baserow"
 NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 # Ler ou gerar segredos (idempotência)
-SECRET_KEY=$(read_data "app-baserow" | grep -oP '(?<=- SECRET_KEY: ).*' || openssl rand -hex 16)
-BASEROW_JWT_SECRET_KEY=$(read_data "app-baserow" | grep -oP '(?<=- BASEROW_JWT_SECRET_KEY: ).*' || openssl rand -hex 16)
+SECRET_KEY=$(read_data "app-baserow" | grep -oP '(?<=Secret Key: ).*' || openssl rand -hex 16)
+BASEROW_JWT_SECRET_KEY=$(read_data "app-baserow" | grep -oP '(?<=JWT Secret: ).*' || openssl rand -hex 16)
 
 # TLS SMTP
 SMTP_SECURE="false"
 if [ "$SMTP_PORT" -eq 465 ]; then
     SMTP_SECURE="true"
+fi
+SMTP_TLS="false"
+if [ "$SMTP_PORT" = "587" ]; then
+    SMTP_TLS="true"
 fi
 
 echo -e "${amarelo}Instalando Baserow no dominio $DOMAIN_BASEROW...${reset}"
@@ -36,21 +40,19 @@ services:
     volumes:
       - baserow_data:/baserow/data
     networks:
-      - \$NOME_REDE_INTERNA
+      - $NOME_REDE_INTERNA
     environment:
-      - BASEROW_PUBLIC_URL=https://\$DOMAIN_BASEROW
+      - BASEROW_PUBLIC_URL=https://$DOMAIN_BASEROW
       - SECRET_KEY=$SECRET_KEY
       - BASEROW_JWT_SIGNING_KEY=$BASEROW_JWT_SECRET_KEY
       - EMAIL_SMTP=true
-      - FROM_EMAIL=\$SMTP_FROM_EMAIL
-      - EMAIL_SMTP_USER=\$SMTP_USER
-    deploy:
-
-      - EMAIL_SMTP_PASSWORD=\$SMTP_PASS
-      - EMAIL_SMTP_HOST=\$SMTP_HOST
-      - EMAIL_SMTP_PORT=\$SMTP_PORT
+      - FROM_EMAIL=$SMTP_FROM_EMAIL
+      - EMAIL_SMTP_USER=$SMTP_USER
+      - EMAIL_SMTP_PASSWORD=$SMTP_PASS
+      - EMAIL_SMTP_HOST=$SMTP_HOST
+      - EMAIL_SMTP_PORT=$SMTP_PORT
       - EMAIL_SMTP_USE_SSL=$SMTP_SECURE
-      - EMAIL_SMTP_USE_TLS=$([ "$SMTP_PORT" = "587" ] && echo "true" || echo "false")
+      - EMAIL_SMTP_USE_TLS=$SMTP_TLS
       - MIGRATE_ON_STARTUP=true
       - REDIS_HOST=baserow_redis
       - REDIS_PORT=6379
@@ -58,7 +60,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.http.routers.baserow.rule=Host(\`\$DOMAIN_BASEROW\`)
+        - traefik.http.routers.baserow.rule=Host(\`$DOMAIN_BASEROW\`)
         - traefik.http.routers.baserow.entrypoints=websecure
         - traefik.http.routers.baserow.tls.certresolver=letsencryptresolver
         - traefik.http.services.baserow.loadbalancer.server.port=80
@@ -73,7 +75,7 @@ services:
     volumes:
       - baserow_redis:/data
     networks:
-      - \$NOME_REDE_INTERNA
+      - $NOME_REDE_INTERNA
     deploy:
       resources:
         limits:
@@ -87,7 +89,7 @@ volumes:
     external: true
 
 networks:
-  \$NOME_REDE_INTERNA:
+  $NOME_REDE_INTERNA:
     external: true
 YAML
 
