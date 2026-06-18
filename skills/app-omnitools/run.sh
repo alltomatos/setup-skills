@@ -29,7 +29,7 @@ services:
         - "traefik.http.routers.omnitools.rule=Host(\`$DOMAIN_OMNITOOLS\`)"
         - "traefik.http.routers.omnitools.entrypoints=websecure"
         - "traefik.http.routers.omnitools.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.omnitools.loadbalancer.server.port=3000"
+        - "traefik.http.services.omnitools.loadbalancer.server.port=80"
       resources:
         limits:
           cpus: "1"
@@ -50,7 +50,7 @@ Dominio: https://$DOMAIN_OMNITOOLS
 
 Host: omnitools
 
-Port: 3000
+Port: 80
 
 Rede: $NOME_REDE_INTERNA"
 else
