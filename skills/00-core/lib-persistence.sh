@@ -69,6 +69,31 @@ service_exists() {
     [ -f "$(_dados_path "$1")" ]
 }
 
+# -----------------------------------------------------------------------------
+# Cria um banco de dados numa instância Postgres/pgvector (idempotente).
+# Necessário porque apps rodam apenas `db:migrate` (não criam o banco).
+# Uso: ensure_db "pgvector" "evocrm"   |   ensure_db "postgres" "n8n"
+# (o 1º arg é o filtro de nome do serviço/container da infra de banco)
+# -----------------------------------------------------------------------------
+ensure_db() {
+    local infra="$1" db="$2" cid
+    cid=$(docker ps -q --filter "name=${infra}" | head -n1)
+    if [ -z "$cid" ]; then
+        echo "[db] ERRO: container da infra '${infra}' não encontrado (instale a dependência)." >&2
+        return 1
+    fi
+    if docker exec "$cid" psql -U postgres -lqt 2>/dev/null | cut -d'|' -f1 | grep -qw "$db"; then
+        echo "[db] banco '$db' já existe em ${infra}."
+        return 0
+    fi
+    if docker exec "$cid" psql -U postgres -c "CREATE DATABASE \"$db\";" >/dev/null 2>&1; then
+        echo "[db] banco '$db' criado em ${infra}."
+        return 0
+    fi
+    echo "[db] ERRO ao criar o banco '$db' em ${infra}." >&2
+    return 1
+}
+
 # =============================================================================
 # PORTAINER — Modo "Total Control" (replica a técnica do Setup Orion)
 # Credenciais persistidas em /root/dados_vps/dados_portainer (compatível com o

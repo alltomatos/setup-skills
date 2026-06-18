@@ -36,7 +36,8 @@ JWT_SECRET=$(openssl rand -hex 32)
 API_TOKEN=$(openssl rand -hex 32)
 DOORKEEPER_SECRET=$(openssl rand -hex 32)
 BOT_RUNTIME_SECRET=$(openssl rand -hex 32)
-ENCRYPTION_KEY=$(openssl rand -base64 32)
+# ENCRYPTION_KEY precisa ser uma chave Fernet válida (base64 urlsafe de 32 bytes)
+ENCRYPTION_KEY=$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '\n')
 
 echo -e "${amarelo}Instalando EvoCRM no domínio $DOMAIN_EVOCRM_FRONT...${reset}"
 
@@ -347,6 +348,9 @@ networks:
   $NOME_REDE_INTERNA:
     external: true
 EOL
+
+# Cria o banco 'evocrm' no pgvector (apps só rodam db:migrate, não criam o banco)
+ensure_db "pgvector" "evocrm" || { echo -e "${vermelho}Erro ao preparar o banco no pgvector.${reset}"; exit 1; }
 
 deploy_via_portainer "$STACK_NAME" "evocrm.yaml"
 
