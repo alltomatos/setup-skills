@@ -60,7 +60,7 @@ services:
         - traefik.http.services.nextcloud.loadbalancer.server.port=80
         - traefik.http.routers.nextcloud.middlewares=nextcloud_redirect
         - traefik.http.middlewares.nextcloud_redirect.redirectregex.regex=https://(.*)/.well-known/(?:card|cal)dav
-        - traefik.http.middlewares.nextcloud_redirect.redirectregex.replacement=https://\$1/remote.php/dav
+        - traefik.http.middlewares.nextcloud_redirect.redirectregex.replacement=https://\$\$1/remote.php/dav
         - traefik.http.middlewares.nextcloud_redirect.redirectregex.permanent=true
       resources:
         limits:
