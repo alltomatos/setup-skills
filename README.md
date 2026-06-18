@@ -1,182 +1,181 @@
-# Setup Skills — Orion Design
+# Orion DevOps — Deploy Skills
 
-> Ecossistema de skills atômicas para deploy de aplicações self-hosted via Docker Swarm, governado pelo Claude Code CLI.
-> Fonte: SetupOrion v2.8.0 · Licença MIT · [oriondesign.art.br](https://oriondesign.art.br/setup)
+> Ecossistema de **deploy skills** que transforma qualquer CLI de IA agêntica (Claude Code, Gemini CLI, Codex CLI…) em um assistente DevOps para instalar stacks Docker Swarm no padrão **Setup Orion**.
+>
+> Núcleo 100% **bash puro** — agnóstico de agente. Fonte: SetupOrion · [oriondesign.art.br](https://oriondesign.art.br/setup)
 
 ---
 
-## 🚀 Starter — Pré-requisitos
+## ⚡ TL;DR
 
-### 1. Node.js 22 LTS
+```bash
+# 1. instale uma CLI de IA (Claude, Gemini ou Codex — veja abaixo)
+# 2. clone o repositório
+git clone https://github.com/alltomatos/devops.git && cd devops
+# 3. abra a CLI e invoque o assistente DevOps
+claude            # ou: gemini   |   codex
+> /devops         # (Claude) renderiza o catálogo e conduz o deploy
+```
+
+No Windows? Sem problema: a CLI roda local e faz o deploy **remoto** na sua VPS via SSH (nada é instalado manualmente no servidor).
+
+---
+
+## 🤖 Starter — escolha sua CLI
+
+O repositório funciona com **qualquer agente compatível**, porque as skills são scripts bash + `metadata.json`. As diretivas do projeto ficam em [`CLAUDE.md`](./CLAUDE.md) (o Claude lê automaticamente; para Gemini/Codex, basta apontá-los para esse arquivo).
+
+### 0. Node.js 22 LTS (pré-requisito comum às 3 CLIs)
 
 ```bash
 # Via nvm (recomendado)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 source ~/.bashrc
-
-nvm install 22
-nvm use 22
-nvm alias default 22
-
+nvm install 22 && nvm use 22 && nvm alias default 22
 node -v   # v22.x.x
-npm -v    # 10.x.x
 ```
+> Alternativa Debian/Ubuntu: `curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt-get install -y nodejs`
 
-> Alternativa: pacote oficial Debian/Ubuntu
-> ```bash
-> curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-> sudo apt-get install -y nodejs
-> ```
-
----
-
-### 2. Claude Code CLI
+### 1. Claude Code CLI (Anthropic)
 
 ```bash
 npm install -g @anthropic-ai/claude-code
-
-# Verificar instalação
 claude --version
-
-# Login (abre autenticação no browser)
-claude login
+claude            # primeiro uso pede login (browser)
 ```
+> Requer conta Anthropic com acesso ao Claude Code. Suporte nativo a **skills** (`/devops`, `/status-ecossistema`, etc.).
 
-> Requer conta Anthropic com acesso ao Claude Code (claude.ai/code).
-
----
-
-### 3. Clonar o projeto
+### 2. Gemini CLI (Google) — **tem uso gratuito** 🆓
 
 ```bash
-git clone https://github.com/alltomatos/devops.git
-cd devops
-
-# Iniciar o orquestrador
-claude
+npm install -g @google/gemini-cli
+gemini --version
+gemini            # faça login com sua conta Google pessoal
 ```
+> **Plano gratuito generoso** logando com conta Google pessoal (sem cartão) — ótimo para começar sem custo. As diretivas ficam em `CLAUDE.md`; para o Gemini lê-las automaticamente, crie um atalho:
+> ```bash
+> ln -s CLAUDE.md GEMINI.md      # Linux/macOS
+> ```
+
+### 3. Codex CLI (OpenAI)
+
+```bash
+npm install -g @openai/codex
+codex --version
+codex             # primeiro uso pede login/API key
+```
+> Para o Codex carregar as diretivas, aponte-o ao `CLAUDE.md`:
+> ```bash
+> ln -s CLAUDE.md AGENTS.md      # Linux/macOS
+> ```
+
+> 💡 **Por que funciona em qualquer CLI?** Os `run.sh` e o `lib-persistence.sh` são bash puro (sem Python/Node em runtime). O agente apenas lê o `metadata.json`, coleta os inputs e executa o `run.sh` no destino. A inteligência de orquestração está no `CLAUDE.md` + scripts auxiliares — não em um agente específico.
 
 ---
 
-## 📐 Arquitetura
+## 🚀 Como usar
 
-```
-devops/
-├── .claude/
-│   ├── config.json          # Configuração do orquestrador
-│   └── context7.json        # Context7 MCP para docs live
-├── catalog/
-│   ├── readme.md            # Catálogo de Soluções Setup Orion
-│   └── docs/                # Documentação de negócio das aplicações
-├── docs/
-│   ├── SetupOrion.md        # Script-fonte Orion v2.8.0 (45k linhas)
-│   ├── adr/
-│   │   ├── ADR-001.md       # Padrão de persistência em Markdown
-│   │   ├── ADR-002.md       # Segurança de segredos e contexto
-│   │   └── ADR-003.md       # Convenções para Claude Code Skills
-│   └── Setup.md             # Guia de setup da VPS
-├── skills/
-│   ├── 00-core/
-│   │   └── lib-persistence.sh   # Biblioteca de persistência atômica
-│   ├── infra-bootstrap/         # Bootstrap inicial da VPS
-│   ├── app-traefik/             # Traefik + Portainer (Swarm)
-│   ├── app-chatwoot/            # Chatwoot (atendimento omnichannel)
-│   ├── app-evolution/           # Evolution API (WhatsApp)
-│   ├── app-n8n/                 # N8N (automação)
-│   ├── app-typebot/             # Typebot (chatbot visual)
-│   ├── app-minio/               # MinIO (object storage S3-compat)
-│   └── ...                      # ~95 skills pendentes (ver Roadmap)
-├── ORCHESTRATOR-ROADMAP.md      # Roadmap completo (E1–E23, ~102 skills)
-├── ESTADO_ORQUESTRATOR.md       # Estado atual e GAPs
-└── CLAUDE.md                    # Diretivas do orquestrador
-```
+1. **Clone** o repositório (local, na sua máquina — Windows/Linux/macOS):
+   ```bash
+   git clone https://github.com/alltomatos/devops.git && cd devops
+   ```
+2. **Abra a CLI** escolhida (`claude` / `gemini` / `codex`).
+3. **Inicie o assistente DevOps**:
+   - No Claude: digite `/devops`.
+   - No Gemini/Codex: peça "aja como o assistente DevOps do CLAUDE.md e renderize o catálogo".
+4. **Selecione o ambiente**:
+   - **REMOTO** (padrão no Windows): informe `SSH_HOST` (ex.: `root@1.2.3.4`). O agente valida o acesso por chave SSH, **clona o repo na VPS** (`/root/devops`) e roda tudo via SSH.
+   - **LOCAL**: quando a própria CLI roda na VPS Linux.
+5. **Escolha a stack** pelo número/nome do catálogo. O agente resolve dependências, coleta inputs e faz o deploy.
+
+Comandos do assistente (Claude):
+
+| Comando | Função |
+|---|---|
+| `/devops` | Catálogo de deploy (status real ✅/⬜) e fluxo de instalação |
+| `/devops audit` | Auditoria de segurança e performance da VPS |
+| `/status-ecossistema` | Resumo das stacks instaladas x pendentes |
+| `/diagnose-stack <nome>` | Diagnóstico de uma stack específica |
+| `/audit-skills` | Conformance das skills |
 
 ---
 
-## 🏗️ Como as Skills Funcionam
+## 🏛️ Arquitetura de deploy (padrão Setup Orion)
 
-Cada skill é uma unidade atômica e idempotente composta por 3 arquivos:
+A escolha do **modo de deploy não é opcional** — replica o comportamento consolidado do Setup Orion:
+
+| Camada | Como é deployado | Por quê |
+|---|---|---|
+| **Item 0** `infra-bootstrap` | direto na VPS | prepara Docker + Swarm |
+| **Item 1** `app-traefik` (Traefik + Portainer) | `docker stack deploy` | o Portainer ainda não existe para usar sua API |
+| **Todas as demais skills** | **API do Portainer** (`/api/stacks`) | stacks ficam com **controle total** na UI (editor, env, redeploy, logs) — `docker stack deploy` as criaria como "limited/external" |
+
+O `app-traefik` cria o admin do Portainer **via API** automaticamente e persiste as credenciais; a partir daí, toda app é criada via `deploy_via_portainer` (em `skills/00-core/lib-persistence.sh`).
+
+---
+
+## 🏗️ Como as skills funcionam
+
+Cada skill em `skills/<nome>/` é atômica e idempotente:
 
 | Arquivo | Papel |
 |---------|-------|
-| `metadata.json` | Declaração de inputs, deps, pré-flight checks e persistência |
-| `run.sh` | Lógica de deploy (Docker Swarm stack) |
+| `metadata.json` | Inputs, `depends_on`, pré-flight checks, caminho de persistência |
+| `run.sh` | Lógica de deploy (gera o YAML e sobe a stack) — **bash puro** |
 | `README.md` | Guia humano: pré-requisitos, inputs, pós-instalação |
 
-**Fluxo de execução:**
+**Fluxo:** `agente coleta inputs → valida deps/pré-flight → injeta variáveis → executa run.sh → deploy (API Portainer) → persiste em /root/dados_vps/dados_<servico>`
+
+### Persistência (formato Setup Orion)
+
+Os dados de cada instalação ficam em **`/root/dados_vps/dados_<servico>`** (sem extensão), no formato:
+
 ```
-Claude coleta inputs → valida pré-flight → injeta variáveis → executa run.sh → persiste metadados em /root/dados_vps/<skill>.md
+[ POSTGRES ]
+
+Host: postgres
+
+Port: 5432
+
+Usuario: postgres
+
+Senha: <senha>
 ```
 
-**Regras inegociáveis (ADR-001 + ADR-002):**
-- Segredos nunca em disco, git ou logs — apenas em memória efêmera
-- Persistência exclusivamente em `/root/dados_vps/*.md`
-- Escrita atômica via arquivo temporário (sem corrupção parcial)
-- Idempotência: re-executar a skill não duplica serviços
-
----
-
-## 🛠️ Orquestração & DevOps
-
-O ecossistema conta com uma skill inteligente de **DevOps** para gerenciar o ciclo de vida das aplicações e a saúde do servidor.
-
-### 🛡️ Auditoria de Segurança e Performance
-O comando `/devops audit` realiza uma avaliação proativa do servidor:
-- **Segurança:** Checagem de porta SSH, login root, autenticação por senha e status do Firewall (UFW).
-- **Recursos:** Monitoramento de vCPUs, RAM disponível e espaço em disco.
-- **Updates:** Identificação de pacotes pendentes de atualização no SO.
-
-### 🌐 Orquestração Remota via SSH
-Você pode rodar o Claude CLI no seu computador local e realizar o deploy em uma VPS remota sem instalar nada no servidor de destino:
-1. Inicie `/devops` e escolha o modo **REMOTO**.
-2. O agente guiará a configuração de chaves SSH (acesso sem senha).
-3. Todo o catálogo de skills será enviado e executado via SSH/SCP de forma transparente.
-
----
-
-## 📦 Skills Disponíveis
-
-
-Para uma visão detalhada de cada aplicação, consulte o [**Catálogo de Soluções Setup Orion**](./catalog/readme.md).
-
-### ✅ Implementadas (7)
-
-| Skill | Descrição | Deps |
-|-------|-----------|------|
-| `infra-bootstrap` | Bootstrap inicial da VPS (Docker, Swarm, usuário) | — |
-| `app-traefik` | Traefik reverse proxy + Portainer + SSL automático | infra-bootstrap |
-| `app-chatwoot` | Chatwoot — atendimento omnichannel | app-traefik, pgvector |
-| `app-evolution` | Evolution API — gateway WhatsApp | app-traefik |
-| `app-n8n` | N8N — automação de workflows | app-traefik, postgres |
-| `app-typebot` | Typebot — chatbot visual | app-traefik, postgres |
-| `app-minio` | MinIO — object storage S3-compatível | app-traefik |
-
-### ⏳ Roadmap (~95 pendentes)
-
-Ver [ORCHESTRATOR-ROADMAP.md](./ORCHESTRATOR-ROADMAP.md) para o mapa completo organizado por épico:
-
-| Epic | Categoria | Skills |
-|------|-----------|--------|
-| E5 | Infra/Banco | postgres, pgvector, redis, mysql, mongodb, rabbitmq, clickhouse, kafka, qdrant |
-| E6 | AI/LLM | flowise, dify, ollama, openwebui, langfuse, langflow, anythingllm, firecrawl, zep, evoai |
-| E7 | WhatsApp/Messaging | unoapi, quepasa, wuzapi, wppconnect, transcrevezap |
-| E8 | CRM/Atendimento | woofed, krayincrm, twentycrm, evocrm, mautic |
-| E9 | Low-code/CMS | strapi, directus, nocobase, nocodb, baserow, tooljet, lowcoder, appsmith |
-| E10 | Produtividade | nextcloud, outline, mattermost, docmost, wiki, affine, jitsi, excalidraw… |
-| E11 | Docs/PDF | documenso, docuseal, stirlingpdf, gotenberg, opensign |
-| E12 | Segurança/Auth | vaultwarden, keycloak, authentik, passbolt |
-| E13 | Monitoramento | uptimekuma, monitor, checkmate, netbox |
-| E14–E22 | Demais | metabase, wordpress, calcom, odoo, frappe, supabase, rustdesk… |
-| E23 | Auditoria | testes, segurança, idempotência |
+- Skills dependentes leem as credenciais via `grep "Senha:" dados_<dep> | awk '{print $2}'`.
+- Arquivos com **`chmod 600`**; `/root` é restrito a root.
+- Há um arquivo global `dados_vps` (nome do servidor, rede interna, email SSL, link do Portainer) e `dados_portainer` (credenciais do admin para a API).
 
 ---
 
 ## 🔐 Segurança
 
-- **Zero hardcode**: nenhum token, senha ou chave no repositório
-- **Shift-left**: segredos solicitados via chat, usados e descartados
-- **Mascaramento**: valores sensíveis nunca aparecem em logs
-- **Pre-commit**: instalar Husky + lint-staged para reforço local
+- **Zero hardcode no git**: segredos são **gerados em runtime** (`openssl rand`) ou recebidos por env — nunca commitados (ADR-002).
+- **Persistência operacional na VPS**: credenciais ficam em `/root/dados_vps/dados_<servico>` com `chmod 600` (necessário para o modelo de dependências entre stacks). Recomenda-se disco criptografado/backup seguro.
+- **SSH só por chave**: o assistente nunca pede senha SSH; guia a configuração de chave.
+- **Mascaramento**: valores sensíveis não aparecem em resumos/logs do chat.
+
+---
+
+## 📦 Catálogo de skills
+
+São **~103 skills** cobrindo bancos, IA/LLM, WhatsApp, CRM, low-code, produtividade, docs, segurança, monitoramento e utilitários. O catálogo com status real é renderizado pelo `/devops`.
+
+| Epic | Categoria | Exemplos |
+|------|-----------|----------|
+| E1–E4 | Base/Infra | infra-bootstrap, app-traefik (Traefik + Portainer) |
+| E5 | Dados/Banco/Filas | postgres, pgvector, redis, mysql, mongodb, rabbitmq, clickhouse, kafka, qdrant |
+| E6 | IA/LLM | ollama, openwebui, flowise, dify, langfuse, langflow, anythingllm, firecrawl, zep, evoai |
+| E7 | WhatsApp/Mensageria | evolution, unoapi, quepasa, wuzapi, wppconnect, transcrevezap |
+| E8 | CRM/Atendimento | chatwoot, woofed, krayincrm, twentycrm, evocrm, mautic |
+| E9 | Low-code/CMS | strapi, directus, nocobase, nocodb, baserow, tooljet, lowcoder, appsmith |
+| E10 | Produtividade | nextcloud, outline, mattermost, docmost, wiki, affine, jitsi, excalidraw |
+| E11 | Docs/PDF/Assinatura | documenso, docuseal, stirlingpdf, gotenberg, opensign |
+| E12 | Segurança/Auth | vaultwarden, keycloak, authentik, passbolt |
+| E13 | Monitoramento | uptimekuma, monitor (Prometheus+Grafana), checkmate, netbox |
+| E14+ | Diversos | metabase, wordpress, calcom, odoo, frappe, supabase, rustdesk, n8n, typebot, minio… |
+
+Detalhes de negócio: [Catálogo de Soluções](./catalog/readme.md) · Roadmap: [ORCHESTRATOR-ROADMAP.md](./ORCHESTRATOR-ROADMAP.md)
 
 ---
 
@@ -184,17 +183,16 @@ Ver [ORCHESTRATOR-ROADMAP.md](./ORCHESTRATOR-ROADMAP.md) para o mapa completo or
 
 | Artefato | Papel |
 |----------|-------|
-| `CLAUDE.md` | Diretivas do orquestrador (regras inegociáveis) |
-| `ORCHESTRATOR-ROADMAP.md` | Roadmap de skills (source of truth) |
-| `ESTADO_ORQUESTRATOR.md` | Estado atual, GAPs e pendências |
-| `catalog/readme.md` | Catálogo de Soluções Setup Orion |
-| `docs/adr/ADR-001.md` | Decisão: persistência em Markdown |
-| `docs/adr/ADR-002.md` | Decisão: segurança de segredos |
-| `docs/adr/ADR-003.md` | Decisão: convenções de skills |
+| `CLAUDE.md` | Diretivas do orquestrador (lidas por qualquer CLI) |
+| `.claude/skills/` | Skills do assistente (devops, audit-skills, diagnose-stack, status-ecossistema, migrate-skill) |
+| `docs/SetupOrion.md` | Script-fonte do Setup Orion (referência da técnica) |
+| `docs/adr/ADR-001.md` | Persistência em `dados_<servico>` (formato Setup Orion) |
+| `docs/adr/ADR-002.md` | Segurança de segredos (persistência operacional `chmod 600`) |
+| `docs/adr/ADR-003.md` | Convenções das skills |
+| `ORCHESTRATOR-ROADMAP.md` · `ESTADO_ORQUESTRATOR.md` | Roadmap e estado atual |
 
 ---
 
 ## 🤝 Créditos
 
-Script original: **Orion Design** — [oriondesign.art.br](https://oriondesign.art.br/setup)
-Licença: MIT · Atribuição obrigatória ao autor original.
+Técnica e catálogo baseados no **Setup Orion** — [oriondesign.art.br](https://oriondesign.art.br/setup). Atribuição ao autor original.
