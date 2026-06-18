@@ -7,9 +7,9 @@
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SKILL_DIR/../00-core/lib-persistence.sh"
 
-amarelo="\e[33m"
-verde="\e[32m"
-reset="\e[0m"
+amarelo="$POSTGRES_PASSWORDe[33m"
+verde="$POSTGRES_PASSWORDe[32m"
+reset="$POSTGRES_PASSWORDe[0m"
 
 STACK_NAME="flowise"
 NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
@@ -22,6 +22,8 @@ fi
 echo -e "${amarelo}Instalando Flowise no domínio $DOMAIN_FLOWISE...${reset}"
 
 docker volume create flowise_data > /dev/null 2>&1
+
+POSTGRES_PASSWORD=$(grep "Senha:" /root/dados_vps/dados_postgres | awk -F"Senha:" '{print $2}' | xargs)
 
 cat > flowise.yaml <<EOL
 version: "3.7"
@@ -36,7 +38,7 @@ services:
       - DATABASE_HOST=postgres
       - DATABASE_NAME=flowise
       - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=\$POSTGRES_PASSWORD
+      - DATABASE_PASSWORD=$POSTGRES_PASSWORD
       - API_KEY=$API_KEY
       - PORT=3000
     volumes:
@@ -44,7 +46,7 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.flowise.rule=Host(\`$DOMAIN_FLOWISE\`)"
+        - "traefik.http.routers.flowise.rule=Host($POSTGRES_PASSWORD`$DOMAIN_FLOWISE$POSTGRES_PASSWORD`)"
         - "traefik.http.routers.flowise.entrypoints=websecure"
         - "traefik.http.routers.flowise.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.flowise.loadbalancer.server.port=3000"

@@ -7,9 +7,9 @@
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SKILL_DIR/../00-core/lib-persistence.sh"
 
-amarelo="\e[33m"
-verde="\e[32m"
-reset="\e[0m"
+amarelo="$POSTGRES_PASSWORDe[33m"
+verde="$POSTGRES_PASSWORDe[32m"
+reset="$POSTGRES_PASSWORDe[0m"
 
 STACK_NAME="quepasa"
 NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
@@ -22,6 +22,8 @@ fi
 echo -e "${amarelo}Instalando Quepasa no domínio $DOMAIN_QUEPASA...${reset}"
 
 docker volume create quepasa_volume > /dev/null 2>&1
+
+POSTGRES_PASSWORD=$(grep "Senha:" /root/dados_vps/dados_postgres | awk -F"Senha:" '{print $2}' | xargs)
 
 cat > quepasa.yaml <<EOL
 version: "3.7"
@@ -44,13 +46,13 @@ services:
       - DBDATABASE=quepasa
       - DBPORT=5432
       - DBUSER=postgres
-      - DBPASSWORD=\$POSTGRES_PASSWORD
+      - DBPASSWORD=$POSTGRES_PASSWORD
       - DBSSLMODE=disable
       - SIGNING_SECRET=$MASTERKEY
     deploy:
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.quepasa.rule=Host(\`$DOMAIN_QUEPASA\`)"
+        - "traefik.http.routers.quepasa.rule=Host($POSTGRES_PASSWORD`$DOMAIN_QUEPASA$POSTGRES_PASSWORD`)"
         - "traefik.http.routers.quepasa.entrypoints=websecure"
         - "traefik.http.routers.quepasa.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.quepasa.loadbalancer.server.port=31000"

@@ -7,9 +7,9 @@
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SKILL_DIR/../00-core/lib-persistence.sh"
 
-amarelo="\e[33m"
-verde="\e[32m"
-reset="\e[0m"
+amarelo="$PGVECTOR_PASSWORDe[33m"
+verde="$PGVECTOR_PASSWORDe[32m"
+reset="$PGVECTOR_PASSWORDe[0m"
 
 STACK_NAME="zep"
 NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
@@ -20,9 +20,11 @@ if [ -z "$ZEP_AUTH_SECRET" ]; then
 fi
 
 # Basic Auth para Traefik (painel admin)
-HASHED_PASS=$(htpasswd -nb "$ZEP_USER" "$ZEP_PASS" | sed -e 's/\$/\$\$/g')
+HASHED_PASS=$(htpasswd -nb "$ZEP_USER" "$ZEP_PASS" | sed -e 's/$PGVECTOR_PASSWORD$/$PGVECTOR_PASSWORD$$PGVECTOR_PASSWORD$/g')
 
 echo -e "${amarelo}Instalando Zep no domínio $DOMAIN_ZEP...${reset}"
+
+PGVECTOR_PASSWORD=$(grep "Senha:" /root/dados_vps/dados_pgvector | awk -F"Senha:" '{print $2}' | xargs)
 
 cat > zep.yaml <<EOL
 version: "3.7"
@@ -43,7 +45,7 @@ services:
       - $NOME_REDE_INTERNA
     environment:
       - ZEP_STORE_TYPE=postgres
-      - ZEP_STORE_POSTGRES_DSN=postgres://postgres:\$PGVECTOR_PASSWORD@pgvector:5432/zep?sslmode=disable
+      - ZEP_STORE_POSTGRES_DSN=postgres://postgres:$PGVECTOR_PASSWORD@pgvector:5432/zep?sslmode=disable
       - ZEP_AUTH_SECRET=$ZEP_AUTH_SECRET
       - ZEP_OPENAI_API_KEY=$OPENAI_API_KEY
       - ZEP_NLP_SERVER_URL=http://zep-nlp:5557
@@ -51,13 +53,13 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.zep.rule=Host(\`$DOMAIN_ZEP\`)"
+        - "traefik.http.routers.zep.rule=Host($PGVECTOR_PASSWORD`$DOMAIN_ZEP$PGVECTOR_PASSWORD`)"
         - "traefik.http.routers.zep.entrypoints=websecure"
         - "traefik.http.routers.zep.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.zep.loadbalancer.server.port=8000"
         
         # Admin Panel Auth
-        - "traefik.http.routers.zep-admin.rule=Host(\`$DOMAIN_ZEP\`) && PathPrefix(\`/admin\`)"
+        - "traefik.http.routers.zep-admin.rule=Host($PGVECTOR_PASSWORD`$DOMAIN_ZEP$PGVECTOR_PASSWORD`) && PathPrefix($PGVECTOR_PASSWORD`/admin$PGVECTOR_PASSWORD`)"
         - "traefik.http.routers.zep-admin.entrypoints=websecure"
         - "traefik.http.routers.zep-admin.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.zep-admin.middlewares=zep-auth"

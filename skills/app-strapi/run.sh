@@ -7,9 +7,9 @@
 SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SKILL_DIR/../00-core/lib-persistence.sh"
 
-amarelo="\e[33m"
-verde="\e[32m"
-reset="\e[0m"
+amarelo="$POSTGRES_PASSWORDe[33m"
+verde="$POSTGRES_PASSWORDe[32m"
+reset="$POSTGRES_PASSWORDe[0m"
 
 STACK_NAME="strapi"
 NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
@@ -26,6 +26,8 @@ echo -e "${amarelo}Instalando Strapi no domínio $DOMAIN_STRAPI...${reset}"
 # Criar volume
 docker volume create strapi_data > /dev/null 2>&1
 
+POSTGRES_PASSWORD=$(grep "Senha:" /root/dados_vps/dados_postgres | awk -F"Senha:" '{print $2}' | xargs)
+
 cat > strapi.yaml <<EOL
 version: "3.7"
 services:
@@ -41,7 +43,7 @@ services:
       - DATABASE_NAME=strapi
       - DATABASE_PORT=5432
       - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=\$POSTGRES_PASSWORD
+      - DATABASE_PASSWORD=$POSTGRES_PASSWORD
       - JWT_SECRET=$JWT_SECRET
       - ADMIN_JWT_SECRET=$ADMIN_JWT_SECRET
       - APP_KEYS=$APP_KEYS
@@ -52,7 +54,7 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.strapi.rule=Host(\`$DOMAIN_STRAPI\`)"
+        - "traefik.http.routers.strapi.rule=Host($POSTGRES_PASSWORD`$DOMAIN_STRAPI$POSTGRES_PASSWORD`)"
         - "traefik.http.routers.strapi.entrypoints=websecure"
         - "traefik.http.routers.strapi.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.strapi.loadbalancer.server.port=1337"
