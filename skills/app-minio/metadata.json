@@ -35,7 +35,7 @@
     {
       "var": "NOME_REDE_INTERNA",
       "label": "Nome da Rede Interna",
-      "description": "Nome da rede overlay Docker que conecta todos os containers do ecossistema Orion.",
+      "description": "Nome da rede overlay Docker que conecta todos os containers do ecossistema Setup Orion.",
       "example": "OrionNet",
       "sensitive": false
     }

@@ -1,6 +1,6 @@
 ---
 description: |
-  Relata o estado atual do ecossistema Orion: stacks ativas, skills instaladas,
+  Relata o estado atual do ecossistema Setup Orion: stacks ativas, skills instaladas,
   uso de recursos e alertas. Use quando o usuário pedir "status", "como está
   o servidor", "quais serviços estão rodando" ou "ver stacks".
 disable-model-invocation: true

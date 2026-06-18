@@ -1,6 +1,6 @@
 ---
 description: |
-  Audita todas as deploy skills do ecossistema Orion contra os 3 ADRs.
+  Audita todas as deploy skills do ecossistema Setup Orion contra os 3 ADRs.
   Verifica: metadata.json completo, run.sh com lib-persistence.sh e save_data,
   README.md presente, sem segredos hardcoded. Use quando o usuário pedir
   "auditar skills", "revisar padrões" ou "verificar compliance".

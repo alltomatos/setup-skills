@@ -1,6 +1,6 @@
 # Skill: Monitor Orion
 
-Instala a stack de monitoramento padrão do ecossistema Orion, composta por Grafana, Prometheus, cAdvisor e NodeExporter.
+Instala a stack de monitoramento padrão do ecossistema Setup Orion, composta por Grafana, Prometheus, cAdvisor e NodeExporter.
 
 ## Pré-requisitos
 

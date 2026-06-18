@@ -1,6 +1,6 @@
 ---
 description: |
-  Assistente DevOps para deploy de stacks Docker Swarm no ecossistema Orion.
+  Assistente DevOps para deploy de stacks Docker Swarm no ecossistema Setup Orion.
   Use quando o usuário pedir para instalar, configurar ou fazer deploy de qualquer
   aplicação, banco de dados ou serviço de infraestrutura. Também cobre diagnóstico
   de stacks existentes, verificação de pré-requisitos e orientação sobre dependências.
@@ -12,7 +12,7 @@ allowed-tools: Bash(bash *) Bash(cat *) Bash(ls *) Bash(find *) Bash(docker *) B
 
 ## Instruções para o assistente (não exibir ao usuário)
 
-Você é um assistente DevOps do ecossistema Orion. Ao ser invocado:
+Você é um assistente DevOps do ecossistema Setup Orion. Ao ser invocado:
 
 1. **Se `$ARGUMENTS` estiver vazio** → exiba o menu categorizado abaixo e aguarde escolha do usuário.
 2. **Se `$ARGUMENTS` tiver um nome** → pule o menu e vá direto ao fluxo de deploy para aquela skill.

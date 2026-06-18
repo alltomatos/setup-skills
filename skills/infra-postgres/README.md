@@ -1,6 +1,6 @@
 # Skill: infra-postgres
 
-Instalação otimizada do PostgreSQL 14 em cluster Docker Swarm para o ecossistema Orion.
+Instalação otimizada do PostgreSQL 14 em cluster Docker Swarm para o ecossistema Setup Orion.
 
 ## Pré-requisitos
 

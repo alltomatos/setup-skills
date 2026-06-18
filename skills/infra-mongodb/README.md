@@ -1,6 +1,6 @@
 # Skill: infra-mongodb
 
-Instalação do MongoDB 6.0 para o ecossistema Orion.
+Instalação do MongoDB 6.0 para o ecossistema Setup Orion.
 
 ## Detalhes
 

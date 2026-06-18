@@ -1,7 +1,7 @@
 # Skill: infra-bootstrap
 
 ## O que faz
-Prepara o ambiente Debian 11 para receber as demais skills do ecossistema Orion. Esta é a **skill base** e deve ser executada **antes de qualquer outra**.
+Prepara o ambiente Debian 11 para receber as demais skills do ecossistema Setup Orion. Esta é a **skill base** e deve ser executada **antes de qualquer outra**.
 
 ## Pré-requisitos
 - Sistema operacional: **Debian 11** (recomendado)

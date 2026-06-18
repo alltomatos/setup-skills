@@ -1,6 +1,6 @@
 ---
 description: |
-  Diagnostica problemas em uma stack Docker Swarm do ecossistema Orion.
+  Diagnostica problemas em uma stack Docker Swarm do ecossistema Setup Orion.
   Analisa logs, status do serviço, uso de recursos e conectividade de rede.
   Use quando o usuário relatar que um serviço está "offline", "não funciona",
   "dando erro" ou "não sobe". Arg: nome da stack.

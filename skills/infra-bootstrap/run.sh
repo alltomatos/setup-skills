@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # skills/infra-bootstrap/run.sh
-# Skill: Verificação e preparação do ambiente Debian 11 para o ecossistema Orion
+# Skill: Verificação e preparação do ambiente Debian 11 para o ecossistema Setup Orion
 #
 # Padrão:
 #   - Executado como root

@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # skills/00-core/lib-persistence.sh
-# Biblioteca de persistência centralizada do ecossistema Orion
+# Biblioteca de persistência centralizada do ecossistema Setup Orion
 #
 # Padrão:
 #   - Todo dado persistido em /root/dados_vps/*.md
@@ -73,9 +73,9 @@ _update_index() {
     # Cria o cabeçalho se o índice não existe ainda
     if [ ! -f "$index" ]; then
         cat > "$index" <<MD
-# Catálogo de Instalações Orion
+# Catálogo de Instalações Setup Orion
 
-> Gerado automaticamente pelas skills do ecossistema Orion.
+> Gerado automaticamente pelas skills do ecossistema Setup Orion.
 
 ## Serviços Instalados
 

@@ -1,6 +1,6 @@
 # Skill: infra-mysql
 
-Instalação do MySQL 8.0 otimizado para o ecossistema Orion.
+Instalação do MySQL 8.0 otimizado para o ecossistema Setup Orion.
 
 ## Detalhes
 

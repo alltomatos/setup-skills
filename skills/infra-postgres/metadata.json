@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "name": "infra-postgres",
-  "description": "Instala o PostgreSQL 14 como uma stack Docker Swarm otimizada para o ecossistema Orion.",
+  "description": "Instala o PostgreSQL 14 como uma stack Docker Swarm otimizada para o ecossistema Setup Orion.",
   "depends_on": [
     "infra-bootstrap",
     "app-traefik"

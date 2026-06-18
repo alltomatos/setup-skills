@@ -2,7 +2,7 @@
 
 ## O que é este repositório
 
-Conjunto de **deploy skills** que transformam Claude CLI (e agentes compatíveis) em assistentes DevOps para instalação de stacks Docker Swarm no ecossistema Orion.
+Conjunto de **deploy skills** que transformam Claude CLI (e agentes compatíveis) em assistentes DevOps para instalação de stacks Docker Swarm no ecossistema Setup Orion.
 
 Cada skill em `skills/<nome>/` é um script bash autocontido que instala uma solução via `docker stack deploy`. O assistente lê o `metadata.json`, coleta as entradas necessárias e executa o `run.sh`.
 

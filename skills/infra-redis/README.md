@@ -1,6 +1,6 @@
 # Skill: infra-redis
 
-Instalação do Redis para cache de alta performance e mensagens pub-sub no ecossistema Orion.
+Instalação do Redis para cache de alta performance e mensagens pub-sub no ecossistema Setup Orion.
 
 ## Detalhes
 

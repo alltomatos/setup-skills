@@ -24,7 +24,7 @@ STACK_NAME="postgres"
 DATA_FILE="/root/dados_vps/infra-postgres.md"
 
 # 1. Obter Nome da Rede Interna
-# No ecossistema Orion, a rede é definida no bootstrap/traefik. 
+# No ecossistema Setup Orion, a rede é definida no bootstrap/traefik. 
 # Tentamos descobrir o nome da rede criada pelo traefik.
 NOME_REDE_INTERNA=$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep "orion" || echo "orion_network")
 

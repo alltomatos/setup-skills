@@ -1,5 +1,5 @@
-# Catálogo de Soluções Orion
-Este catálogo fornece uma visão de negócio e casos de uso para todas as ferramentas disponíveis no ecossistema Orion.
+# Catálogo de Soluções Setup Orion
+Este catálogo fornece uma visão de negócio e casos de uso para todas as ferramentas disponíveis no ecossistema Setup Orion.
 
 ## 📊 Categorias
 

@@ -1,6 +1,6 @@
 # Skill: infra-rabbitmq
 
-Instalação do RabbitMQ com painel de gerenciamento para o ecossistema Orion.
+Instalação do RabbitMQ com painel de gerenciamento para o ecossistema Setup Orion.
 
 ## Detalhes
 

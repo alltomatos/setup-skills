@@ -23,7 +23,7 @@ infra-bootstrap → app-traefik → app-minio
 | `URL_MINIO`        | Não      | —       | Domínio do painel admin (DNS deve apontar para esta VPS)          | `minio.seudominio.com.br`  |
 | `URL_S3`           | Não      | —       | Domínio da API S3 — **lido por outras skills** (DNS obrigatório)  | `s3.seudominio.com.br`     |
 | `SENHA_MINIO`      | **SIM**  | 8 chars | Senha do usuário `admin`. Nunca gravada em disco.                 | `MinhaS3nh@Forte!`         |
-| `NOME_REDE_INTERNA`| Não      | —       | Rede overlay Docker do ecossistema Orion                          | `OrionNet`                 |
+| `NOME_REDE_INTERNA`| Não      | —       | Rede overlay Docker do ecossistema Setup Orion                          | `OrionNet`                 |
 
 ---
 
@@ -50,7 +50,7 @@ Claude orienta criação de bucket e geração de Access Keys no painel
 
 ## URL_S3 é consumida por outras skills
 
-> Esta é a integração mais importante desta skill no ecossistema Orion.
+> Esta é a integração mais importante desta skill no ecossistema Setup Orion.
 
 Quando o Claude instala skills que precisam de storage de arquivos (uploads, attachments, mídia), ele lê `/root/dados_vps/minio.md` para obter o `URL_S3` e usa como endpoint S3 na configuração de cada serviço.
 
