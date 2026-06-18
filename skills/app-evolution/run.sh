@@ -171,6 +171,8 @@ YAML
 deploy_stack() {
     echo -e "${amarelo}[4/5] Executando deploy da stack evolution...${reset}"
 
+    ensure_db "postgres" "evolution" || { echo -e "${vermelho}      [FAIL] erro ao preparar banco evolution.${reset}"; ERRORS=$((ERRORS + 1)); return; }
+
     if deploy_via_portainer "evolution" "/root/evolution.yaml" > /dev/null 2>&1; then
         echo -e "${verde}      [OK] Stack evolution deployada.${reset}"
     else
