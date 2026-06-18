@@ -162,6 +162,59 @@ O catálogo (com status ✅/⬜ real) é renderizado por `scripts/catalog.sh`, *
    REMOTO: ssh $SSH_HOST "cat /root/dados_vps/<nome>.md"
 ```
 
+---
+
+## 🏛️ Arquitetura de Deploy (técnica Setup Orion — OBRIGATÓRIA)
+
+Referência: `docs/Setup.md` (bootstrap do sistema) e `docs/SetupOrion.md` (script-mãe).
+Há **dois modos de deploy** e a escolha NÃO é opcional:
+
+### 1) Fundação / bootstrap → `docker stack deploy` (direto)
+Apenas o **item 0 (`infra-bootstrap`)** e o **item 1 (`app-traefik`: Traefik + Portainer)**.
+Motivo: o Portainer ainda não existe, então não há API para usar. O `app-traefik`:
+1. `docker swarm init`, cria rede overlay (`NOME_REDE_INTERNA`) e volumes.
+2. `docker stack deploy ... -c traefik.yaml traefik` e `... -c portainer.yaml portainer`.
+3. **Cria o admin do Portainer via API** (`POST /api/users/admin/init`, retry) com senha
+   gerada (ou `PORTAINER_ADMIN_PASSWORD`) e **persiste as credenciais** em
+   `/root/dados_vps/dados_portainer` (chmod 600, formato Setup Orion).
+   → A partir daqui, **NÃO** se cria mais admin manualmente no browser.
+
+### 2) Todas as demais soluções → **API do Portainer** ("Total Control")
+Toda skill de app chama `deploy_via_portainer "$STACK_NAME" "<arquivo>.yaml"`
+(em `skills/00-core/lib-persistence.sh`). A função:
+1. Lê credenciais de `/root/dados_vps/dados_portainer` (ou env `PORTAINER_URL/USER/PASS`).
+2. Autentica `POST /api/auth` → JWT (retry 6×).
+3. Pega `endpoint` (Name `primary`, senão o primeiro) e o `SwarmID`.
+4. Cria a stack via `POST /api/stacks/create/swarm/file` (multipart), ou **atualiza**
+   (`PUT /api/stacks/{id}`) se já existir — idempotente.
+5. **Sem fallback** para `docker stack deploy`: se a API falhar, retorna erro.
+
+> **Por que API e não `docker stack deploy` para apps?** Stacks criadas pela CLI
+> aparecem no Portainer como **"limited/external"** e não podem ser editadas/gerenciadas
+> pela UI. Via API, ficam com **controle total** no Portainer (editor, env, redeploy, logs).
+
+### Credenciais do Portainer (`/root/dados_vps/dados_portainer`)
+```
+[ PORTAINER ]
+Dominio do portainer: docker.exemplo.com.br
+Usuario: admin
+Senha: <senha>
+Token: <jwt>
+```
+- Arquivo `chmod 600`. A senha do admin **não** vai para os `*.md` (ADR-002).
+- Se o admin já existir com senha desconhecida, use `PORTAINER_USER/PORTAINER_PASS`
+  via env, ou resete via helper oficial:
+  `docker run --rm -v portainer_data:/data portainer/helper-reset-password`.
+
+### Regra de ouro para o agente
+- Itens **0 e 1**: `docker stack deploy` (o próprio `run.sh` faz).
+- **Qualquer outra skill**: o `run.sh` já usa `deploy_via_portainer` — garanta que
+  `dados_portainer` existe (item 1 concluído) antes de deployar apps.
+- Segredos de app (senhas de banco, etc.) seguem indo por **env via STDIN** ao `run.sh`;
+  eles são embutidos no YAML e enviados à API (o Portainer passa a ser a fonte da stack).
+
+---
+
 ## Diagnóstico rápido
 
 - Status das stacks: `/status-ecossistema`

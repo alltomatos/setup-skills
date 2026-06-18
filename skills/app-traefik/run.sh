@@ -319,7 +319,7 @@ persist_data() {
 
 ## Credenciais (modo Total Control)
 > Admin criado automaticamente via API (usuário: ${PORTAINER_ADMIN_USER:-admin}).
-> A senha está em /root/dados_vps/portainer_auth (chmod 600) — use-a para logar na UI.
+> Credenciais em /root/dados_vps/dados_portainer (chmod 600) — use-as para logar na UI.
 > Todas as demais stacks são criadas via API do Portainer (totalmente gerenciáveis)."
 }
 

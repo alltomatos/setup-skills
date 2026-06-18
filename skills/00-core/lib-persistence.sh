@@ -89,22 +89,33 @@ MD
     fi
 }
 
+# =============================================================================
+# PORTAINER — Modo "Total Control" (replica a técnica do Setup Orion)
+# Credenciais persistidas em /root/dados_vps/dados_portainer (compatível com o
+# ecossistema), formato:
+#   [ PORTAINER ]
+#   Dominio do portainer: <dominio>
+#   Usuario: <user>
+#   Senha: <pass>
+#   Token: <jwt>
+# Apps são criados via API do Portainer (NÃO via `docker stack deploy`, que
+# geraria stacks "limited/external" não gerenciáveis pela UI).
+# =============================================================================
+PORTAINER_CRED_FILE="$DATA_DIR/dados_portainer"
+
 # -----------------------------------------------------------------------------
-# Resolve as credenciais do Portainer (env tem prioridade; senão o arquivo de auth)
-# Popula as globais: _PORT_URL _PORT_USER _PORT_PASS _PORT_TOKEN
+# Resolve credenciais (env tem prioridade; senão o arquivo dados_portainer).
+# Popula as globais: _PORT_URL (sem https://) _PORT_USER _PORT_PASS
 # -----------------------------------------------------------------------------
 _portainer_load_auth() {
-    local auth_file="$DATA_DIR/portainer_auth"
     _PORT_URL="${PORTAINER_URL:-}"
     _PORT_USER="${PORTAINER_USER:-}"
     _PORT_PASS="${PORTAINER_PASS:-}"
-    _PORT_TOKEN="${PORTAINER_TOKEN:-}"
 
-    if [ -f "$auth_file" ]; then
-        [ -z "$_PORT_URL" ]   && _PORT_URL=$(grep -E '^PORTAINER_URL='   "$auth_file" | cut -d= -f2- | tr -d '\r')
-        [ -z "$_PORT_USER" ]  && _PORT_USER=$(grep -E '^PORTAINER_USER='  "$auth_file" | cut -d= -f2- | tr -d '\r')
-        [ -z "$_PORT_PASS" ]  && _PORT_PASS=$(grep -E '^PORTAINER_PASS='  "$auth_file" | cut -d= -f2- | tr -d '\r')
-        [ -z "$_PORT_TOKEN" ] && _PORT_TOKEN=$(grep -E '^PORTAINER_TOKEN=' "$auth_file" | cut -d= -f2- | tr -d '\r')
+    if [ -f "$PORTAINER_CRED_FILE" ]; then
+        [ -z "$_PORT_URL" ]  && _PORT_URL=$(grep "Dominio do portainer:" "$PORTAINER_CRED_FILE" | awk -F "Dominio do portainer:" '{print $2}' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | tr -d '\r')
+        [ -z "$_PORT_USER" ] && _PORT_USER=$(grep "Usuario:" "$PORTAINER_CRED_FILE" | awk -F "Usuario:" '{print $2}' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | tr -d '\r')
+        [ -z "$_PORT_PASS" ] && _PORT_PASS=$(grep "Senha:" "$PORTAINER_CRED_FILE" | awk -F "Senha:" '{print $2}' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | tr -d '\r')
     fi
     # Fallback de URL a partir do portainer.md (campo "URL de Acesso")
     if [ -z "$_PORT_URL" ] && [ -f "$DATA_DIR/portainer.md" ]; then
@@ -114,36 +125,55 @@ _portainer_load_auth() {
 }
 
 # -----------------------------------------------------------------------------
-# Persiste as credenciais do Portainer (chmod 600). Segredos ficam neste arquivo
-# operacional fora do contexto Markdown (necessário p/ deploys via API).
+# Persiste credenciais no formato Setup Orion (chmod 600).
 # Uso: portainer_save_auth <url> <user> <pass> [token]
 # -----------------------------------------------------------------------------
 portainer_save_auth() {
     _ensure_data_dir
-    local auth_file="$DATA_DIR/portainer_auth"
-    ( umask 077; cat > "$auth_file" <<EOF
-PORTAINER_URL=${1#https://}
-PORTAINER_USER=$2
-PORTAINER_PASS=$3
-PORTAINER_TOKEN=${4:-}
+    local url="${1#https://}"; url="${url%/}"
+    ( umask 077; cat > "$PORTAINER_CRED_FILE" <<EOF
+[ PORTAINER ]
+
+Dominio do portainer: $url
+
+Usuario: $2
+
+Senha: $3
+
+Token: ${4:-}
 EOF
     )
-    chmod 600 "$auth_file"
+    chmod 600 "$PORTAINER_CRED_FILE"
+}
+
+# -----------------------------------------------------------------------------
+# Autentica e ecoa um JWT fresco (retry até 6x). Vazio + status !=0 em falha.
+# Uso: _portainer_jwt <base_url> <user> <pass>
+# -----------------------------------------------------------------------------
+_portainer_jwt() {
+    local base="$1" user="$2" pass="$3" jwt="" i
+    for i in $(seq 1 6); do
+        jwt=$(curl -k -s -X POST -H "Content-Type: application/json" \
+              -d "$(jq -nc --arg u "$user" --arg p "$pass" '{username:$u,password:$p}')" \
+              "$base/api/auth" | jq -r '.jwt // empty')
+        [ -n "$jwt" ] && { echo "$jwt"; return 0; }
+        sleep 5
+    done
+    return 1
 }
 
 # -----------------------------------------------------------------------------
 # Inicializa o admin do Portainer via API (modo Total Control) e persiste auth.
-# Só funciona na primeira vez (enquanto não existe admin). Idempotente: se o
-# admin já existe, apenas valida que a senha informada autentica.
+# Cria o admin se ainda não existe (retry 4x); valida e persiste o JWT.
 # Uso: portainer_init_admin <url> <user> <pass>
 # -----------------------------------------------------------------------------
 portainer_init_admin() {
     local url="${1#https://}"; url="${url%/}"
     local user="$2" pass="$3"
     local base="https://$url"
+    local i
 
     # Aguarda a API responder
-    local i
     for i in $(seq 1 30); do
         curl -k -s -o /dev/null "$base/api/status" && break
         sleep 2
@@ -152,42 +182,34 @@ portainer_init_admin() {
     local check
     check=$(curl -k -s -o /dev/null -w "%{http_code}" "$base/api/users/admin/check")
     if [ "$check" = "404" ]; then
-        # Nenhum admin ainda -> cria
-        local code
-        code=$(curl -k -s -o /dev/null -w "%{http_code}" -X POST \
-            -H "Content-Type: application/json" \
-            -d "$(jq -nc --arg u "$user" --arg p "$pass" '{Username:$u,Password:$p}')" \
-            "$base/api/users/admin/init")
-        if [ "$code" -ge 200 ] && [ "$code" -lt 300 ]; then
-            portainer_save_auth "$url" "$user" "$pass"
-            echo "[portainer] Admin '$user' criado via API e credenciais persistidas."
-            return 0
-        fi
-        echo "[portainer] ERRO: falha ao criar admin (HTTP $code)." >&2
-        return 1
+        local resp
+        for i in $(seq 1 4); do
+            resp=$(curl -k -s -X POST "$base/api/users/admin/init" \
+                -H "Content-Type: application/json" \
+                -d "$(jq -nc --arg u "$user" --arg p "$pass" '{Username:$u,Password:$p}')")
+            echo "$resp" | grep -q "\"Username\"" && break
+            sleep 15
+        done
     fi
 
-    # Admin já existe -> valida senha e persiste
-    local jwt
-    jwt=$(curl -k -s -X POST -H "Content-Type: application/json" \
-          -d "$(jq -nc --arg u "$user" --arg p "$pass" '{username:$u,password:$p}')" \
-          "$base/api/auth" | jq -r '.jwt // empty')
-    if [ -n "$jwt" ]; then
-        portainer_save_auth "$url" "$user" "$pass"
-        echo "[portainer] Admin já existia; credenciais validadas e persistidas."
+    # Gera o primeiro token (JWT) e persiste
+    local token
+    token=$(_portainer_jwt "$base" "$user" "$pass")
+    if [ -n "$token" ]; then
+        portainer_save_auth "$url" "$user" "$pass" "$token"
+        echo "[portainer] Admin pronto; credenciais persistidas em $PORTAINER_CRED_FILE."
         return 0
     fi
-    echo "[portainer] AVISO: admin já existe mas a senha informada não autentica." >&2
+    echo "[portainer] ERRO: não foi possível autenticar como '$user' (admin existe com outra senha?)." >&2
     return 1
 }
 
 # -----------------------------------------------------------------------------
 # Faz o deploy de uma stack através da API do Portainer (modo Total Control).
-# As stacks ficam totalmente gerenciáveis pela UI do Portainer (NÃO usa
-# `docker stack deploy`, que criaria stacks "limited/external").
-# Idempotente: cria se nova, atualiza (redeploy) se já existir.
+# As stacks ficam totalmente gerenciáveis pela UI do Portainer.
+# Idempotente: cria (multipart, estilo Setup Orion) se nova; atualiza se existir.
 # Uso: deploy_via_portainer "nome_da_stack" "/caminho/para/arquivo.yaml"
-# Auth: env PORTAINER_TOKEN ou PORTAINER_USER/PORTAINER_PASS, ou /root/dados_vps/portainer_auth
+# Auth: env PORTAINER_URL/USER/PASS ou /root/dados_vps/dados_portainer.
 # Retorna 0 em sucesso; !=0 em falha (SEM fallback para docker stack deploy).
 # -----------------------------------------------------------------------------
 deploy_via_portainer() {
@@ -199,72 +221,61 @@ deploy_via_portainer() {
         return 1
     fi
 
-    local _PORT_URL _PORT_USER _PORT_PASS _PORT_TOKEN
+    local _PORT_URL _PORT_USER _PORT_PASS
     _portainer_load_auth
-    if [ -z "$_PORT_URL" ]; then
-        echo "[portainer] ERRO: URL do Portainer não encontrada (defina PORTAINER_URL ou ~/dados_vps/portainer_auth)." >&2
+    if [ -z "$_PORT_URL" ] || [ -z "$_PORT_USER" ] || [ -z "$_PORT_PASS" ]; then
+        echo "[portainer] ERRO: credenciais ausentes (dados_portainer ou PORTAINER_URL/USER/PASS)." >&2
         return 1
     fi
 
     local base="https://$_PORT_URL"
-    local -a auth_hdr
-    if [ -n "$_PORT_TOKEN" ]; then
-        auth_hdr=(-H "X-API-Key: $_PORT_TOKEN")
-    elif [ -n "$_PORT_USER" ] && [ -n "$_PORT_PASS" ]; then
-        local jwt
-        jwt=$(curl -k -s -X POST -H "Content-Type: application/json" \
-              -d "$(jq -nc --arg u "$_PORT_USER" --arg p "$_PORT_PASS" '{username:$u,password:$p}')" \
-              "$base/api/auth" | jq -r '.jwt // empty')
-        if [ -z "$jwt" ]; then
-            echo "[portainer] ERRO: autenticação falhou (verifique PORTAINER_USER/PASS)." >&2
-            return 1
-        fi
-        auth_hdr=(-H "Authorization: Bearer $jwt")
-    else
-        echo "[portainer] ERRO: sem credenciais (PORTAINER_TOKEN ou PORTAINER_USER/PASS)." >&2
+    local token
+    token=$(_portainer_jwt "$base" "$_PORT_USER" "$_PORT_PASS")
+    if [ -z "$token" ]; then
+        echo "[portainer] ERRO: autenticação falhou (verifique usuário/senha do Portainer)." >&2
         return 1
     fi
 
     # Endpoint local (prefere Name=="primary", senão o primeiro) e SwarmID
     local endpoint_id swarm_id
-    endpoint_id=$(curl -k -s "${auth_hdr[@]}" "$base/api/endpoints" \
+    endpoint_id=$(curl -k -s -H "Authorization: Bearer $token" "$base/api/endpoints" \
                   | jq -r 'map(select(.Name=="primary"))[0].Id // .[0].Id // empty')
     if [ -z "$endpoint_id" ]; then
         echo "[portainer] ERRO: nenhum endpoint Docker encontrado." >&2
         return 1
     fi
-    swarm_id=$(curl -k -s "${auth_hdr[@]}" "$base/api/endpoints/$endpoint_id/docker/swarm" | jq -r '.ID // empty')
+    swarm_id=$(curl -k -s -H "Authorization: Bearer $token" "$base/api/endpoints/$endpoint_id/docker/swarm" | jq -r '.ID // empty')
     if [ -z "$swarm_id" ]; then
         echo "[portainer] ERRO: SwarmID não encontrado (endpoint $endpoint_id)." >&2
         return 1
     fi
 
-    local content_json
-    content_json=$(jq -Rs . < "$compose_file")
-
-    # Stack já existe? -> update; senão -> create
-    local existing_id
-    existing_id=$(curl -k -s "${auth_hdr[@]}" "$base/api/stacks" \
+    # Stack já existe? -> update (redeploy); senão -> create (multipart)
+    local existing_id resp_file http_code
+    existing_id=$(curl -k -s -H "Authorization: Bearer $token" "$base/api/stacks" \
                   | jq -r --arg n "$stack_name" 'map(select(.Name==$n))[0].Id // empty')
-
-    local resp_file http_code body
     resp_file=$(mktemp)
+
     if [ -n "$existing_id" ]; then
+        local content_json body
+        content_json=$(jq -Rs . < "$compose_file")
         body=$(jq -nc --argjson c "$content_json" '{StackFileContent:$c, Env:[], Prune:true}')
         http_code=$(curl -k -s -o "$resp_file" -w "%{http_code}" -X PUT \
-            "${auth_hdr[@]}" -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $token" -H "Content-Type: application/json" \
             -d "$body" "$base/api/stacks/$existing_id?endpointId=$endpoint_id")
     else
-        body=$(jq -nc --arg n "$stack_name" --arg s "$swarm_id" --argjson c "$content_json" \
-               '{Name:$n, SwarmID:$s, StackFileContent:$c, Env:[]}')
         http_code=$(curl -k -s -o "$resp_file" -w "%{http_code}" -X POST \
-            "${auth_hdr[@]}" -H "Content-Type: application/json" \
-            -d "$body" "$base/api/stacks/create/swarm/string?endpointId=$endpoint_id")
+            -H "Authorization: Bearer $token" \
+            -F "Name=$stack_name" \
+            -F "file=@$compose_file" \
+            -F "SwarmID=$swarm_id" \
+            -F "endpointId=$endpoint_id" \
+            "$base/api/stacks/create/swarm/file")
     fi
 
     if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
         rm -f "$resp_file"
-        echo "[portainer] Stack '$stack_name' deployada via API (HTTP $http_code, $([ -n "$existing_id" ] && echo update || echo create))."
+        echo "[portainer] Stack '$stack_name' via API (HTTP $http_code, $([ -n "$existing_id" ] && echo update || echo create))."
         return 0
     fi
     echo "[portainer] ERRO: deploy via API de '$stack_name' falhou (HTTP $http_code):" >&2
