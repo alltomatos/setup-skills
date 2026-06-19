@@ -216,6 +216,9 @@ services:
     environment:
       - PGRST_DB_URI=postgres://authenticator:$POSTGRES_PASSWORD@db:5432/postgres
       - PGRST_JWT_SECRET=$JWT_SECRET
+      - PGRST_DB_ANON_ROLE=anon
+      - PGRST_DB_SCHEMAS=public,storage,graphql_public
+      - PGRST_DB_USE_LEGACY_GUCS=false
     deploy:
       placement: {constraints: [node.role == manager]}
 
