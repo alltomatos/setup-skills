@@ -170,9 +170,13 @@ services:
     image: supabase/gotrue:v2.182.1
     networks: [$NOME_REDE_INTERNA]
     environment:
+      - GOTRUE_DB_DRIVER=postgres
       - GOTRUE_DB_DATABASE_URL=postgres://supabase_auth_admin:$POSTGRES_PASSWORD@db:5432/postgres
       - GOTRUE_JWT_SECRET=$JWT_SECRET
       - GOTRUE_SITE_URL=https://$DOMAIN_SUPABASE
+      - API_EXTERNAL_URL=https://$DOMAIN_SUPABASE
+      - GOTRUE_API_HOST=0.0.0.0
+      - GOTRUE_API_PORT=9999
     deploy:
       placement: {constraints: [node.role == manager]}
 
