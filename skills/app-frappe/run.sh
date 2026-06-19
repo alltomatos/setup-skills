@@ -14,13 +14,14 @@ reset="\e[0m"
 STACK_NAME="erpnext"
 NOME_REDE_INTERNA="${NOME_REDE_INTERNA:-$(docker network ls --filter driver=overlay --format "{{.Name}}" | grep -vw ingress | head -n1)}"
 
-# Recupera ou gera senhas (ADR-001)
-DB_PASSWORD=$(read_data "app-frappe" | grep -oP '(?<=- DB Password Interno: ).*' || openssl rand -hex 16)
-FRAPPE_ADMIN_PASSWORD=$(read_data "app-frappe" | grep -oP '(?<=- Admin Password: ).*' || echo "$ADMIN_PASSWORD")
-
-if [ -z "$FRAPPE_ADMIN_PASSWORD" ]; then
-    FRAPPE_ADMIN_PASSWORD=$(openssl rand -hex 12)
-fi
+# Recupera ou gera senhas (ADR-001) — leitura DEVE bater com o save_data ("Campo: valor")
+EXISTING=$(read_data "app-frappe" 2>/dev/null)
+DB_PASSWORD=$(echo "$EXISTING" | grep -oP '(?<=DB Password Interno: ).*')
+[ -z "$DB_PASSWORD" ] && DB_PASSWORD=$(openssl rand -hex 16)
+# admin: env passado no deploy tem prioridade; senao persistido; senao gera
+PERSISTED_ADMIN=$(echo "$EXISTING" | grep -oP '(?<=Senha: ).*')
+FRAPPE_ADMIN_PASSWORD="${FRAPPE_ADMIN_PASSWORD:-$PERSISTED_ADMIN}"
+[ -z "$FRAPPE_ADMIN_PASSWORD" ] && FRAPPE_ADMIN_PASSWORD=$(openssl rand -hex 12)
 
 echo -e "${amarelo}Instalando Frappe ERPNext em $DOMAIN_FRAPPE...${reset}"
 
@@ -88,6 +89,32 @@ services:
     networks:
       - $NOME_REDE_INTERNA
     deploy:
+      placement: {constraints: [node.role == manager]}
+
+  # Job unico (one-shot): escreve common_site_config.json (db/redis hosts) e cria o site.
+  # Sem isso o frappe usa localhost p/ redis/db (ECONNREFUSED) e nao existe site (404).
+  create-site:
+    image: frappe/erpnext:v15.49.3
+    command:
+      - bash
+      - -c
+      - >
+        bench set-config -g db_host db &&
+        bench set-config -gp db_port 3306 &&
+        bench set-config -g redis_cache redis://cache:6379 &&
+        bench set-config -g redis_queue redis://queue:6379 &&
+        bench set-config -g redis_socketio redis://socketio-redis:6379 &&
+        bench set-config -gp socketio_port 9000 &&
+        until (echo > /dev/tcp/db/3306) 2>/dev/null; do echo aguardando-db; sleep 3; done &&
+        (bench new-site --no-mariadb-socket --admin-password=$FRAPPE_ADMIN_PASSWORD --db-root-password=$DB_PASSWORD --install-app erpnext --set-default $DOMAIN_FRAPPE || echo "site ja existe ou falhou - ver logs")
+    volumes:
+      - erpnext_sites:/home/frappe/frappe-bench/sites
+      - erpnext_logs:/home/frappe/frappe-bench/logs
+    networks:
+      - $NOME_REDE_INTERNA
+    deploy:
+      restart_policy:
+        condition: none
       placement: {constraints: [node.role == manager]}
 
   db:
