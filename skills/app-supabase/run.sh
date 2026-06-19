@@ -34,9 +34,11 @@ generate_jwt_tokens() {
     echo "$secret $token_anon_key $token_service_key"
 }
 
-JWT_SECRET=$(echo "$EXISTING_DATA" | grep -oP '(?<=- JWT Secret: ).*')
-ANON_KEY=$(echo "$EXISTING_DATA" | grep -oP '(?<=- Anon Key: ).*')
-SERVICE_KEY=$(echo "$EXISTING_DATA" | grep -oP '(?<=- Service Key: ).*')
+# NOTA: save_data escreve "Campo: valor" (sem prefixo "- ") — a leitura DEVE bater 1:1,
+# senao todos os segredos regeneram a cada run e quebram o volume/roles do db existente.
+JWT_SECRET=$(echo "$EXISTING_DATA" | grep -oP '(?<=JWT Secret: ).*')
+ANON_KEY=$(echo "$EXISTING_DATA" | grep -oP '(?<=Anon Key: ).*')
+SERVICE_KEY=$(echo "$EXISTING_DATA" | grep -oP '(?<=Service Key: ).*')
 
 if [ -z "$JWT_SECRET" ] || [ -z "$ANON_KEY" ] || [ -z "$SERVICE_KEY" ]; then
     read JWT_SECRET ANON_KEY SERVICE_KEY <<< $(generate_jwt_tokens)
@@ -106,12 +108,14 @@ services:
     plugins: [{name: cors}, {name: basic-auth}]
 EOF
 
-# Geração de mais segredos
-POSTGRES_PASSWORD=$(openssl rand -hex 16)
+# Geração de mais segredos (persistir POSTGRES_PASSWORD — regenerar quebra os roles do db)
+POSTGRES_PASSWORD=$(echo "$EXISTING_DATA" | grep -oP '(?<=Postgres Password: ).*')
+[ -z "$POSTGRES_PASSWORD" ] && POSTGRES_PASSWORD=$(openssl rand -hex 16)
 Logflare_key=$(openssl rand -hex 16)
 SECRET_KEY_BASE=$(openssl rand -hex 32)
 VAULT_ENC_KEY=$(openssl rand -base64 32 | cut -c1-32)
-PG_META_CRYPTO_KEY=$(openssl rand -hex 32)
+PG_META_CRYPTO_KEY=$(echo "$EXISTING_DATA" | grep -oP '(?<=PG Meta Crypto Key: ).*')
+[ -z "$PG_META_CRYPTO_KEY" ] && PG_META_CRYPTO_KEY=$(openssl rand -hex 32)
 
 # Determinar sufixo de ambiente se fornecido via $1
 SUFFIX="${1:+_$1}"
@@ -121,6 +125,9 @@ version: "3.7"
 services:
   studio:
     image: supabase/studio:2025.11.10-sha-5291fe3
+    # healthcheck embutido (/api/profile) recicla o studio no Swarm mesmo com o app Ready
+    healthcheck:
+      disable: true
     networks: [$NOME_REDE_INTERNA]
     environment:
       - SUPABASE_URL=http://kong:8000
@@ -130,6 +137,20 @@ services:
       - AUTH_JWT_SECRET=$JWT_SECRET
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - PG_META_CRYPTO_KEY=$PG_META_CRYPTO_KEY
+      - STUDIO_PG_META_URL=http://meta:8080
+    deploy:
+      placement: {constraints: [node.role == manager]}
+
+  meta:
+    image: supabase/postgres-meta:v0.89.3
+    networks: [$NOME_REDE_INTERNA]
+    environment:
+      - PG_META_PORT=8080
+      - PG_META_DB_HOST=db
+      - PG_META_DB_PORT=5432
+      - PG_META_DB_NAME=postgres
+      - PG_META_DB_USER=postgres
+      - PG_META_DB_PASSWORD=$POSTGRES_PASSWORD
     deploy:
       placement: {constraints: [node.role == manager]}
 
@@ -159,6 +180,15 @@ services:
     image: supabase/postgres:15.8.1.085
     volumes:
       - $BASE_DIR/docker/volumes/db/data:/var/lib/postgresql/data
+      # init scripts oficiais — SEM eles o roles.sql nao roda e os roles internos
+      # (authenticator/auth_admin/...) ficam sem a senha = POSTGRES_PASSWORD (SASL fail)
+      - $BASE_DIR/docker/volumes/db/realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql
+      - $BASE_DIR/docker/volumes/db/webhooks.sql:/docker-entrypoint-initdb.d/init-scripts/98-webhooks.sql
+      - $BASE_DIR/docker/volumes/db/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql
+      - $BASE_DIR/docker/volumes/db/jwt.sql:/docker-entrypoint-initdb.d/init-scripts/99-jwt.sql
+      - $BASE_DIR/docker/volumes/db/_supabase.sql:/docker-entrypoint-initdb.d/migrations/97-_supabase.sql
+      - $BASE_DIR/docker/volumes/db/logs.sql:/docker-entrypoint-initdb.d/migrations/99-logs.sql
+      - $BASE_DIR/docker/volumes/db/pooler.sql:/docker-entrypoint-initdb.d/migrations/99-pooler.sql
     networks: [$NOME_REDE_INTERNA]
     environment:
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
@@ -200,6 +230,11 @@ services:
       - PGRST_JWT_SECRET=$JWT_SECRET
       - DATABASE_URL=postgres://supabase_storage_admin:$POSTGRES_PASSWORD@db:5432/postgres
       - STORAGE_BACKEND=file
+      - FILE_STORAGE_BACKEND_PATH=/var/lib/storage
+      - POSTGREST_URL=http://rest:3000
+      - REGION=us-east-1
+      - GLOBAL_S3_BUCKET=supabase-storage
+      - TENANT_ID=stub
     deploy:
       placement: {constraints: [node.role == manager]}
 
