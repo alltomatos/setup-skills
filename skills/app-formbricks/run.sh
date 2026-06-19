@@ -97,6 +97,12 @@ services:
       - S3_ENDPOINT_URL=$S3_ENDPOINT
       - S3_FORCE_PATH_STYLE=1
       - REDIS_URL=redis://redis:6379
+      # :latest exige estas vars (Cube.js analytics + Hub) — sem servicos dedicados,
+      # placeholders p/ passar a validacao zod; recursos de analytics/hub ficam off
+      - CUBEJS_API_URL=http://localhost:4000
+      - CUBEJS_API_SECRET=$ENCRYPTION_KEY
+      - HUB_API_URL=http://localhost:3001
+      - HUB_API_KEY=$ENCRYPTION_KEY
     deploy:
       mode: replicated
       replicas: 1
